@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Text(
-                                  '${providerWatch.products[index].rating > 4.50 ? '⭐c⭐⭐⭐' : providerWatch.products[index].rating > 4 ? '⭐⭐⭐⭐' : providerWatch.products[index].rating > 3 ? '⭐⭐⭐' : providerWatch.products[index].rating > 2 ? '⭐⭐' : providerWatch.products[index].rating > 1 ? '⭐' : ''}',
+                                  '${providerWatch.products[index].rating > 4.50 ? '⭐⭐⭐⭐' : providerWatch.products[index].rating > 4 ? '⭐⭐⭐⭐' : providerWatch.products[index].rating > 3 ? '⭐⭐⭐' : providerWatch.products[index].rating > 2 ? '⭐⭐' : providerWatch.products[index].rating > 1 ? '⭐' : ''}',
                                 ),
                               ),
                               Text(

@@ -9,6 +9,9 @@ class ProductProvider extends ChangeNotifier {
 
   int productInfoIncValue = 1;
 
+  List<Product> bagProducts = [];
+
+
   Future<void> getProducts() async {
     Response response = await get(Uri.parse('https://dummyjson.com/products'));
 
@@ -33,6 +36,10 @@ class ProductProvider extends ChangeNotifier {
     if (productInfoIncValue > 1) {
       productInfoIncValue--;
     }
+    notifyListeners();
+  }
+
+  void bag(String goToBag) {
     notifyListeners();
   }
 }

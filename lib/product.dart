@@ -7,6 +7,10 @@ class Product {
   final num discountPercentage;
   final num rating;
   final String availabilityStatus;
+  final List<String> images;
+
+  String addToCart = 'Add to Cart';
+
 
   Product({
     required this.thumbnail,
@@ -17,6 +21,7 @@ class Product {
     required this.rating,
     required this.brand,
     required this.availabilityStatus,
+    required this.images,
   });
 
   factory Product.fromMap(Map productMap) {
@@ -29,6 +34,7 @@ class Product {
       rating: productMap['rating'] ?? 0,
       brand: productMap['brand'] ?? 'Groceries',
       availabilityStatus: productMap['availabilityStatus'] ?? '',
+      images: productMap['images'].cast<String>(),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/favourite_screen.dart';
 import 'package:shopping_app/home_screen.dart';
+import 'package:shopping_app/product_bag.dart';
 import 'package:shopping_app/product_provider.dart';
 import 'package:shopping_app/profile_screen.dart';
 import 'package:shopping_app/shop_screen.dart';
@@ -43,7 +44,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return ProductBag();
+              }));
+            },
             icon: Icon(Icons.shopping_bag_outlined),
           ),
         ],

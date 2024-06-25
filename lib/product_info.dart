@@ -1,9 +1,12 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping_app/product_bag.dart';
 import 'package:shopping_app/product_provider.dart';
 import 'product.dart';
 
-class ProductInfo extends StatelessWidget {
+class ProductInfo extends StatefulWidget {
   final Product product;
   const ProductInfo({
     super.key,
@@ -11,9 +14,17 @@ class ProductInfo extends StatelessWidget {
   });
 
   @override
+  State<ProductInfo> createState() => _ProductInfoState();
+}
+
+class _ProductInfoState extends State<ProductInfo> {
+  int currentIndex = 0;
+  final CarouselController carouselController = CarouselController();
+  @override
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();
     final providerRead = context.read<ProductProvider>();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xffDB3022),
@@ -34,16 +45,39 @@ class ProductInfo extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Hero(
-              tag: product.thumbnail,
-              child: Image(
-                width: double.infinity,
-                height: 320,
-                fit: BoxFit.cover,
-                image: NetworkImage(product.thumbnail),
+            child: CarouselSlider(
+              items: widget.product.images.map((image) {
+                return Image.network(image);
+              }).toList(),
+              options: CarouselOptions(
+                height: 300,
+                autoPlay: widget.product.images.length > 1 ? true : false,
+                enlargeCenterPage: true,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    currentIndex = index;
+                  });
+                },
               ),
+              carouselController: carouselController,
             ),
           ),
+          if (widget.product.images.length > 1)
+            DotsIndicator(
+              dotsCount: widget.product.images.length,
+              position: currentIndex,
+              decorator: DotsDecorator(
+                activeColor: Theme.of(context).primaryColor,
+                size: const Size.square(9.0),
+                activeSize: const Size(18.0, 9.0),
+                activeShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+              ),
+              onTap: (index) {
+                carouselController.animateToPage(index);
+              },
+            ),
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -66,7 +100,7 @@ class ProductInfo extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      product.title,
+                      widget.product.title,
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
@@ -76,10 +110,11 @@ class ProductInfo extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '⭐ ${product.rating}',
+                          '\$ ${widget.product.price}',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
+                            color: Color(0xffDB3022),
                           ),
                         ),
                         Column(
@@ -110,12 +145,12 @@ class ProductInfo extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              product.availabilityStatus,
+                              widget.product.availabilityStatus,
                               style: TextStyle(
-                                  color:
-                                      product.availabilityStatus == 'Low Stock'
-                                          ? Colors.red
-                                          : Colors.green),
+                                  color: widget.product.availabilityStatus ==
+                                          'Low Stock'
+                                      ? Colors.red
+                                      : Colors.green),
                             ),
                           ],
                         ),
@@ -124,7 +159,7 @@ class ProductInfo extends StatelessWidget {
                     SizedBox(height: 5),
                     Text(
                       textAlign: TextAlign.justify,
-                      product.description,
+                      widget.product.description,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
@@ -135,14 +170,14 @@ class ProductInfo extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Brand: ${product.brand}',
+                          'Brand: ${widget.product.brand}',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          'Discount: ${product.discountPercentage}',
+                          'Discount: ${widget.product.discountPercentage}',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -210,6 +245,28 @@ class ProductInfo extends StatelessWidget {
                         ),
                       ],
                     ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('⭐ ${widget.product.rating}'),
+                        Container(
+                          height: 40,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Size'),
+                              Icon(Icons.arrow_drop_down),
+                            ],
+                          ),
+                        )
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -218,43 +275,40 @@ class ProductInfo extends StatelessWidget {
         ],
       ),
       bottomSheet: Container(
-        height: 70,
+        margin: EdgeInsets.only(bottom: 10),
+        height: 60,
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  '\$ ${product.price}',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: Color(0xffDB3022),
               ),
-              Expanded(
-                child: SizedBox(
-                  height: 50,
-                  child: FilledButton(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Color(0xffDB3022),
-                    ),
-                    onPressed: () {},
-                    child: Row(
-                      children: [
-                        Icon(Icons.shopping_bag_outlined),
-                        SizedBox(width: 10),
-                        Text(
-                          'Add to Cart',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
+              onPressed: () {
+                if (!providerWatch.bagProducts.contains(widget.product)) {
+                  providerRead.bag(widget.product.addToCart = 'Go to Bag');
+                  providerWatch.bagProducts.add(widget.product);
+                } else {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return ProductBag();
+                  }));
+                }
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.shopping_bag_outlined),
+                  SizedBox(width: 10),
+                  Text(
+                    widget.product.addToCart,
+                    style: TextStyle(fontSize: 16),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
