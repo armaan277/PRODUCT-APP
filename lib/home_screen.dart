@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping_app/product_info.dart';
 import 'package:shopping_app/product_provider.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -40,11 +41,27 @@ class HomeScreen extends StatelessWidget {
                           ),
                           child: SizedBox(
                             height: 200,
-                            child: Image(
-                              image: NetworkImage(
-                                providerWatch.products[index].thumbnail,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return ProductInfo(
+                                        product: providerWatch.products[index],
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Hero(
+                                tag: providerWatch.products[index].thumbnail,
+                                child: Image(
+                                  image: NetworkImage(
+                                    providerWatch.products[index].thumbnail,
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                              fit: BoxFit.cover,
                             ),
                           ),
                         ),
@@ -56,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Text(
-                                  '${providerWatch.products[index].rating > 4.50 ? '⭐⭐⭐⭐⭐' : providerWatch.products[index].rating > 4 ? '⭐⭐⭐⭐' : providerWatch.products[index].rating > 3 ? '⭐⭐⭐' : providerWatch.products[index].rating > 2 ? '⭐⭐' : providerWatch.products[index].rating > 1 ? '⭐' : ''}',
+                                  '${providerWatch.products[index].rating > 4.50 ? '⭐c⭐⭐⭐' : providerWatch.products[index].rating > 4 ? '⭐⭐⭐⭐' : providerWatch.products[index].rating > 3 ? '⭐⭐⭐' : providerWatch.products[index].rating > 2 ? '⭐⭐' : providerWatch.products[index].rating > 1 ? '⭐' : ''}',
                                 ),
                               ),
                               Text(

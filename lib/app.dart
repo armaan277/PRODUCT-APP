@@ -13,7 +13,7 @@ class ProductApp extends StatelessWidget {
       create: (context) => ProductProvider(),
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: BottomNavigation(),
+        home: BottomNavigation(),  
       ),
     );
   }

@@ -6,6 +6,7 @@ class Product {
   final num price;
   final num discountPercentage;
   final num rating;
+  final String availabilityStatus;
 
   Product({
     required this.thumbnail,
@@ -15,6 +16,7 @@ class Product {
     required this.discountPercentage,
     required this.rating,
     required this.brand,
+    required this.availabilityStatus,
   });
 
   factory Product.fromMap(Map productMap) {
@@ -26,6 +28,7 @@ class Product {
       discountPercentage: productMap['discountPercentage'] ?? 0,
       rating: productMap['rating'] ?? 0,
       brand: productMap['brand'] ?? 'Groceries',
+      availabilityStatus: productMap['availabilityStatus'] ?? '',
     );
   }
 }

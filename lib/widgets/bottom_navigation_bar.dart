@@ -44,7 +44,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.shopping_cart_outlined),
+            icon: Icon(Icons.shopping_bag_outlined),
           ),
         ],
         iconTheme: IconThemeData(color: Colors.white),
@@ -66,8 +66,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
           ),
           BottomNavigationBarItem(
             label: 'Shop',
-            icon: Icon(
-              Icons.shopping_cart,
+            icon: Badge(
+              label: Text('0'),
+              child: Icon(
+                Icons.shopping_cart,
+              ),
             ),
           ),
           BottomNavigationBarItem(

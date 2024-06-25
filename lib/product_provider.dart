@@ -7,6 +7,8 @@ class ProductProvider extends ChangeNotifier {
   List<Product> products = [];
   bool isProductLoading = true;
 
+  int productInfoIncValue = 1;
+
   Future<void> getProducts() async {
     Response response = await get(Uri.parse('https://dummyjson.com/products'));
 
@@ -22,4 +24,15 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void productInfoInc() {
+    productInfoIncValue++;
+    notifyListeners();
+  }
+
+  void productInfoDec() {
+    if (productInfoIncValue > 1) {
+      productInfoIncValue--;
+    }
+    notifyListeners();
+  }
 }
