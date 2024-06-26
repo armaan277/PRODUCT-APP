@@ -2,11 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopping_app/contants/constant.dart';
-import 'package:shopping_app/screens/product_bag_screen.dart';
+import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
+import 'package:shopping_app/widgets/container_button.dart';
 import '../model/product.dart';
-import '../widgets/showbottomsheet_container.dart';
+import '../widgets/show_modal_bottom_sheet.dart';
 
 class ProductInfo extends StatefulWidget {
   final Product product;
@@ -29,7 +29,7 @@ class _ProductInfoState extends State<ProductInfo> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xffDB3022),
+        backgroundColor: AppColor.appColor,
         title: Text(
           'Product Detail',
           style: TextStyle(color: Colors.white),
@@ -116,7 +116,7 @@ class _ProductInfoState extends State<ProductInfo> {
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xffDB3022),
+                            color: AppColor.appColor,
                           ),
                         ),
                         Column(
@@ -183,7 +183,7 @@ class _ProductInfoState extends State<ProductInfo> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xffDB3022),
+                            color: AppColor.appColor,
                           ),
                         ),
                       ],
@@ -237,7 +237,7 @@ class _ProductInfoState extends State<ProductInfo> {
                                     icon: Icon(
                                       color: Colors.white,
                                       Icons.add,
-                                      size: 15,
+                                      size: 15, 
                                     ),
                                   ),
                                 ),
@@ -251,116 +251,14 @@ class _ProductInfoState extends State<ProductInfo> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('⭐ ${widget.product.rating}'),
-                        GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Container(
-                                  color: Color(0xffF9F9F9),
-                                  width: double.infinity,
-                                  height: 300,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        width: 60,
-                                        clipBehavior: Clip.hardEdge,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                        ),
-                                        child: Divider(
-                                          height: 20,
-                                          thickness: 5,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        'Select Size',
-                                        style: TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          ShowbottomsheetContainer(size: 'S'),
-                                          ShowbottomsheetContainer(size: 'M'),
-                                          ShowbottomsheetContainer(size: 'L'),
-                                        ],
-                                      ),
-                                      SizedBox(height: 10),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          ShowbottomsheetContainer(size: 'X'),
-                                          ShowbottomsheetContainer(size: 'XL'),
-                                          ShowbottomsheetContainer(size: 'XXL'),
-                                        ],
-                                      ),
-                                      SizedBox(height: 20),
-                                      SizedBox(
-                                        height: 60,
-                                        width: double.infinity,
-                                        child: FilledButton(
-                                          style: FilledButton.styleFrom(
-                                            backgroundColor: AppColor.appColor,
-                                          ),
-                                          onPressed: () {
-                                            if (!providerWatch.bagProducts
-                                                .contains(widget.product)) {
-                                              providerWatch.bagProducts
-                                                  .add(widget.product);
-                                              providerRead.bagProductscounts();
-                                            } else {
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (context) {
-                                                return ProductBag();
-                                              }));
-                                            }
-                                            setState(() {});
-                                          },
-                                          child: Text(
-                                            !providerWatch.bagProducts
-                                                    .contains(widget.product)
-                                                ? 'Add to Cart'
-                                                : 'Go to Bag',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          child: Container(
-                            height: 40,
-                            width: 74,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
-                              borderRadius: BorderRadius.circular(5.0),
-                              border: Border.all(color: AppColor.appColor),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('Size'),
-                                Icon(Icons.arrow_drop_down),
-                              ],
-                            ),
+                        Text(
+                          '⭐ ${widget.product.rating}',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
-                        )
+                        ),
+                        ShowModalBottomSheet(product: widget.product),
                       ],
                     )
                   ],
@@ -374,42 +272,7 @@ class _ProductInfoState extends State<ProductInfo> {
         margin: EdgeInsets.only(bottom: 10),
         height: 60,
         color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: Color(0xffDB3022),
-              ),
-              onPressed: () {
-                if (!providerWatch.bagProducts.contains(widget.product)) {
-                  providerWatch.bagProducts.add(widget.product);
-                  providerRead.bagProductscounts();
-                } else {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return ProductBag();
-                  }));
-                }
-                setState(() {});
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.shopping_bag_outlined),
-                  SizedBox(width: 10),
-                  Text(
-                    !providerWatch.bagProducts.contains(widget.product)
-                        ? 'Add to Cart'
-                        : 'Go to Bag',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+        child: ContainerButton(product: widget.product),
       ),
     );
   }

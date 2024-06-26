@@ -3,6 +3,6 @@ import 'package:shopping_app/app.dart';
 
 void main() {
   runApp(
-  const  ProductApp(),
+    const ProductApp(),
   );
 }

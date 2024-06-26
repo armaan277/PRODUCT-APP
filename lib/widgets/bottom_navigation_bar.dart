@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopping_app/contants/constant.dart';
+import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/screens/favourite_screen.dart';
 import 'package:shopping_app/screens/home_screen.dart';
 import 'package:shopping_app/screens/product_bag_screen.dart';

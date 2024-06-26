@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/screens/product_info_screen.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 
@@ -13,7 +14,7 @@ class HomeScreen extends StatelessWidget {
     return providerWatch.isProductLoading
         ? const Center(
             child: CircularProgressIndicator(
-              color: Color(0xffDB3022),
+              color: AppColor.appColor,
             ),
           )
         : GridView.builder(
@@ -94,7 +95,7 @@ class HomeScreen extends StatelessWidget {
                               Text(
                                 '\$ ${providerWatch.products[index].price}',
                                 style: TextStyle(
-                                  color: Color(0xffDB3022),
+                                  color: AppColor.appColor,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -111,7 +112,7 @@ class HomeScreen extends StatelessWidget {
                     width: 50,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: Color(0xffDB3022),
+                      color: AppColor.appColor,
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                     child: Center(
