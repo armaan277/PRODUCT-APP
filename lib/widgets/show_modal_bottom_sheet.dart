@@ -82,15 +82,22 @@ class ShowModalBottomSheetState extends State<ShowModalBottomSheet> {
         height: 40,
         width: 90,
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(5.0),
           border: Border.all(color: AppColor.appColor),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Size'),
-            Icon(Icons.arrow_drop_down),
+            Text(
+              'Size',
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            Icon(
+              Icons.arrow_drop_down,
+            ),
           ],
         ),
       ),

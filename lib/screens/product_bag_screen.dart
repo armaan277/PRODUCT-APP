@@ -10,6 +10,7 @@ class ProductBag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();
+    final providerRead = context.read<ProductProvider>();
     return Scaffold(
       appBar: AppBar(
         title: Text('Product'),
@@ -21,6 +22,13 @@ class ProductBag extends StatelessWidget {
           return Card(
             child: ListTile(
               title: Text(providerWatch.bagProducts[index].title),
+              trailing: IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  providerRead.removeProductFromBag(index);
+                  providerRead.bagProductscountsDec();
+                },
+              ),
             ),
           );
         },

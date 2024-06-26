@@ -7,8 +7,6 @@ class ProductProvider extends ChangeNotifier {
   List<Product> products = [];
   bool isProductLoading = true;
 
-  int productInfoIncValue = 1;
-
   List<Product> bagProducts = [];
 
   int bagProductscount = 0;
@@ -28,24 +26,30 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void productInfoInc() {
-    productInfoIncValue++;
+  void productInfoInc(Product product) {
+    product.productInfoIncValue++;
     notifyListeners();
   }
 
-  void productInfoDec() {
-    if (productInfoIncValue > 1) {
-      productInfoIncValue--;
+  void productInfoDec(Product product) {
+    if (product.productInfoIncValue > 1) {
+     product.productInfoIncValue--;
     }
     notifyListeners();
   }
 
-  void bagProductscounts() {
+  void bagProductscountsInc() {
     bagProductscount++;
     notifyListeners();
   }
 
-  void removeProductFromBag() {
-    
+  void bagProductscountsDec() {
+    bagProductscount--;
+    notifyListeners();
+  }
+
+  void removeProductFromBag(int index) {
+    bagProducts.removeAt(index);
+    notifyListeners();
   }
 }

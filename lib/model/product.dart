@@ -9,7 +9,7 @@ class Product {
   final String availabilityStatus;
   final List<String> images;
 
-  String addToCart = 'Add to Cart';
+  int productInfoIncValue = 1;
 
 
   Product({

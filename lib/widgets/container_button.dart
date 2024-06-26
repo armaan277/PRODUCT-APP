@@ -33,7 +33,7 @@ class ContainerButtonState extends State<ContainerButton> {
           onPressed: () {
             if (!providerWatch.bagProducts.contains(widget.product)) {
               providerWatch.bagProducts.add(widget.product);
-              providerRead.bagProductscounts();
+              providerRead.bagProductscountsInc();
             } else {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return ProductBag();

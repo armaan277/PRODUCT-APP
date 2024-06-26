@@ -69,11 +69,12 @@ class _ProductInfoState extends State<ProductInfo> {
               dotsCount: widget.product.images.length,
               position: currentIndex,
               decorator: DotsDecorator(
-                activeColor: Theme.of(context).primaryColor,
+                color: Colors.grey,
+                activeColor: AppColor.appColor,
                 size: const Size.square(9.0),
-                activeSize: const Size(18.0, 9.0),
+                activeSize: const Size(12.0, 12.0),
                 activeShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0),
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
               ),
               onTap: (index) {
@@ -104,8 +105,9 @@ class _ProductInfoState extends State<ProductInfo> {
                     Text(
                       widget.product.title,
                       style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black54,
                       ),
                     ),
                     Row(
@@ -114,8 +116,8 @@ class _ProductInfoState extends State<ProductInfo> {
                         Text(
                           '\$ ${widget.product.price}',
                           style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
                             color: AppColor.appColor,
                           ),
                         ),
@@ -175,14 +177,14 @@ class _ProductInfoState extends State<ProductInfo> {
                           'Brand: ${widget.product.brand}',
                           style: TextStyle(
                             fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         Text(
                           'Discount: ${widget.product.discountPercentage}',
                           style: TextStyle(
                             fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w500,
                             color: AppColor.appColor,
                           ),
                         ),
@@ -196,7 +198,7 @@ class _ProductInfoState extends State<ProductInfo> {
                           'Choose amount:',
                           style: TextStyle(
                             fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         Container(
@@ -213,7 +215,8 @@ class _ProductInfoState extends State<ProductInfo> {
                                   radius: 16,
                                   child: IconButton(
                                     onPressed: () {
-                                      providerRead.productInfoDec();
+                                      providerRead
+                                          .productInfoDec(widget.product);
                                     },
                                     icon: Icon(
                                       Icons.remove,
@@ -225,19 +228,24 @@ class _ProductInfoState extends State<ProductInfo> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8.0),
                                   child: Text(
-                                      '${providerWatch.productInfoIncValue}'),
+                                    '${widget.product.productInfoIncValue}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ),
                                 CircleAvatar(
                                   backgroundColor: Colors.black,
                                   radius: 16,
                                   child: IconButton(
                                     onPressed: () {
-                                      providerRead.productInfoInc();
+                                      providerRead
+                                          .productInfoInc(widget.product);
                                     },
                                     icon: Icon(
                                       color: Colors.white,
                                       Icons.add,
-                                      size: 15, 
+                                      size: 15,
                                     ),
                                   ),
                                 ),

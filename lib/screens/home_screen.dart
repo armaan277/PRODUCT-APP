@@ -74,7 +74,7 @@ class HomeScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Text(
-                                  '${providerWatch.products[index].rating > 4.50 ? '⭐⭐⭐⭐' : providerWatch.products[index].rating > 4 ? '⭐⭐⭐⭐' : providerWatch.products[index].rating > 3 ? '⭐⭐⭐' : providerWatch.products[index].rating > 2 ? '⭐⭐' : providerWatch.products[index].rating > 1 ? '⭐' : ''}',
+                                  '${providerWatch.products[index].rating > 4.50 ? '⭐⭐⭐⭐⭐' : providerWatch.products[index].rating > 4 ? '⭐⭐⭐⭐' : providerWatch.products[index].rating > 3 ? '⭐⭐⭐' : providerWatch.products[index].rating > 2 ? '⭐⭐' : providerWatch.products[index].rating > 1 ? '⭐' : ''}',
                                 ),
                               ),
                               Text(
@@ -88,16 +88,17 @@ class HomeScreen extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 providerWatch.products[index].title,
                                 style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black54,
                                 ),
                               ),
                               Text(
                                 '\$ ${providerWatch.products[index].price}',
                                 style: TextStyle(
                                   color: AppColor.appColor,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ],
