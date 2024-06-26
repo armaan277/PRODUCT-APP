@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:shopping_app/product.dart';
+import 'package:shopping_app/model/product.dart';
 
 class ProductProvider extends ChangeNotifier {
   List<Product> products = [];
@@ -11,6 +11,7 @@ class ProductProvider extends ChangeNotifier {
 
   List<Product> bagProducts = [];
 
+  int bagProductscount = 0;
 
   Future<void> getProducts() async {
     Response response = await get(Uri.parse('https://dummyjson.com/products'));
@@ -39,7 +40,12 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void bag(String goToBag) {
+  void bagProductscounts() {
+    bagProductscount++;
     notifyListeners();
+  }
+
+  void removeProductFromBag() {
+    
   }
 }

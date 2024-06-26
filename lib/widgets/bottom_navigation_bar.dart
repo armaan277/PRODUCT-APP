@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopping_app/favourite_screen.dart';
-import 'package:shopping_app/home_screen.dart';
-import 'package:shopping_app/product_bag.dart';
-import 'package:shopping_app/product_provider.dart';
-import 'package:shopping_app/profile_screen.dart';
-import 'package:shopping_app/shop_screen.dart';
+import 'package:shopping_app/contants/constant.dart';
+import 'package:shopping_app/screens/favourite_screen.dart';
+import 'package:shopping_app/screens/home_screen.dart';
+import 'package:shopping_app/screens/product_bag_screen.dart';
+import 'package:shopping_app/product_provider/product_provider.dart';
+import 'package:shopping_app/screens/profile_screen.dart';
+import 'package:shopping_app/screens/shop_screen.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});
@@ -31,10 +32,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    final providerWatch = context.watch<ProductProvider>();
     return Scaffold(
       backgroundColor: Color(0xfff9f9f9),
       appBar: AppBar(
-        backgroundColor: Color(0xffDB3022),
+        backgroundColor: AppColor.appColor,
         title: Text(
           'Shopping App',
           style: TextStyle(
@@ -49,7 +51,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 return ProductBag();
               }));
             },
-            icon: Icon(Icons.shopping_bag_outlined),
+            icon: Badge(
+              backgroundColor: Colors.black,
+              label: Text('${providerWatch.bagProductscount}'),
+              child: Icon(Icons.shopping_bag_outlined),
+            ),
           ),
         ],
         iconTheme: IconThemeData(color: Colors.white),
@@ -60,7 +66,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         onTap: selectedIndexWidget,
         type: BottomNavigationBarType.fixed,
         currentIndex: selectedIndex,
-        selectedItemColor: Color(0xffDB3022),
+        selectedItemColor: AppColor.appColor,
         unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(

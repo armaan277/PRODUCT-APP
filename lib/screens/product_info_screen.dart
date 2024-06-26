@@ -2,9 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopping_app/product_bag.dart';
-import 'package:shopping_app/product_provider.dart';
-import 'product.dart';
+import 'package:shopping_app/contants/constant.dart';
+import 'package:shopping_app/screens/product_bag_screen.dart';
+import 'package:shopping_app/product_provider/product_provider.dart';
+import '../model/product.dart';
+import '../widgets/showbottomsheet_container.dart';
 
 class ProductInfo extends StatefulWidget {
   final Product product;
@@ -250,19 +252,113 @@ class _ProductInfoState extends State<ProductInfo> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('⭐ ${widget.product.rating}'),
-                        Container(
-                          height: 40,
-                          width: 70,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Size'),
-                              Icon(Icons.arrow_drop_down),
-                            ],
+                        GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Container(
+                                  color: Color(0xffF9F9F9),
+                                  width: double.infinity,
+                                  height: 300,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: 60,
+                                        clipBehavior: Clip.hardEdge,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                        ),
+                                        child: Divider(
+                                          height: 20,
+                                          thickness: 5,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Select Size',
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          ShowbottomsheetContainer(size: 'S'),
+                                          ShowbottomsheetContainer(size: 'M'),
+                                          ShowbottomsheetContainer(size: 'L'),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          ShowbottomsheetContainer(size: 'X'),
+                                          ShowbottomsheetContainer(size: 'XL'),
+                                          ShowbottomsheetContainer(size: 'XXL'),
+                                        ],
+                                      ),
+                                      SizedBox(height: 20),
+                                      SizedBox(
+                                        height: 60,
+                                        width: double.infinity,
+                                        child: FilledButton(
+                                          style: FilledButton.styleFrom(
+                                            backgroundColor: AppColor.appColor,
+                                          ),
+                                          onPressed: () {
+                                            if (!providerWatch.bagProducts
+                                                .contains(widget.product)) {
+                                              providerWatch.bagProducts
+                                                  .add(widget.product);
+                                              providerRead.bagProductscounts();
+                                            } else {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) {
+                                                return ProductBag();
+                                              }));
+                                            }
+                                            setState(() {});
+                                          },
+                                          child: Text(
+                                            !providerWatch.bagProducts
+                                                    .contains(widget.product)
+                                                ? 'Add to Cart'
+                                                : 'Go to Bag',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 74,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(5.0),
+                              border: Border.all(color: AppColor.appColor),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Size'),
+                                Icon(Icons.arrow_drop_down),
+                              ],
+                            ),
                           ),
                         )
                       ],
@@ -288,14 +384,15 @@ class _ProductInfoState extends State<ProductInfo> {
               ),
               onPressed: () {
                 if (!providerWatch.bagProducts.contains(widget.product)) {
-                  providerRead.bag(widget.product.addToCart = 'Go to Bag');
                   providerWatch.bagProducts.add(widget.product);
+                  providerRead.bagProductscounts();
                 } else {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return ProductBag();
                   }));
                 }
+                setState(() {});
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -303,7 +400,9 @@ class _ProductInfoState extends State<ProductInfo> {
                   Icon(Icons.shopping_bag_outlined),
                   SizedBox(width: 10),
                   Text(
-                    widget.product.addToCart,
+                    !providerWatch.bagProducts.contains(widget.product)
+                        ? 'Add to Cart'
+                        : 'Go to Bag',
                     style: TextStyle(fontSize: 16),
                   ),
                 ],
