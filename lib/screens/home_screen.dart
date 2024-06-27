@@ -4,9 +4,14 @@ import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/screens/product_info_screen.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();
@@ -127,28 +132,38 @@ class HomeScreen extends StatelessWidget {
                   Positioned(
                     left: 150,
                     top: 175,
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 3,
-                              blurRadius: 7,
-                              offset: Offset(0, 1),
-                            ),
-                          ],
-                        ),
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: 22,
-                          child: Icon(
-                            Icons.favorite_border_outlined,
-                            size: 30,
-                            color: Colors.red,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 3,
+                            blurRadius: 7,
+                            offset: Offset(0, 1),
                           ),
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 22,
+                        child: IconButton(
+                          icon: providerWatch.favoriteProducts
+                                  .contains(providerWatch.products[index])
+                              ? Icon(Icons.favorite)
+                              : Icon(Icons.favorite_border),
+                          onPressed: () {
+                            if (!providerWatch.favoriteProducts
+                                .contains(providerWatch.products[index])) {
+                              providerWatch.favoriteProducts
+                                  .add(providerWatch.products[index]);
+                            } else {
+                              providerWatch.favoriteProducts
+                                  .remove(providerWatch.products[index]);
+                            }
+                            setState(() {});
+                          },
+                          color: Colors.red,
                         ),
                       ),
                     ),

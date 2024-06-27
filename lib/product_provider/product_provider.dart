@@ -9,6 +9,8 @@ class ProductProvider extends ChangeNotifier {
 
   List<Product> bagProducts = [];
 
+  List<Product> favoriteProducts = [];
+
   int bagProductscount = 0;
 
   Future<void> getProducts() async {
@@ -50,6 +52,11 @@ class ProductProvider extends ChangeNotifier {
 
   void removeProductFromBag(int index) {
     bagProducts.removeAt(index);
+    notifyListeners();
+  }
+
+    void removeProductFromFavorite(int index) {
+    favoriteProducts.removeAt(index);
     notifyListeners();
   }
 }
