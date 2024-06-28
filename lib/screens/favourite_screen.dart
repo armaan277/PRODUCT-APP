@@ -9,6 +9,7 @@ class FavouriteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();
+    final providerRead = context.watch<ProductProvider>();
     return Scaffold(
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -17,6 +18,7 @@ class FavouriteScreen extends StatelessWidget {
             child: ListView.builder(
               itemCount: providerWatch.favoriteProducts.length,
               itemBuilder: (context, index) {
+                final product = providerWatch.favoriteProducts[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 10.0, vertical: 8.0),
@@ -28,7 +30,7 @@ class FavouriteScreen extends StatelessWidget {
                           color: Colors.grey.withOpacity(0.1),
                           spreadRadius: 2,
                           blurRadius: 2,
-                          offset: Offset(0, 1),
+                          offset: const Offset(0, 1),
                         ),
                       ],
                     ),
@@ -39,7 +41,7 @@ class FavouriteScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(right: 10.0),
                           child: Image.network(
-                            providerWatch.favoriteProducts[index].thumbnail,
+                            product.thumbnail,
                             width: 125.0,
                           ),
                         ),
@@ -47,19 +49,18 @@ class FavouriteScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(height: 10),
+                            const  SizedBox(height: 10),
                               RichText(
                                 text: TextSpan(
                                   text: 'Brand: ',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.black54,
                                     fontWeight: FontWeight.w600,
                                   ),
                                   children: [
                                     TextSpan(
-                                      text: providerWatch
-                                          .favoriteProducts[index].brand,
-                                      style: TextStyle(
+                                      text: product.brand,
+                                      style: const TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.w300,
                                       ),
@@ -71,9 +72,9 @@ class FavouriteScreen extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 2.0),
                                 child: Text(
-                                  providerWatch.favoriteProducts[index].title,
+                                  product.title,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.black87,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -81,8 +82,8 @@ class FavouriteScreen extends StatelessWidget {
                               ),
                               SizedBox(width: 50),
                               Text(
-                                '\$ ${providerWatch.favoriteProducts[index].price}',
-                                style: TextStyle(
+                                '\$ ${product.price}',
+                                style: const TextStyle(
                                   fontSize: 15,
                                   color: AppColor.appColor,
                                   fontWeight: FontWeight.w600,
@@ -92,13 +93,12 @@ class FavouriteScreen extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 2.0),
                                 child: Text(
-                                  '${providerWatch.products[index].rating > 4.50 ? '⭐⭐⭐⭐⭐' : providerWatch.products[index].rating > 4 ? '⭐⭐⭐⭐' : providerWatch.products[index].rating > 3 ? '⭐⭐⭐' : providerWatch.products[index].rating > 2 ? '⭐⭐' : providerWatch.products[index].rating > 1 ? '⭐' : ''}',
+                                  '${product.rating > 4.50 ? '⭐⭐⭐⭐⭐' : product.rating > 4 ? '⭐⭐⭐⭐' : product.rating > 3 ? '⭐⭐⭐' : product.rating > 2 ? '⭐⭐' : product.rating > 1 ? '⭐' : ''}',
                                 ),
                               ),
                               Text(
-                                providerWatch.favoriteProducts[index]
-                                    .warrantyInformation,
-                                style: TextStyle(
+                                product.warrantyInformation,
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -107,11 +107,9 @@ class FavouriteScreen extends StatelessWidget {
                         ),
                         IconButton(
                           onPressed: () {
-                            context
-                                .read<ProductProvider>()
-                                .removeProductFromFavorite(index);
+                            providerRead.removeProductFromFavorite(index);
                           },
-                          icon: Icon(Icons.close),
+                          icon: const Icon(Icons.close),
                         ),
                       ],
                     ),

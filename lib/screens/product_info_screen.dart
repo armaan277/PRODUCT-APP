@@ -24,18 +24,16 @@ class _ProductInfoState extends State<ProductInfo> {
   final CarouselController carouselController = CarouselController();
   @override
   Widget build(BuildContext context) {
-    final providerWatch = context.watch<ProductProvider>();
     final providerRead = context.read<ProductProvider>();
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.appColor,
-        title: Text(
+        title: const Text(
           'Product Detail',
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
@@ -85,7 +83,7 @@ class _ProductInfoState extends State<ProductInfo> {
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(
+                borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(30.0),
                 ),
                 boxShadow: [
@@ -93,7 +91,7 @@ class _ProductInfoState extends State<ProductInfo> {
                     color: Colors.grey.withOpacity(0.5),
                     spreadRadius: 3,
                     blurRadius: 7,
-                    offset: Offset(0, 1),
+                    offset: const Offset(0, 1),
                   ),
                 ],
               ),
@@ -104,7 +102,7 @@ class _ProductInfoState extends State<ProductInfo> {
                   children: [
                     Text(
                       widget.product.title,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w500,
                         color: Colors.black54,
@@ -115,7 +113,7 @@ class _ProductInfoState extends State<ProductInfo> {
                       children: [
                         Text(
                           '\$ ${widget.product.price}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
                             color: AppColor.appColor,
@@ -137,7 +135,7 @@ class _ProductInfoState extends State<ProductInfo> {
                                     ),
                                   ],
                                 ),
-                                child: CircleAvatar(
+                                child: const CircleAvatar(
                                   backgroundColor: Colors.white,
                                   radius: 22,
                                   child: Icon(
@@ -151,38 +149,39 @@ class _ProductInfoState extends State<ProductInfo> {
                             Text(
                               widget.product.availabilityStatus,
                               style: TextStyle(
-                                  color: widget.product.availabilityStatus ==
-                                          'Low Stock'
-                                      ? Colors.red
-                                      : Colors.green),
+                                color: widget.product.availabilityStatus ==
+                                        'Low Stock'
+                                    ? Colors.red
+                                    : Colors.green,
+                              ),
                             ),
                           ],
                         ),
                       ],
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Text(
                       textAlign: TextAlign.justify,
                       widget.product.description,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           'Brand: ${widget.product.brand}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         Text(
                           'Discount: ${widget.product.discountPercentage}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                             color: AppColor.appColor,
@@ -190,11 +189,11 @@ class _ProductInfoState extends State<ProductInfo> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           'Choose amount:',
                           style: TextStyle(
                             fontSize: 16,
@@ -218,7 +217,7 @@ class _ProductInfoState extends State<ProductInfo> {
                                       providerRead
                                           .productInfoDec(widget.product);
                                     },
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.remove,
                                       size: 15,
                                     ),
@@ -226,10 +225,11 @@ class _ProductInfoState extends State<ProductInfo> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
+                                    horizontal: 8.0,
+                                  ),
                                   child: Text(
                                     '${widget.product.productInfoIncValue}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -242,7 +242,7 @@ class _ProductInfoState extends State<ProductInfo> {
                                       providerRead
                                           .productInfoInc(widget.product);
                                     },
-                                    icon: Icon(
+                                    icon: const Icon(
                                       color: Colors.white,
                                       Icons.add,
                                       size: 15,
@@ -255,13 +255,13 @@ class _ProductInfoState extends State<ProductInfo> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                   const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           '⭐ ${widget.product.rating}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -277,7 +277,7 @@ class _ProductInfoState extends State<ProductInfo> {
         ],
       ),
       bottomSheet: Container(
-        margin: EdgeInsets.only(bottom: 10),
+        margin: const EdgeInsets.only(bottom: 10),
         height: 60,
         color: Colors.white,
         child: ContainerButton(product: widget.product),

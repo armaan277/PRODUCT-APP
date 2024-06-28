@@ -35,7 +35,7 @@ class ProductProvider extends ChangeNotifier {
 
   void productInfoDec(Product product) {
     if (product.productInfoIncValue > 1) {
-     product.productInfoIncValue--;
+      product.productInfoIncValue--;
     }
     notifyListeners();
   }
@@ -55,7 +55,7 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-    void removeProductFromFavorite(int index) {
+  void removeProductFromFavorite(int index) {
     favoriteProducts.removeAt(index);
     notifyListeners();
   }

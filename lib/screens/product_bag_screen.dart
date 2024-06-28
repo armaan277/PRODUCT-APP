@@ -1,35 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
-import 'package:shopping_app/model/product.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 
-class ProductBag extends StatelessWidget {
-  ProductBag({
+class ProductBag extends StatefulWidget {
+  const ProductBag({
     super.key,
   });
-  Product? product;
 
+  @override
+  State<ProductBag> createState() => _ProductBagState();
+}
+
+class _ProductBagState extends State<ProductBag> {
   @override
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();
-    final providerRead = context.watch<ProductProvider>();
-
+    final providerRead = context.read<ProductProvider>();
     return Scaffold(
-      backgroundColor: Color(0xffF5F5F5),
+      backgroundColor: const Color(0xffF5F5F5),
       appBar: AppBar(
         backgroundColor: AppColor.appColor,
-        title: Text(
+        title: const Text(
           'My Bag',
           style: TextStyle(
             color: Colors.white,
           ),
         ),
         centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: providerWatch.bagProducts.isEmpty
-          ? Center(
+          ? const Center(
               child: Text(
                 'Bag is Empty !!!',
                 style: TextStyle(
@@ -40,12 +42,15 @@ class ProductBag extends StatelessWidget {
               ),
             )
           : ListView.separated(
-              separatorBuilder: (context, index) => SizedBox(height: 4.0),
+              separatorBuilder: (context, index) => const SizedBox(height: 4.0),
               itemCount: providerWatch.bagProducts.length,
               itemBuilder: (context, index) {
+                final product = providerWatch.bagProducts[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 8.0),
+                    horizontal: 10.0,
+                    vertical: 8.0,
+                  ),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -54,7 +59,7 @@ class ProductBag extends StatelessWidget {
                           color: Colors.grey.withOpacity(0.1),
                           spreadRadius: 2,
                           blurRadius: 2,
-                          offset: Offset(0, 1),
+                          offset: const Offset(0, 1),
                         ),
                       ],
                     ),
@@ -64,8 +69,11 @@ class ProductBag extends StatelessWidget {
                       children: [
                         SizedBox(
                           width: 140,
-                          child: Image.network(
-                            providerWatch.bagProducts[index].thumbnail,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: Image.network(
+                              product.thumbnail,
+                            ),
                           ),
                         ),
                         Expanded(
@@ -74,25 +82,37 @@ class ProductBag extends StatelessWidget {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    top: 8.0, bottom: 4.0),
+                                  top: 4.0,
+                                  bottom: 4.0,
+                                ),
                                 child: Text(
                                   overflow: TextOverflow.ellipsis,
-                                  providerWatch.bagProducts[index].title,
-                                  style: TextStyle(
+                                  product.title,
+                                  style: const TextStyle(
                                     fontSize: 15,
-                                    color: Colors.black87,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
-                              Text(
-                                'Brand: ${providerWatch.bagProducts[index].brand}',
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.w500,
+                              RichText(
+                                text: TextSpan(
+                                  text: 'Brand : ',
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: product.brand,
+                                      style: const TextStyle(
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                              Text(
+                              const Text(
                                 'Size: S',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w300,
@@ -115,9 +135,8 @@ class ProductBag extends StatelessWidget {
                                               border: Border.all(
                                                   color: Colors.grey),
                                             ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(4.0),
                                               child: Icon(
                                                 Icons.remove,
                                                 size: 18,
@@ -126,8 +145,8 @@ class ProductBag extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
+                                        const Padding(
+                                          padding: EdgeInsets.symmetric(
                                             horizontal: 8.0,
                                           ),
                                           child: Text(
@@ -145,9 +164,8 @@ class ProductBag extends StatelessWidget {
                                               border: Border.all(
                                                   color: Colors.grey),
                                             ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(4.0),
                                               child: Icon(
                                                 Icons.add,
                                                 size: 18,
@@ -159,8 +177,8 @@ class ProductBag extends StatelessWidget {
                                       ],
                                     ),
                                     Text(
-                                      '\$ ${providerWatch.bagProducts[index].price}',
-                                      style: TextStyle(
+                                      '\$ ${product.price}',
+                                      style: const TextStyle(
                                         fontSize: 16,
                                         color: Colors.red,
                                         fontWeight: FontWeight.w500,
@@ -170,8 +188,8 @@ class ProductBag extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                providerWatch.bagProducts[index].returnPolicy,
-                                style: TextStyle(
+                                product.returnPolicy,
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -182,11 +200,24 @@ class ProductBag extends StatelessWidget {
                           color: Colors.white,
                           itemBuilder: (context) => [
                             PopupMenuItem(
+                              onTap: () {
+                                if (!providerWatch.favoriteProducts
+                                    .contains(product)) {
+                                  providerWatch.favoriteProducts.add(product);
+                                } else {
+                                  providerWatch.favoriteProducts
+                                      .remove(product);
+                                }
+                                setState(() {});
+                              },
                               child: Row(
                                 children: [
                                   Icon(
-                                    Icons.favorite_border_outlined,
-                                    color: Colors.black54,
+                                    !providerWatch.favoriteProducts
+                                            .contains(product)
+                                        ? Icons.favorite_border
+                                        : Icons.favorite,
+                                    color: Colors.red,
                                   ),
                                   SizedBox(width: 5),
                                   Text(
@@ -203,7 +234,7 @@ class ProductBag extends StatelessWidget {
                                 providerRead.removeProductFromBag(index);
                                 providerRead.bagProductscountsDec();
                               },
-                              child: Row(
+                              child: const Row(
                                 children: [
                                   Icon(
                                     Icons.delete,

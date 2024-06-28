@@ -34,10 +34,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();
     return Scaffold(
-      backgroundColor: Color(0xfff9f9f9),
+      backgroundColor: const Color(0xfff9f9f9),
       appBar: AppBar(
         backgroundColor: AppColor.appColor,
-        title: Text(
+        title: const Text(
           'Shopping App',
           style: TextStyle(
             color: Colors.white,
@@ -54,13 +54,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
             icon: Badge(
               backgroundColor: Colors.black,
               label: Text('${providerWatch.bagProductscount}'),
-              child: Icon(Icons.shopping_bag_outlined),
+              child: const Icon(Icons.shopping_bag_outlined),
             ),
           ),
         ],
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      drawer: Drawer(),
+      drawer: const Drawer(),
       body: selectedWidget(selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         onTap: selectedIndexWidget,
@@ -68,7 +68,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         currentIndex: selectedIndex,
         selectedItemColor: AppColor.appColor,
         unselectedItemColor: Colors.grey,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(
               Icons.home,
@@ -104,15 +104,15 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget selectedWidget(int index) {
     switch (index) {
       case 0:
-        return HomeScreen();
+        return const HomeScreen();
       case 1:
-        return ShopScreen();
+        return const ShopScreen();
       case 2:
-        return FavouriteScreen();
+        return const FavouriteScreen();
       case 3:
-        return ProfileScreen();
+        return const ProfileScreen();
       default:
-        return Text('Default');
+        return const Text('Default');
     }
   }
 }

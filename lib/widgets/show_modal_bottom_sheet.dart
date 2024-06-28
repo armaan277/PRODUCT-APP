@@ -24,7 +24,7 @@ class ShowModalBottomSheetState extends State<ShowModalBottomSheet> {
           context: context,
           builder: (BuildContext context) {
             return Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color(0xffF9F9F9),
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(20.0),
@@ -34,7 +34,7 @@ class ShowModalBottomSheetState extends State<ShowModalBottomSheet> {
               height: 300,
               child: Column(
                 children: [
-                  SizedBox(height: 10),
+                 const SizedBox(height: 10),
                   Container(
                     width: 80,
                     height: 7,
@@ -44,25 +44,25 @@ class ShowModalBottomSheetState extends State<ShowModalBottomSheet> {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Text(
+                 const SizedBox(height: 10),
+                 const Text(
                     'Select Size',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 20),
-                  Row(
+                const  SizedBox(height: 20),
+                 const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    children:  [
                       ShowbottomsheetContainer(size: 'S'),
                       ShowbottomsheetContainer(size: 'M'),
                       ShowbottomsheetContainer(size: 'L'),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  Row(
+                 const SizedBox(height: 10),
+                 const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ShowbottomsheetContainer(size: 'X'),
@@ -70,7 +70,7 @@ class ShowModalBottomSheetState extends State<ShowModalBottomSheet> {
                       ShowbottomsheetContainer(size: 'XXL'),
                     ],
                   ),
-                  SizedBox(height: 24),
+                 const SizedBox(height: 24),
                   ContainerButton(product: widget.product),
                 ],
               ),
@@ -86,7 +86,7 @@ class ShowModalBottomSheetState extends State<ShowModalBottomSheet> {
           borderRadius: BorderRadius.circular(5.0),
           border: Border.all(color: AppColor.appColor),
         ),
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(

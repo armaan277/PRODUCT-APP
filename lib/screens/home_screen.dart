@@ -15,7 +15,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();
-
     return providerWatch.isProductLoading
         ? const Center(
             child: CircularProgressIndicator(
@@ -23,16 +22,19 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           )
         : GridView.builder(
-            itemCount: context.watch<ProductProvider>().products.length,
+            itemCount: providerWatch.products.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 0.6,
             ),
             itemBuilder: (context, index) {
+              final product = providerWatch.products[index];
+              final favourit =
+                  !providerWatch.favoriteProducts.contains(product);
               return Stack(
                 children: [
                   Container(
-                    margin: EdgeInsets.all(5.0),
+                    margin: const EdgeInsets.all(5.0),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10.0),
@@ -43,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.0),
-                            color: Color(0xffF3F3F3),
+                            color: const Color(0xffF3F3F3),
                           ),
                           child: SizedBox(
                             height: 200,
@@ -53,54 +55,61 @@ class _HomeScreenState extends State<HomeScreen> {
                                   MaterialPageRoute(
                                     builder: (context) {
                                       return ProductInfo(
-                                        product: providerWatch.products[index],
+                                        product: product,
                                       );
                                     },
                                   ),
                                 );
                               },
-                              child: Hero(
-                                tag: providerWatch.products[index].thumbnail,
-                                child: Image(
-                                  image: NetworkImage(
-                                    providerWatch.products[index].thumbnail,
-                                  ),
-                                  fit: BoxFit.cover,
+                              child: Image(
+                                image: NetworkImage(
+                                  product.thumbnail,
                                 ),
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.only(left: 8.0),
+                          padding: const EdgeInsets.only(left: 8.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Text(
-                                  '${providerWatch.products[index].rating > 4.50 ? '⭐⭐⭐⭐⭐' : providerWatch.products[index].rating > 4 ? '⭐⭐⭐⭐' : providerWatch.products[index].rating > 3 ? '⭐⭐⭐' : providerWatch.products[index].rating > 2 ? '⭐⭐' : providerWatch.products[index].rating > 1 ? '⭐' : ''}',
+                                  product.rating > 4.50
+                                      ? '⭐⭐⭐⭐⭐'
+                                      : product.rating > 4
+                                          ? '⭐⭐⭐⭐'
+                                          : product.rating > 3
+                                              ? '⭐⭐⭐'
+                                              : product.rating > 2
+                                                  ? '⭐⭐'
+                                                  : product.rating > 1
+                                                      ? '⭐'
+                                                      : '',
                                 ),
                               ),
                               Text(
-                                providerWatch.products[index].brand,
-                                style: TextStyle(
+                                product.brand,
+                                style: const TextStyle(
                                   fontSize: 13,
                                   color: Colors.grey,
                                 ),
                               ),
                               Text(
                                 overflow: TextOverflow.ellipsis,
-                                providerWatch.products[index].title,
-                                style: TextStyle(
+                                product.title,
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black54,
                                 ),
                               ),
                               Text(
-                                '\$ ${providerWatch.products[index].price}',
-                                style: TextStyle(
+                                '\$ ${product.price}',
+                                style: const TextStyle(
                                   color: AppColor.appColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -113,8 +122,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: 15.0, vertical: 18.0),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 15.0,
+                      vertical: 18.0,
+                    ),
                     width: 50,
                     height: 32,
                     decoration: BoxDecoration(
@@ -123,9 +134,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        '-${providerWatch.products[index].discountPercentage.toInt()}%',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+                        '${product.discountPercentage.toInt()}%',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -140,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.grey.withOpacity(0.5),
                             spreadRadius: 3,
                             blurRadius: 7,
-                            offset: Offset(0, 1),
+                            offset: const Offset(0, 1),
                           ),
                         ],
                       ),
@@ -148,19 +161,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         backgroundColor: Colors.white,
                         radius: 22,
                         child: IconButton(
-                          icon: providerWatch.favoriteProducts
-                                  .contains(providerWatch.products[index])
-                              ? Icon(Icons.favorite)
-                              : Icon(Icons.favorite_border),
+                          icon: favourit
+                              ? const Icon(Icons.favorite_border)
+                              : const Icon(Icons.favorite),
                           onPressed: () {
-                            if (!providerWatch.favoriteProducts
-                                .contains(providerWatch.products[index])) {
-                              providerWatch.favoriteProducts
-                                  .add(providerWatch.products[index]);
-                            } else {
-                              providerWatch.favoriteProducts
-                                  .remove(providerWatch.products[index]);
-                            }
+                            favourit
+                                ? providerWatch.favoriteProducts.add(product)
+                                : providerWatch.favoriteProducts
+                                    .remove(product);
                             setState(() {});
                           },
                           color: Colors.red,
