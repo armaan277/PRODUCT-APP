@@ -25,6 +25,8 @@ class _ProductInfoState extends State<ProductInfo> {
   @override
   Widget build(BuildContext context) {
     final providerRead = context.read<ProductProvider>();
+    final providerWatch = context.watch<ProductProvider>();
+    final favorite = !providerWatch.favoriteProducts.contains(widget.product);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.appColor,
@@ -121,28 +123,37 @@ class _ProductInfoState extends State<ProductInfo> {
                         ),
                         Column(
                           children: [
-                            GestureDetector(
-                              onTap: () {},
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 3,
-                                      blurRadius: 7,
-                                      offset: Offset(0, 1),
-                                    ),
-                                  ],
-                                ),
-                                child: const CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  radius: 22,
-                                  child: Icon(
-                                    Icons.favorite_border_outlined,
-                                    size: 30,
-                                    color: Colors.red,
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 3,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 1),
                                   ),
+                                ],
+                              ),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                radius: 22,
+                                child: IconButton(
+                                  onPressed: () {
+                                    providerRead
+                                        .favoriteProduct(widget.product);
+                                  },
+                                  icon: favorite
+                                      ? Icon(
+                                          Icons.favorite_border,
+                                          size: 30,
+                                          color: Colors.red,
+                                        )
+                                      : Icon(
+                                          Icons.favorite,
+                                          size: 30,
+                                          color: Colors.red,
+                                        ),
                                 ),
                               ),
                             ),
@@ -255,7 +266,7 @@ class _ProductInfoState extends State<ProductInfo> {
                         ),
                       ],
                     ),
-                   const SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

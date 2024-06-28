@@ -15,6 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();
+    final providerRead = context.read<ProductProvider>();
     return providerWatch.isProductLoading
         ? const Center(
             child: CircularProgressIndicator(
@@ -29,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             itemBuilder: (context, index) {
               final product = providerWatch.products[index];
-              final favourit =
+              final favorite =
                   !providerWatch.favoriteProducts.contains(product);
               return Stack(
                 children: [
@@ -161,15 +162,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         backgroundColor: Colors.white,
                         radius: 22,
                         child: IconButton(
-                          icon: favourit
+                          icon: favorite
                               ? const Icon(Icons.favorite_border)
                               : const Icon(Icons.favorite),
                           onPressed: () {
-                            favourit
-                                ? providerWatch.favoriteProducts.add(product)
-                                : providerWatch.favoriteProducts
-                                    .remove(product);
-                            setState(() {});
+                            providerRead.favoriteProduct(product);
                           },
                           color: Colors.red,
                         ),

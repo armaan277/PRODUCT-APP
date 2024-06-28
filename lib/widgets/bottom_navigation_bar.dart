@@ -18,11 +18,11 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> {
   int selectedIndex = 0;
 
-  void selectedIndexWidget(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-  }
+  // void selectedIndexWidget(int index) {
+  //   setState(() {
+  //     selectedIndex = index;
+  //   });
+  // }
 
   @override
   void initState() {
@@ -61,58 +61,108 @@ class _BottomNavigationState extends State<BottomNavigation> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: const Drawer(),
-      body: selectedWidget(selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: selectedIndexWidget,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: selectedIndex,
-        selectedItemColor: AppColor.appColor,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-            ),
+      body: IndexedStack(
+        index: selectedIndex,
+        children: [
+          HomeScreen(),
+          ShopScreen(),
+          FavouriteScreen(),
+          ProfileScreen(),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: selectedIndex,
+        onDestinationSelected: (value) {
+          selectedIndex = value;
+          setState(() {});
+        },
+        destinations: [
+          NavigationDestination(
+            icon: Icon(Icons.home),
             label: 'Home',
+            selectedIcon: Icon(
+              Icons.home,
+              color: AppColor.appColor,
+            ),
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
+            icon: Icon(Icons.shopping_cart),
             label: 'Shop',
-            icon: Badge(
-              label: Text('0'),
-              child: Icon(
-                Icons.shopping_cart,
-              ),
+            selectedIcon: Icon(
+              Icons.shopping_cart,
+              color: AppColor.appColor,
             ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
+          NavigationDestination(
+            icon: Icon(Icons.favorite),
+            label: 'Favorite',
+            selectedIcon: Icon(
               Icons.favorite,
+              color: AppColor.appColor,
             ),
-            label: 'favourites',
           ),
-          BottomNavigationBarItem(
-            label: 'Profile',
-            icon: Icon(
+          NavigationDestination(
+            icon: Icon(Icons.person),
+            label: 'Person',
+            selectedIcon: Icon(
               Icons.person,
+              color: AppColor.appColor,
             ),
           ),
         ],
       ),
+
+      // bottomNavigationBar: BottomNavigationBar(
+      //   onTap: selectedIndexWidget,
+      //   type: BottomNavigationBarType.fixed,
+      //   currentIndex: selectedIndex,
+      //   selectedItemColor: AppColor.appColor,
+      //   unselectedItemColor: Colors.grey,
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         Icons.home,
+      //       ),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       label: 'Shop',
+      //       icon: Badge(
+      //         label: Text('0'),
+      //         child: Icon(
+      //           Icons.shopping_cart,
+      //         ),
+      //       ),
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(
+      //         Icons.favorite,
+      //       ),
+      //       label: 'favourites',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       label: 'Profile',
+      //       icon: Icon(
+      //         Icons.person,
+      //       ),
+      //     ),
+      //   ],
+      // ),
     );
   }
 
-  Widget selectedWidget(int index) {
-    switch (index) {
-      case 0:
-        return const HomeScreen();
-      case 1:
-        return const ShopScreen();
-      case 2:
-        return const FavouriteScreen();
-      case 3:
-        return const ProfileScreen();
-      default:
-        return const Text('Default');
-    }
-  }
+  // Widget selectedWidget(int index) {
+  //   switch (index) {
+  //     case 0:
+  //       return const HomeScreen();
+  //     case 1:
+  //       return const ShopScreen();
+  //     case 2:
+  //       return const FavouriteScreen();
+  //     case 3:
+  //       return const ProfileScreen();
+  //     default:
+  //       return const Text('Default');
+  //   }
+  // }
 }

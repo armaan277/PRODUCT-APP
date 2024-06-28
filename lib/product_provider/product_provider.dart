@@ -59,4 +59,13 @@ class ProductProvider extends ChangeNotifier {
     favoriteProducts.removeAt(index);
     notifyListeners();
   }
+
+  void favoriteProduct(Product product) {
+    if (!favoriteProducts.contains(product)) {
+      favoriteProducts.add(product);
+    } else {
+      favoriteProducts.remove(product);
+    }
+    notifyListeners();
+  }
 }

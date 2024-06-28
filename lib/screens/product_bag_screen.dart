@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
+import 'package:shopping_app/model/product.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 
 class ProductBag extends StatefulWidget {
@@ -46,6 +47,8 @@ class _ProductBagState extends State<ProductBag> {
               itemCount: providerWatch.bagProducts.length,
               itemBuilder: (context, index) {
                 final product = providerWatch.bagProducts[index];
+                final favorite =
+                    !providerWatch.favoriteProducts.contains(product);
                 return Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10.0,
@@ -145,12 +148,14 @@ class _ProductBagState extends State<ProductBag> {
                                             ),
                                           ),
                                         ),
-                                        const Padding(
+                                        Padding(
                                           padding: EdgeInsets.symmetric(
                                             horizontal: 8.0,
                                           ),
                                           child: Text(
-                                            '1',
+                                            providerWatch.bagProducts[index]
+                                                .productInfoIncValue
+                                                .toString(),
                                             style: TextStyle(
                                               fontWeight: FontWeight.w600,
                                             ),
@@ -201,26 +206,18 @@ class _ProductBagState extends State<ProductBag> {
                           itemBuilder: (context) => [
                             PopupMenuItem(
                               onTap: () {
-                                if (!providerWatch.favoriteProducts
-                                    .contains(product)) {
-                                  providerWatch.favoriteProducts.add(product);
-                                } else {
-                                  providerWatch.favoriteProducts
-                                      .remove(product);
-                                }
-                                setState(() {});
+                                providerRead.favoriteProduct(product);
                               },
                               child: Row(
                                 children: [
                                   Icon(
-                                    !providerWatch.favoriteProducts
-                                            .contains(product)
+                                    favorite
                                         ? Icons.favorite_border
                                         : Icons.favorite,
                                     color: Colors.red,
                                   ),
-                                  SizedBox(width: 5),
-                                  Text(
+                                  const SizedBox(width: 5),
+                                  const Text(
                                     'Favorites',
                                     style: TextStyle(
                                       color: Colors.black54,

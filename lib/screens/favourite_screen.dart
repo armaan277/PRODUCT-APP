@@ -49,7 +49,7 @@ class FavouriteScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                            const  SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               RichText(
                                 text: TextSpan(
                                   text: 'Brand: ',
@@ -93,7 +93,17 @@ class FavouriteScreen extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 2.0),
                                 child: Text(
-                                  '${product.rating > 4.50 ? '⭐⭐⭐⭐⭐' : product.rating > 4 ? '⭐⭐⭐⭐' : product.rating > 3 ? '⭐⭐⭐' : product.rating > 2 ? '⭐⭐' : product.rating > 1 ? '⭐' : ''}',
+                                  product.rating > 4.50
+                                      ? '⭐⭐⭐⭐⭐'
+                                      : product.rating > 4
+                                          ? '⭐⭐⭐⭐'
+                                          : product.rating > 3
+                                              ? '⭐⭐⭐'
+                                              : product.rating > 2
+                                                  ? '⭐⭐'
+                                                  : product.rating > 1
+                                                      ? '⭐'
+                                                      : '',
                                 ),
                               ),
                               Text(
