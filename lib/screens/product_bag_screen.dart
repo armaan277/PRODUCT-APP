@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
-import 'package:shopping_app/model/product.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 
 class ProductBag extends StatefulWidget {

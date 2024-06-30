@@ -10,6 +10,7 @@ class Product {
   final List<String> images;
   final String returnPolicy;
   final String warrantyInformation;
+  final String category;
 
   int productInfoIncValue = 1;
 
@@ -25,6 +26,7 @@ class Product {
     required this.images,
     required this.returnPolicy,
     required this.warrantyInformation,
+    required this.category,
   });
 
   factory Product.fromMap(Map productMap) {
@@ -40,6 +42,7 @@ class Product {
       images: productMap['images'].cast<String>(),
       returnPolicy: productMap['returnPolicy'] ?? '',
       warrantyInformation: productMap['warrantyInformation'] ?? '',
+      category: productMap['category'] ?? '',
     );
   }
 }
