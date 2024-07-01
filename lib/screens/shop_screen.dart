@@ -62,11 +62,13 @@ class _ShopScreenState extends State<ShopScreen> {
                                   ),
                                 );
                               },
-                              child: Image(
-                                image: NetworkImage(
-                                  product.thumbnail,
+                              child: Center(
+                                child: Image(
+                                  image: NetworkImage(
+                                    product.images.first,
+                                  ),
+                                  fit: BoxFit.cover,
                                 ),
-                                fit: BoxFit.cover,
                               ),
                             ),
                           ),

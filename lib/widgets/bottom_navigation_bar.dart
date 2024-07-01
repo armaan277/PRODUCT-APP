@@ -34,7 +34,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();
     return Scaffold(
-      backgroundColor: const Color(0xfff9f9f9),
+      backgroundColor: AppColor.appBackgroundColor,
       appBar: AppBar(
         backgroundColor: AppColor.appColor,
         title: const Text(

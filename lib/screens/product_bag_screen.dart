@@ -70,11 +70,12 @@ class _ProductBagState extends State<ProductBag> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
+                          height: 140,
                           width: 140,
                           child: Padding(
                             padding: const EdgeInsets.only(right: 10.0),
                             child: Image.network(
-                              product.thumbnail,
+                              product.images.first,
                             ),
                           ),
                         ),
@@ -84,7 +85,7 @@ class _ProductBagState extends State<ProductBag> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(
-                                  top: 4.0,
+                                  top: 10.0,
                                   bottom: 4.0,
                                 ),
                                 child: Text(
@@ -114,8 +115,8 @@ class _ProductBagState extends State<ProductBag> {
                                   ],
                                 ),
                               ),
-                              const Text(
-                                'Size: S',
+                              Text(
+                                'Size: ${context.watch<ProductProvider>().selectSize}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w300,
                                 ),

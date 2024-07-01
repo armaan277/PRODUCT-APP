@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/model/product.dart';
+import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/widgets/container_button.dart';
 import 'showbottomsheet_container.dart';
 
@@ -25,7 +27,7 @@ class ShowModalBottomSheetState extends State<ShowModalBottomSheet> {
           builder: (BuildContext context) {
             return Container(
               decoration: const BoxDecoration(
-                color: Color(0xffF9F9F9),
+                color: AppColor.appBackgroundColor,
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(20.0),
                 ),
@@ -34,7 +36,7 @@ class ShowModalBottomSheetState extends State<ShowModalBottomSheet> {
               height: 300,
               child: Column(
                 children: [
-                 const SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Container(
                     width: 80,
                     height: 7,
@@ -44,33 +46,87 @@ class ShowModalBottomSheetState extends State<ShowModalBottomSheet> {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
-                 const SizedBox(height: 10),
-                 const Text(
+                  const SizedBox(height: 10),
+                  const Text(
                     'Select Size',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                const  SizedBox(height: 20),
-                 const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children:  [
-                      ShowbottomsheetContainer(size: 'S'),
-                      ShowbottomsheetContainer(size: 'M'),
-                      ShowbottomsheetContainer(size: 'L'),
-                    ],
-                  ),
-                 const SizedBox(height: 10),
-                 const Row(
+                  const SizedBox(height: 20),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ShowbottomsheetContainer(size: 'X'),
-                      ShowbottomsheetContainer(size: 'XL'),
-                      ShowbottomsheetContainer(size: 'XXL'),
+                      ShowbottomsheetContainer(
+                        size: 'S',
+                        selectSize:
+                            context.watch<ProductProvider>().selectSize == 'S'
+                                ? 'selectsize'
+                                : '',
+                        onTap: () {
+                          context.read<ProductProvider>().selectSizes('S');
+                        },
+                      ),
+                      ShowbottomsheetContainer(
+                        size: 'M',
+                        selectSize:
+                            context.watch<ProductProvider>().selectSize == 'M'
+                                ? 'selectsize'
+                                : '',
+                        onTap: () {
+                          context.read<ProductProvider>().selectSizes('M');
+                        },
+                      ),
+                      ShowbottomsheetContainer(
+                        size: 'L',
+                        selectSize:
+                            context.watch<ProductProvider>().selectSize == 'L'
+                                ? 'selectsize'
+                                : '',
+                        onTap: () {
+                          context.read<ProductProvider>().selectSizes('L');
+                        },
+                      ),
                     ],
                   ),
-                 const SizedBox(height: 24),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ShowbottomsheetContainer(
+                        size: 'X',
+                        selectSize:
+                            context.watch<ProductProvider>().selectSize == 'X'
+                                ? 'selectsize'
+                                : '',
+                        onTap: () {
+                          context.read<ProductProvider>().selectSizes('X');
+                        },
+                      ),
+                      ShowbottomsheetContainer(
+                        size: 'XL',
+                        selectSize:
+                            context.watch<ProductProvider>().selectSize == 'XL'
+                                ? 'selectsize'
+                                : '',
+                        onTap: () {
+                          context.read<ProductProvider>().selectSizes('XL');
+                        },
+                      ),
+                      ShowbottomsheetContainer(
+                        size: 'XXL',
+                        selectSize:
+                            context.watch<ProductProvider>().selectSize == 'XXL'
+                                ? 'selectsize'
+                                : '',
+                        onTap: () {
+                          context.read<ProductProvider>().selectSizes('XXL');
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
                   ContainerButton(product: widget.product),
                 ],
               ),

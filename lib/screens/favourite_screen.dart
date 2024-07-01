@@ -17,7 +17,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     final providerWatch = context.watch<ProductProvider>();
     final providerRead = context.read<ProductProvider>();
     return Scaffold(
-      backgroundColor: Color(0xffF9F9F9),
+      backgroundColor: AppColor.appBackgroundColor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -120,8 +120,9 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                       Padding(
                         padding: const EdgeInsets.only(right: 10.0),
                         child: Image.network(
-                          product.thumbnail,
+                          product.images.first,
                           width: 125.0,
+                          height: 125.0,
                         ),
                       ),
                       Expanded(
@@ -233,7 +234,8 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                           Padding(
                             padding: const EdgeInsets.only(right: 10.0),
                             child: Image.network(
-                              product.thumbnail,
+                              product.images.first,
+                              height: 125.0,
                               width: 125.0,
                             ),
                           ),
@@ -321,7 +323,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
               )
             : Center(
                 child: Text(
-                  'No Favorite❤️ Item Available !!!',
+                  'No Favorite ❤️ Item Available !!!',
                   style: TextStyle(
                     color: Colors.black54,
                     fontSize: 16,

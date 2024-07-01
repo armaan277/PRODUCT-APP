@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
+import 'package:shopping_app/widgets/build_product_categories.dart';
 import 'package:shopping_app/widgets/container_button.dart';
 import '../model/product.dart';
 import '../widgets/show_modal_bottom_sheet.dart';
@@ -28,6 +29,7 @@ class _ProductInfoState extends State<ProductInfo> {
     final providerWatch = context.watch<ProductProvider>();
     final favorite = !providerWatch.favoriteProducts.contains(widget.product);
     return Scaffold(
+      backgroundColor: AppColor.appBackgroundColor,
       appBar: AppBar(
         backgroundColor: AppColor.appColor,
         title: const Text(
@@ -43,46 +45,46 @@ class _ProductInfoState extends State<ProductInfo> {
         ),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: CarouselSlider(
-              items: widget.product.images.map((image) {
-                return Image.network(image);
-              }).toList(),
-              options: CarouselOptions(
-                height: 300,
-                autoPlay: widget.product.images.length > 1 ? true : false,
-                enlargeCenterPage: true,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    currentIndex = index;
-                  });
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: CarouselSlider(
+                items: widget.product.images.map((image) {
+                  return Image.network(image);
+                }).toList(),
+                options: CarouselOptions(
+                  height: 300,
+                  autoPlay: widget.product.images.length > 1 ? true : false,
+                  enlargeCenterPage: true,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                  },
+                ),
+                carouselController: carouselController,
+              ),
+            ),
+            if (widget.product.images.length > 1)
+              DotsIndicator(
+                dotsCount: widget.product.images.length,
+                position: currentIndex,
+                decorator: DotsDecorator(
+                  color: Colors.grey,
+                  activeColor: AppColor.appColor,
+                  size: const Size.square(9.0),
+                  activeSize: const Size(12.0, 12.0),
+                  activeShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                onTap: (index) {
+                  carouselController.animateToPage(index);
                 },
               ),
-              carouselController: carouselController,
-            ),
-          ),
-          if (widget.product.images.length > 1)
-            DotsIndicator(
-              dotsCount: widget.product.images.length,
-              position: currentIndex,
-              decorator: DotsDecorator(
-                color: Colors.grey,
-                activeColor: AppColor.appColor,
-                size: const Size.square(9.0),
-                activeSize: const Size(12.0, 12.0),
-                activeShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-              onTap: (index) {
-                carouselController.animateToPage(index);
-              },
-            ),
-          Expanded(
-            child: Container(
+            Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: const BorderRadius.vertical(
@@ -279,20 +281,34 @@ class _ProductInfoState extends State<ProductInfo> {
                         ),
                         ShowModalBottomSheet(product: widget.product),
                       ],
-                    )
+                    ),
+                    SizedBox(height: 20),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      height: 60,
+                      color: Colors.white,
+                      child: ContainerButton(product: widget.product),
+                    ),
                   ],
                 ),
               ),
             ),
-          ),
-        ],
+            SizedBox(
+              height: 310,
+              child: BuildProductCategories(
+                selectColor: Colors.white,
+                selectCategory: widget.product.category,
+              ),
+            ),
+          ],
+        ),
       ),
-      bottomSheet: Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        height: 60,
-        color: Colors.white,
-        child: ContainerButton(product: widget.product),
-      ),
+      // bottomSheet: Container(
+      //   margin: const EdgeInsets.only(bottom: 10),
+      //   height: 60,
+      //   color: Colors.white,
+      //   child: ContainerButton(product: widget.product),
+      // ),
     );
   }
 }

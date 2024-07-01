@@ -15,6 +15,8 @@ class ProductProvider extends ChangeNotifier {
 
   String select = '';
 
+  String selectSize = '';
+
   Future<void> getProducts() async {
     Response response = await get(Uri.parse('https://dummyjson.com/products'));
 
@@ -73,6 +75,11 @@ class ProductProvider extends ChangeNotifier {
 
   void favoriteChip(String favoriteChip) {
     select = favoriteChip;
+    notifyListeners();
+  }
+
+  void selectSizes(String newSize) {
+    selectSize = newSize;
     notifyListeners();
   }
 }
