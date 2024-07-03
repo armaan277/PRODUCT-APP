@@ -1,4 +1,5 @@
 class Product {
+  final int id;
   final String thumbnail;
   final String title;
   final String description;
@@ -15,6 +16,7 @@ class Product {
   int productInfoIncValue = 1;
 
   Product({
+    required this.id,
     required this.thumbnail,
     required this.title,
     required this.description,
@@ -31,6 +33,7 @@ class Product {
 
   factory Product.fromMap(Map productMap) {
     return Product(
+      id: productMap['id'],
       thumbnail: productMap['thumbnail'] ?? '',
       title: productMap['title'] ?? '',
       description: productMap['description'] ?? '',

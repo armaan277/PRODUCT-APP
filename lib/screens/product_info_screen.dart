@@ -202,7 +202,7 @@ class _ProductInfoState extends State<ProductInfo> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -268,7 +268,7 @@ class _ProductInfoState extends State<ProductInfo> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -282,12 +282,20 @@ class _ProductInfoState extends State<ProductInfo> {
                         ShowModalBottomSheet(product: widget.product),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     Container(
                       margin: const EdgeInsets.only(bottom: 10),
-                      height: 60,
+                      height: 55,
                       color: Colors.white,
                       child: ContainerButton(product: widget.product),
+                    ),
+                    Text(
+                      'Similar Products',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black54,
+                      ),
                     ),
                   ],
                 ),
@@ -296,8 +304,9 @@ class _ProductInfoState extends State<ProductInfo> {
             SizedBox(
               height: 310,
               child: BuildProductCategories(
+                product: widget.product,
                 selectColor: Colors.white,
-                selectCategory: widget.product.category,
+                selectCategory:  widget.product.category,
               ),
             ),
           ],

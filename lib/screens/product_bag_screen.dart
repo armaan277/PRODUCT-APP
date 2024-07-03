@@ -3,16 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 
-class ProductBag extends StatefulWidget {
+class ProductBag extends StatelessWidget {
   const ProductBag({
     super.key,
   });
 
-  @override
-  State<ProductBag> createState() => _ProductBagState();
-}
-
-class _ProductBagState extends State<ProductBag> {
   @override
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();

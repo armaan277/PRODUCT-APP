@@ -2,21 +2,44 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
+import 'package:shopping_app/screens/product_bag_screen.dart';
 import 'package:shopping_app/widgets/favorite_container.dart';
+import 'package:shopping_app/widgets/filter_product_container.dart';
 
-class FavouriteScreen extends StatefulWidget {
+class FavouriteScreen extends StatelessWidget {
   const FavouriteScreen({super.key});
 
-  @override
-  State<FavouriteScreen> createState() => _FavouriteScreenState();
-}
-
-class _FavouriteScreenState extends State<FavouriteScreen> {
   @override
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();
     final providerRead = context.read<ProductProvider>();
     return Scaffold(
+      appBar: AppBar(
+        leading: Icon(Icons.arrow_back),
+        backgroundColor: AppColor.appColor,
+        title: const Text(
+          'Favorites Products',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return ProductBag();
+              }));
+            },
+            icon: Badge(
+              backgroundColor: Colors.black,
+              label: Text('${providerWatch.bagProductscount}'),
+              child: const Icon(Icons.shopping_bag_outlined),
+            ),
+          ),
+        ],
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
       backgroundColor: AppColor.appBackgroundColor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,14 +63,18 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                 children: [
                   FavoriteContainer(
                     title: 'All',
-                    select: providerWatch.select == '' ? 'select' : '',
+                    select: providerWatch.selectFavoriteCategories == ''
+                        ? 'select'
+                        : '',
                     onTap: () {
                       providerRead.favoriteChip('');
                     },
                   ),
                   FavoriteContainer(
                     title: 'Beauty',
-                    select: providerWatch.select == 'beauty' ? 'select' : '',
+                    select: providerWatch.selectFavoriteCategories == 'beauty'
+                        ? 'select'
+                        : '',
                     onTap: () {
                       providerRead.favoriteChip('beauty');
                     },
@@ -55,21 +82,29 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                   FavoriteContainer(
                     title: 'Fragrances',
                     select:
-                        providerWatch.select == 'fragrances' ? 'select' : '',
+                        providerWatch.selectFavoriteCategories == 'fragrances'
+                            ? 'select'
+                            : '',
                     onTap: () {
                       providerRead.favoriteChip('fragrances');
                     },
                   ),
                   FavoriteContainer(
                     title: 'Furniture',
-                    select: providerWatch.select == 'furniture' ? 'select' : '',
+                    select:
+                        providerWatch.selectFavoriteCategories == 'furniture'
+                            ? 'select'
+                            : '',
                     onTap: () {
                       providerRead.favoriteChip('furniture');
                     },
                   ),
                   FavoriteContainer(
                     title: 'Groceries',
-                    select: providerWatch.select == 'groceries' ? 'select' : '',
+                    select:
+                        providerWatch.selectFavoriteCategories == 'groceries'
+                            ? 'select'
+                            : '',
                     onTap: () {
                       providerRead.favoriteChip('groceries');
                     },
@@ -77,6 +112,27 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                 ],
               ),
             ),
+          ),
+          FilterProductContainer(
+            price: providerWatch.selectFilterationFavorite,
+            onTapHTL: () {
+              providerRead.selectFilterationsFavorite('High To Low');
+              providerRead
+                  .sortProductsByPriceHighToLow(providerWatch.favoriteProducts);
+              Navigator.of(context).pop();
+            },
+            onTapLTH: () {
+              providerRead.selectFilterationsFavorite('Low To High');
+              providerRead
+                  .sortProductsByPriceLowToHigh(providerWatch.favoriteProducts);
+              Navigator.of(context).pop();
+            },
+            onTapBR: () {
+              providerRead.selectFilterationsFavorite('Best Rating');
+              providerRead
+                  .sortProductsByBestRating(providerWatch.favoriteProducts);
+              Navigator.of(context).pop();
+            },
           ),
           Expanded(
             child: buildFavoriteProductListView(context),
@@ -91,9 +147,10 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     final providerRead = context.read<ProductProvider>();
 
     final favorites = providerWatch.favoriteProducts
-        .where((favorite) => favorite.category == providerWatch.select)
+        .where((favorite) =>
+            favorite.category == providerWatch.selectFavoriteCategories)
         .toList();
-    return providerWatch.select.isEmpty
+    return providerWatch.selectFavoriteCategories.isEmpty
         ? ListView.builder(
             itemCount: providerWatch.favoriteProducts.length,
             itemBuilder: (context, index) {
@@ -197,7 +254,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                       ),
                       IconButton(
                         onPressed: () {
-                          providerRead.removeProductFromFavorite(index);
+                          providerRead.removeProductFromFavorite(product);
                         },
                         icon: const Icon(Icons.close),
                       ),
@@ -311,7 +368,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                           ),
                           IconButton(
                             onPressed: () {
-                              providerRead.removeProductFromFavorite(index);
+                              providerRead.removeProductFromFavorite(product);
                             },
                             icon: const Icon(Icons.close),
                           ),

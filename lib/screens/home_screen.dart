@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping_app/app_drawer.dart';
 import 'package:shopping_app/constant/constant.dart';
-
-
+import 'package:shopping_app/product_provider/product_provider.dart';
+import 'package:shopping_app/screens/product_bag_screen.dart';
 import '../widgets/build_product_categories.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -9,7 +11,34 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final providerWatch = context.watch<ProductProvider>();
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColor.appColor,
+        title: const Text(
+          'Shopping App',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return ProductBag();
+              }));
+            },
+            icon: Badge(
+              backgroundColor: Colors.black,
+              label: Text('${providerWatch.bagProductscount}'),
+              child: const Icon(Icons.shopping_bag_outlined),
+            ),
+          ),
+        ],
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      drawer: const AppDrawer(),
       backgroundColor: AppColor.appBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -33,7 +62,9 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 height: 310,
                 child: BuildProductCategories(
-                    selectColor: AppColor.appBackgroundColor, selectCategory: 'beauty'),
+                  selectColor: AppColor.appBackgroundColor,
+                  selectCategory: 'beauty',
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -51,8 +82,9 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 height: 310,
                 child: BuildProductCategories(
-                    selectColor: AppColor.appBackgroundColor,
-                    selectCategory: 'fragrances'),
+                  selectColor: AppColor.appBackgroundColor,
+                  selectCategory: 'fragrances',
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -70,8 +102,9 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 height: 310,
                 child: BuildProductCategories(
-                    selectColor: AppColor.appBackgroundColor,
-                    selectCategory: 'furniture'),
+                  selectColor: AppColor.appBackgroundColor,
+                  selectCategory: 'furniture',
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -89,8 +122,9 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 height: 310,
                 child: BuildProductCategories(
-                    selectColor: AppColor.appBackgroundColor,
-                    selectCategory: 'groceries'),
+                  selectColor: AppColor.appBackgroundColor,
+                  selectCategory: 'groceries',
+                ),
               ),
             ],
           ),

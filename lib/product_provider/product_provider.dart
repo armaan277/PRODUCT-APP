@@ -13,9 +13,15 @@ class ProductProvider extends ChangeNotifier {
 
   int bagProductscount = 0;
 
-  String select = '';
+  String selectFavoriteCategories = '';
 
   String selectSize = '';
+
+  String selectFilterationFavorite = 'No Filters';
+
+  String selectFilterationShop = 'No Filters';
+
+  String selectShopCategories = '';
 
   Future<void> getProducts() async {
     Response response = await get(Uri.parse('https://dummyjson.com/products'));
@@ -59,8 +65,8 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeProductFromFavorite(int index) {
-    favoriteProducts.removeAt(index);
+  void removeProductFromFavorite(Product product) {
+    favoriteProducts.removeWhere((ele) => ele.id == product.id);
     notifyListeners();
   }
 
@@ -74,12 +80,66 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void favoriteChip(String favoriteChip) {
-    select = favoriteChip;
+    selectFavoriteCategories = favoriteChip;
+    notifyListeners();
+  }
+
+  void shopChip(String shopChip) {
+    selectShopCategories = shopChip;
     notifyListeners();
   }
 
   void selectSizes(String newSize) {
     selectSize = newSize;
+    notifyListeners();
+  }
+
+  void selectFilterationsFavorite(String newSelectFilteration) {
+    selectFilterationFavorite = newSelectFilteration;
+    notifyListeners();
+  }
+
+  void selectFilterationsShop(String newSelectFilterationShop) {
+    selectFilterationShop = newSelectFilterationShop;
+    notifyListeners();
+  }
+
+  void sortProductsByPriceHighToLow(List<Product> productSort) {
+    for (int i = 0; i < productSort.length - 1; i++) {
+      for (int j = 0; j < productSort.length - i - 1; j++) {
+        if (productSort[j].price < productSort[j + 1].price) {
+          Product temp = productSort[j];
+          productSort[j] = productSort[j + 1];
+          productSort[j + 1] = temp;
+        }
+      }
+    }
+    notifyListeners();
+  }
+
+  void sortProductsByPriceLowToHigh(List<Product> productSort) {
+    for (int i = 0; i < productSort.length - 1; i++) {
+      for (int j = 0; j < productSort.length - i - 1; j++) {
+        if (productSort[j].price > productSort[j + 1].price) {
+          Product temp = productSort[j];
+          productSort[j] = productSort[j + 1];
+          productSort[j + 1] = temp;
+        }
+      }
+    }
+    notifyListeners();
+  }
+
+  void sortProductsByBestRating(List<Product> productSort) {
+    for (int i = 0; i < productSort.length - 1; i++) {
+      for (int j = 0; j < productSort.length - i - 1; j++) {
+        if (productSort[j].rating < productSort[j + 1].rating) {
+          Product temp = productSort[j];
+          productSort[j] = productSort[j + 1];
+          productSort[j + 1] = temp;
+        }
+      }
+    }
     notifyListeners();
   }
 }

@@ -35,32 +35,32 @@ class _BottomNavigationState extends State<BottomNavigation> {
     final providerWatch = context.watch<ProductProvider>();
     return Scaffold(
       backgroundColor: AppColor.appBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: AppColor.appColor,
-        title: const Text(
-          'Shopping App',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ProductBag();
-              }));
-            },
-            icon: Badge(
-              backgroundColor: Colors.black,
-              label: Text('${providerWatch.bagProductscount}'),
-              child: const Icon(Icons.shopping_bag_outlined),
-            ),
-          ),
-        ],
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      drawer: const Drawer(),
+      // appBar: AppBar(
+      //   backgroundColor: AppColor.appColor,
+      //   title: const Text(
+      //     'Shopping App',
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //     ),
+      //   ),
+      //   centerTitle: true,
+      //   actions: [
+      //     IconButton(
+      //       onPressed: () {
+      //         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      //           return ProductBag();
+      //         }));
+      //       },
+      //       icon: Badge(
+      //         backgroundColor: Colors.black,
+      //         label: Text('${providerWatch.bagProductscount}'),
+      //         child: const Icon(Icons.shopping_bag_outlined),
+      //       ),
+      //     ),
+      //   ],
+      //   iconTheme: const IconThemeData(color: Colors.white),
+      // ),
+      // drawer: const Drawer(),
       body: IndexedStack(
         index: selectedIndex,
         children: [

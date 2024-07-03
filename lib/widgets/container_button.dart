@@ -44,8 +44,8 @@ class ContainerButtonState extends State<ContainerButton> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-            const  Icon(Icons.shopping_bag_outlined),
-             const SizedBox(width: 10),
+              const Icon(Icons.shopping_bag_outlined),
+              const SizedBox(width: 10),
               Text(
                 !providerWatch.bagProducts.contains(widget.product)
                     ? 'Add to Cart'
