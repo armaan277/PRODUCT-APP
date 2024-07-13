@@ -271,10 +271,3 @@ class ProductProvider extends ChangeNotifier {
 //       },
 //     );
 //   }
-
-
-
-  // void removeProductFromFavorite(int index,List<Product> favorites) {
-  //   favorites.removeAt(index);
-  //   notifyListeners();
-  // }

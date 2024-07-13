@@ -51,80 +51,74 @@ class ShopScreen extends StatelessWidget {
             ),
             body: Column(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        height: 70,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 3,
-                              blurRadius: 7,
-                              offset: const Offset(0, 1),
-                            ),
-                          ],
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 3,
+                          blurRadius: 7,
+                          offset: const Offset(0, 1),
                         ),
-                        child: Row(
-                          children: [
-                            FavoriteContainer(
-                              title: 'All',
-                              select: providerWatch.selectShopCategories == ''
-                                  ? 'select'
-                                  : '',
-                              onTap: () {
-                                providerRead.shopChip('');
-                              },
-                            ),
-                            FavoriteContainer(
-                              title: 'Beauty',
-                              select:
-                                  providerWatch.selectShopCategories == 'beauty'
-                                      ? 'select'
-                                      : '',
-                              onTap: () {
-                                providerRead.shopChip('beauty');
-                              },
-                            ),
-                            FavoriteContainer(
-                              title: 'Fragrances',
-                              select: providerWatch.selectShopCategories ==
-                                      'fragrances'
-                                  ? 'select'
-                                  : '',
-                              onTap: () {
-                                providerRead.shopChip('fragrances');
-                              },
-                            ),
-                            FavoriteContainer(
-                              title: 'Furniture',
-                              select: providerWatch.selectShopCategories ==
-                                      'furniture'
-                                  ? 'select'
-                                  : '',
-                              onTap: () {
-                                providerRead.shopChip('furniture');
-                              },
-                            ),
-                            FavoriteContainer(
-                              title: 'Groceries',
-                              select: providerWatch.selectShopCategories ==
-                                      'groceries'
-                                  ? 'select'
-                                  : '',
-                              onTap: () {
-                                providerRead.shopChip('groceries');
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
+                      ],
                     ),
-                  ],
+                    child: Row(
+                      children: [
+                        FavoriteContainer(
+                          title: 'All',
+                          select: providerWatch.selectShopCategories == ''
+                              ? 'select'
+                              : '',
+                          onTap: () {
+                            providerRead.shopChip('');
+                          },
+                        ),
+                        FavoriteContainer(
+                          title: 'Beauty',
+                          select: providerWatch.selectShopCategories == 'beauty'
+                              ? 'select'
+                              : '',
+                          onTap: () {
+                            providerRead.shopChip('beauty');
+                          },
+                        ),
+                        FavoriteContainer(
+                          title: 'Fragrances',
+                          select:
+                              providerWatch.selectShopCategories == 'fragrances'
+                                  ? 'select'
+                                  : '',
+                          onTap: () {
+                            providerRead.shopChip('fragrances');
+                          },
+                        ),
+                        FavoriteContainer(
+                          title: 'Furniture',
+                          select:
+                              providerWatch.selectShopCategories == 'furniture'
+                                  ? 'select'
+                                  : '',
+                          onTap: () {
+                            providerRead.shopChip('furniture');
+                          },
+                        ),
+                        FavoriteContainer(
+                          title: 'Groceries',
+                          select:
+                              providerWatch.selectShopCategories == 'groceries'
+                                  ? 'select'
+                                  : '',
+                          onTap: () {
+                            providerRead.shopChip('groceries');
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 FilterProductContainer(
                   price: providerWatch.selectFilterationShop,
@@ -206,12 +200,21 @@ class ShopScreen extends StatelessWidget {
                                 );
                               },
                               child: Center(
-                                child: Image(
-                                  image: NetworkImage(
-                                    product.images.first,
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
+                                child: product.id == 6 ||
+                                        product.id == 9 ||
+                                        product.id == 19
+                                    ? Image(
+                                        image: NetworkImage(
+                                          product.images.first,
+                                        ),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image(
+                                        image: NetworkImage(
+                                          product.thumbnail,
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                             ),
                           ),
@@ -363,12 +366,21 @@ class ShopScreen extends StatelessWidget {
                                 );
                               },
                               child: Center(
-                                child: Image(
-                                  image: NetworkImage(
-                                    product.images.first,
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
+                                child: product.id == 6 ||
+                                        product.id == 9 ||
+                                        product.id == 19
+                                    ? Image(
+                                        image: NetworkImage(
+                                          product.images.first,
+                                        ),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image(
+                                        image: NetworkImage(
+                                          product.thumbnail,
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                             ),
                           ),

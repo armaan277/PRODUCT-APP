@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/screens/favourite_screen.dart';
 import 'package:shopping_app/screens/home_screen.dart';
-import 'package:shopping_app/screens/product_bag_screen.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/screens/profile_screen.dart';
 import 'package:shopping_app/screens/shop_screen.dart';
@@ -18,12 +17,6 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> {
   int selectedIndex = 0;
 
-  // void selectedIndexWidget(int index) {
-  //   setState(() {
-  //     selectedIndex = index;
-  //   });
-  // }
-
   @override
   void initState() {
     context.read<ProductProvider>().getProducts();
@@ -32,35 +25,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    final providerWatch = context.watch<ProductProvider>();
     return Scaffold(
       backgroundColor: AppColor.appBackgroundColor,
-      // appBar: AppBar(
-      //   backgroundColor: AppColor.appColor,
-      //   title: const Text(
-      //     'Shopping App',
-      //     style: TextStyle(
-      //       color: Colors.white,
-      //     ),
-      //   ),
-      //   centerTitle: true,
-      //   actions: [
-      //     IconButton(
-      //       onPressed: () {
-      //         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      //           return ProductBag();
-      //         }));
-      //       },
-      //       icon: Badge(
-      //         backgroundColor: Colors.black,
-      //         label: Text('${providerWatch.bagProductscount}'),
-      //         child: const Icon(Icons.shopping_bag_outlined),
-      //       ),
-      //     ),
-      //   ],
-      //   iconTheme: const IconThemeData(color: Colors.white),
-      // ),
-      // drawer: const Drawer(),
       body: IndexedStack(
         index: selectedIndex,
         children: [
@@ -71,6 +37,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ],
       ),
       bottomNavigationBar: NavigationBar(
+        elevation: 10.0,
+        backgroundColor: Colors.white,
         selectedIndex: selectedIndex,
         onDestinationSelected: (value) {
           selectedIndex = value;
@@ -111,58 +79,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
           ),
         ],
       ),
-
-      // bottomNavigationBar: BottomNavigationBar(
-      //   onTap: selectedIndexWidget,
-      //   type: BottomNavigationBarType.fixed,
-      //   currentIndex: selectedIndex,
-      //   selectedItemColor: AppColor.appColor,
-      //   unselectedItemColor: Colors.grey,
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         Icons.home,
-      //       ),
-      //       label: 'Home',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: 'Shop',
-      //       icon: Badge(
-      //         label: Text('0'),
-      //         child: Icon(
-      //           Icons.shopping_cart,
-      //         ),
-      //       ),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(
-      //         Icons.favorite,
-      //       ),
-      //       label: 'favourites',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: 'Profile',
-      //       icon: Icon(
-      //         Icons.person,
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
-
-  // Widget selectedWidget(int index) {
-  //   switch (index) {
-  //     case 0:
-  //       return const HomeScreen();
-  //     case 1:
-  //       return const ShopScreen();
-  //     case 2:
-  //       return const FavouriteScreen();
-  //     case 3:
-  //       return const ProfileScreen();
-  //     default:
-  //       return const Text('Default');
-  //   }
-  // }
 }
