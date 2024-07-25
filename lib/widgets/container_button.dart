@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/model/product.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
-import '../screens/product_bag_screen.dart';
+import '../screens/product_cart_screen.dart';
 
 class ContainerButton extends StatefulWidget {
   final Product product;
@@ -36,7 +36,7 @@ class ContainerButtonState extends State<ContainerButton> {
               providerRead.bagProductscountsInc();
             } else {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ProductBag();
+                return const ProductCartScreen();
               }));
             }
             setState(() {});

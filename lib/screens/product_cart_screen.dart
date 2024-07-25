@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 
-class ProductBag extends StatelessWidget {
-  const ProductBag({
+class ProductCartScreen extends StatelessWidget {
+  const ProductCartScreen({
     super.key,
   });
 
@@ -80,7 +80,7 @@ class ProductBag extends StatelessWidget {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(
-                                  top: 10.0,
+                                  top: 12.0,
                                   bottom: 4.0,
                                 ),
                                 child: Text(
@@ -95,7 +95,7 @@ class ProductBag extends StatelessWidget {
                               RichText(
                                 text: TextSpan(
                                   text: 'Brand : ',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.black87,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -110,15 +110,9 @@ class ProductBag extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              Text(
-                                'Size: ${context.watch<ProductProvider>().selectSize}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(vertical: 4.0),
+                                    const EdgeInsets.symmetric(vertical: 12.0),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -126,12 +120,16 @@ class ProductBag extends StatelessWidget {
                                     Row(
                                       children: [
                                         GestureDetector(
-                                          onTap: () {},
+                                          onTap: () {
+                                            providerRead
+                                                .productInfoDec(product);
+                                          },
                                           child: Container(
                                             decoration: BoxDecoration(
                                               shape: BoxShape.circle,
                                               border: Border.all(
-                                                  color: Colors.grey),
+                                                color: Colors.grey,
+                                              ),
                                             ),
                                             child: const Padding(
                                               padding: EdgeInsets.all(4.0),
@@ -144,25 +142,29 @@ class ProductBag extends StatelessWidget {
                                           ),
                                         ),
                                         Padding(
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                             horizontal: 8.0,
                                           ),
                                           child: Text(
                                             providerWatch.bagProducts[index]
                                                 .productInfoIncValue
                                                 .toString(),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
                                         ),
                                         GestureDetector(
-                                          onTap: () {},
+                                          onTap: () {
+                                            providerRead
+                                                .productInfoInc(product);
+                                          },
                                           child: Container(
                                             decoration: BoxDecoration(
                                               shape: BoxShape.circle,
                                               border: Border.all(
-                                                  color: Colors.grey),
+                                                color: Colors.grey,
+                                              ),
                                             ),
                                             child: const Padding(
                                               padding: EdgeInsets.all(4.0),

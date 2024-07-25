@@ -6,18 +6,13 @@ import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/widgets/container_button.dart';
 import 'showbottomsheet_container.dart';
 
-class ShowModalBottomSheet extends StatefulWidget {
+class ShowModalBottomSheet extends StatelessWidget {
   final Product product;
   const ShowModalBottomSheet({
     super.key,
     required this.product,
   });
 
-  @override
-  State<ShowModalBottomSheet> createState() => ShowModalBottomSheetState();
-}
-
-class ShowModalBottomSheetState extends State<ShowModalBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -127,13 +122,12 @@ class ShowModalBottomSheetState extends State<ShowModalBottomSheet> {
                     ],
                   ),
                   const SizedBox(height: 24),
-                  ContainerButton(product: widget.product),
+                  ContainerButton(product: product),
                 ],
               ),
             );
           },
         );
-      
       },
       child: Container(
         height: 40,

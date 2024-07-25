@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/app_drawer.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
-import 'package:shopping_app/screens/product_bag_screen.dart';
-import '../widgets/build_product_categories.dart';
+import 'package:shopping_app/screens/product_cart_screen.dart';
+import '../widgets/build_products.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -25,9 +25,7 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ProductBag();
-              }));
+              Navigator.pushNamed(context, 'product_cart_screen');
             },
             icon: Badge(
               backgroundColor: Colors.black,
@@ -40,96 +38,118 @@ class HomeScreen extends StatelessWidget {
       ),
       drawer: const AppDrawer(),
       backgroundColor: AppColor.appBackgroundColor,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 10.0,
-                ),
-                child: Text(
-                  'Beauty',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500,
-                  ),
+      body: providerWatch.isProductLoading
+          ? const Center(
+              child: CircularProgressIndicator(
+                color: AppColor.appColor,
+              ),
+            )
+          : const Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BuildProducts(
+                      title: 'Beauty',
+                      productCategory: 'beauty',
+                    ),
+                    BuildProducts(
+                      title: 'Fragrances',
+                      productCategory: 'fragrances',
+                    ),
+                    BuildProducts(
+                      title: 'Furniture',
+                      productCategory: 'furniture',
+                    ),
+                    BuildProducts(
+                      title: 'Groceries',
+                      productCategory: 'groceries',
+                    ),
+                    BuildProducts(
+                      title: 'Home Decoration',
+                      productCategory: 'home-decoration',
+                    ),
+                    BuildProducts(
+                      title: 'Kitchen Accessories',
+                      productCategory: 'kitchen-accessories',
+                    ),
+                    BuildProducts(
+                      title: 'Laptops',
+                      productCategory: 'laptops',
+                    ),
+                    BuildProducts(
+                      title: 'Mens Shirts',
+                      productCategory: 'mens-shirts',
+                    ),
+                    BuildProducts(
+                      title: 'Mens Shoes',
+                      productCategory: 'mens-shoes',
+                    ),
+                    BuildProducts(
+                      title: 'Mens Watches',
+                      productCategory: 'mens-watches',
+                    ),
+                    BuildProducts(
+                      title: 'Mobile Accessories',
+                      productCategory: 'mobile-accessories',
+                    ),
+                    BuildProducts(
+                      title: 'Motorcycle',
+                      productCategory: 'motorcycle',
+                    ),
+                    BuildProducts(
+                      title: 'Skin Care',
+                      productCategory: 'skin-care',
+                    ),
+                    BuildProducts(
+                      title: 'Smartphones',
+                      productCategory: 'smartphones',
+                    ),
+                    BuildProducts(
+                      title: 'Sports Accessories',
+                      productCategory: 'sports-accessories',
+                    ),
+                    BuildProducts(
+                      title: 'Sunglasses',
+                      productCategory: 'sunglasses',
+                    ),
+                    BuildProducts(
+                      title: 'Tablets',
+                      productCategory: 'tablets',
+                    ),
+                    BuildProducts(
+                      title: 'Tops',
+                      productCategory: 'tops',
+                    ),
+                    BuildProducts(
+                      title: 'Vehicle',
+                      productCategory: 'vehicle',
+                    ),
+                    BuildProducts(
+                      title: 'Womens Bags',
+                      productCategory: 'womens-bags',
+                    ),
+                    BuildProducts(
+                      title: 'Womens Dresses',
+                      productCategory: 'womens-dresses',
+                    ),
+                    BuildProducts(
+                      title: 'Womens Jewellery',
+                      productCategory: 'womens-jewellery',
+                    ),
+                    BuildProducts(
+                      title: 'Womens Shoes',
+                      productCategory: 'womens-shoes',
+                    ),
+                    BuildProducts(
+                      title: 'Womens Watches',
+                      productCategory: 'womens-watches',
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(
-                height: 310,
-                child: BuildProductCategories(
-                  selectColor: AppColor.appBackgroundColor,
-                  selectCategory: 'beauty',
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 10.0,
-                ),
-                child: Text(
-                  'Fragrances',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 310,
-                child: BuildProductCategories(
-                  selectColor: AppColor.appBackgroundColor,
-                  selectCategory: 'fragrances',
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 10.0,
-                ),
-                child: Text(
-                  'Furniture',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 310,
-                child: BuildProductCategories(
-                  selectColor: AppColor.appBackgroundColor,
-                  selectCategory: 'furniture',
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 10.0,
-                ),
-                child: Text(
-                  'Groceries',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 310,
-                child: BuildProductCategories(
-                  selectColor: AppColor.appBackgroundColor,
-                  selectCategory: 'groceries',
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

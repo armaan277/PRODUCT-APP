@@ -9,18 +9,18 @@ import 'package:shopping_app/widgets/container_button.dart';
 import '../model/product.dart';
 import '../widgets/show_modal_bottom_sheet.dart';
 
-class ProductInfo extends StatefulWidget {
+class ProductInfoScreen extends StatefulWidget {
   final Product product;
-  const ProductInfo({
+  const ProductInfoScreen({
     super.key,
     required this.product,
   });
 
   @override
-  State<ProductInfo> createState() => _ProductInfoState();
+  State<ProductInfoScreen> createState() => _ProductInfoScreenState();
 }
 
-class _ProductInfoState extends State<ProductInfo> {
+class _ProductInfoScreenState extends State<ProductInfoScreen> {
   int currentIndex = 0;
   final CarouselController carouselController = CarouselController();
   @override
@@ -133,7 +133,7 @@ class _ProductInfoState extends State<ProductInfo> {
                                     color: Colors.grey.withOpacity(0.5),
                                     spreadRadius: 3,
                                     blurRadius: 7,
-                                    offset: Offset(0, 1),
+                                    offset: const Offset(0, 1),
                                   ),
                                 ],
                               ),
@@ -141,22 +141,17 @@ class _ProductInfoState extends State<ProductInfo> {
                                 backgroundColor: Colors.white,
                                 radius: 22,
                                 child: IconButton(
-                                  onPressed: () {
-                                    providerRead
-                                        .favoriteProduct(widget.product);
-                                  },
-                                  icon: favorite
-                                      ? Icon(
-                                          Icons.favorite_border,
-                                          size: 30,
-                                          color: Colors.red,
-                                        )
-                                      : Icon(
-                                          Icons.favorite,
-                                          size: 30,
-                                          color: Colors.red,
-                                        ),
-                                ),
+                                    onPressed: () {
+                                      providerRead
+                                          .favoriteProduct(widget.product);
+                                    },
+                                    icon: Icon(
+                                      favorite
+                                          ? Icons.favorite_border
+                                          : Icons.favorite,
+                                      size: 30,
+                                      color: Colors.red,
+                                    )),
                               ),
                             ),
                             Text(
@@ -282,14 +277,14 @@ class _ProductInfoState extends State<ProductInfo> {
                         ShowModalBottomSheet(product: widget.product),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Container(
                       margin: const EdgeInsets.only(bottom: 10),
                       height: 55,
                       color: Colors.white,
                       child: ContainerButton(product: widget.product),
                     ),
-                    Text(
+                    const Text(
                       'Similar Products',
                       style: TextStyle(
                         fontSize: 22,
@@ -306,18 +301,12 @@ class _ProductInfoState extends State<ProductInfo> {
               child: BuildProductCategories(
                 product: widget.product,
                 selectColor: Colors.white,
-                selectCategory:  widget.product.category,
+                selectCategory: widget.product.category,
               ),
             ),
           ],
         ),
       ),
-      // bottomSheet: Container(
-      //   margin: const EdgeInsets.only(bottom: 10),
-      //   height: 60,
-      //   color: Colors.white,
-      //   child: ContainerButton(product: widget.product),
-      // ),
     );
   }
 }

@@ -21,7 +21,7 @@ class ProfileListTile extends StatelessWidget {
       leading: leading,
       title: Text(
         '$title',
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 17,
           fontWeight: FontWeight.w500,
         ),

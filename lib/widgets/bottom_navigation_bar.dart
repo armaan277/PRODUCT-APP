@@ -29,7 +29,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       backgroundColor: AppColor.appBackgroundColor,
       body: IndexedStack(
         index: selectedIndex,
-        children: [
+        children: const [
           HomeScreen(),
           ShopScreen(),
           FavouriteScreen(),
@@ -44,7 +44,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
           selectedIndex = value;
           setState(() {});
         },
-        destinations: [
+        destinations: const [
           NavigationDestination(
             icon: Icon(Icons.home),
             label: 'Home',

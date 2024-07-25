@@ -31,20 +31,20 @@ class AppDrawer extends StatelessWidget {
             child: SafeArea(
               child: Column(
                 children: [
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey.shade300),
                       borderRadius: BorderRadius.circular(54),
                     ),
-                    child: CircleAvatar(
+                    child: const CircleAvatar(
                       radius: 54,
                       backgroundImage:
-                          ExactAssetImage('assets/images/armaan.png'),
+                          ExactAssetImage('assets/armaan.png'),
                     ),
                   ),
-                  SizedBox(height: 7),
-                  Text(
+                  const SizedBox(height: 7),
+                  const Text(
                     'Khan Armaan',
                     style: TextStyle(
                       letterSpacing: 1.1,
@@ -58,11 +58,11 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.home,
               color: AppColor.appColor,
             ),
-            title: Text(
+            title: const Text(
               'Home',
               style: TextStyle(
                 fontSize: 16,
@@ -70,22 +70,24 @@ class AppDrawer extends StatelessWidget {
               ),
             ),
             onTap: () {
-              Navigator.of(context).pushNamed('home_screen');
+              // Navigator.of(context).pushNamed('home_screen');
             },
           ),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.shopping_bag,
               color: AppColor.appColor,
             ),
-            title: Text(
-              'My Bag',
+            title: const Text(
+              'My Cart',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, 'product_cart_screen');
+            },
           ),
           ListTile(
             leading: Icon(
@@ -93,12 +95,31 @@ class AppDrawer extends StatelessWidget {
               color: AppColor.appColor,
             ),
             title: Text(
-              'Favorite Products',
+              'Favorite',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
             ),
+            onTap: () {
+              // Navigator.pushNamed(context, 'favourite_screen');
+            },
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.person,
+              color: AppColor.appColor,
+            ),
+            title: const Text(
+              'Profile',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            onTap: () {
+              // Navigator.of(context).pushNamed('profile_screen');
+            },
           ),
           ListTile(
             leading: Icon(
@@ -112,8 +133,9 @@ class AppDrawer extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
+            onTap: () {},
           ),
-          Divider(),
+          const Divider(),
           ListTile(
             leading: Icon(
               Icons.help,
@@ -126,13 +148,14 @@ class AppDrawer extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
+            onTap: () {},
           ),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.logout,
               color: AppColor.appColor,
             ),
-            title: Text(
+            title: const Text(
               'Logout',
               style: TextStyle(
                 fontSize: 16,
@@ -140,7 +163,7 @@ class AppDrawer extends StatelessWidget {
               ),
             ),
             onTap: () {
-              Navigator.of(context).pushNamed('/');
+              Navigator.of(context).pushNamed('login_sreen');
             },
           ),
         ],

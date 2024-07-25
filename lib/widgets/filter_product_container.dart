@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
-import 'package:shopping_app/product_provider/product_provider.dart';
 
 class FilterProductContainer extends StatelessWidget {
   final VoidCallback onTapHTL;
@@ -18,7 +16,6 @@ class FilterProductContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final providerWatch = context.watch<ProductProvider>();
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
@@ -55,29 +52,29 @@ class FilterProductContainer extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.price_change,
                       color: Colors.green,
                     ),
-                    title: Text('Price: High To Low'),
+                    title: const Text('Price: High To Low'),
                     onTap: onTapHTL,
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.price_change_outlined,
                       color: Colors.green,
                     ),
-                    title: Text(
+                    title: const Text(
                       'Price: Low To High',
                     ),
                     onTap: onTapLTH,
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.star,
                       color: Colors.amber,
                     ),
-                    title: Text('Rating: Best Rating'),
+                    title: const Text('Rating: Best Rating'),
                     onTap: onTapBR,
                   ),
                 ],
@@ -87,8 +84,8 @@ class FilterProductContainer extends StatelessWidget {
         );
       },
       child: Container(
-        margin: EdgeInsets.only(top: 8.0),
-        padding: EdgeInsets.symmetric(horizontal: 10.0),
+        margin: const EdgeInsets.only(top: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
         height: 50,
         width: double.infinity,
         decoration: BoxDecoration(
@@ -105,7 +102,7 @@ class FilterProductContainer extends StatelessWidget {
                   color: Colors.grey.shade700,
                   size: 28,
                 ),
-                Text(
+               const Text(
                   'Filters',
                   style: TextStyle(
                     fontSize: 16,
@@ -123,7 +120,7 @@ class FilterProductContainer extends StatelessWidget {
                 ),
                 Text(
                   'Price: $price',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black54,
                   ),

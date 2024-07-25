@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping_app/app_drawer.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
-import 'package:shopping_app/screens/product_bag_screen.dart';
+import 'package:shopping_app/screens/product_cart_screen.dart';
 import 'package:shopping_app/widgets/favorite_container.dart';
 import 'package:shopping_app/widgets/filter_product_container.dart';
+import '../widgets/build_favourite_product.dart';
 
 class FavouriteScreen extends StatelessWidget {
   const FavouriteScreen({super.key});
@@ -15,7 +17,6 @@ class FavouriteScreen extends StatelessWidget {
     final providerRead = context.read<ProductProvider>();
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.arrow_back),
         backgroundColor: AppColor.appColor,
         title: const Text(
           'Favorites Products',
@@ -28,7 +29,7 @@ class FavouriteScreen extends StatelessWidget {
           IconButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ProductBag();
+                return const ProductCartScreen();
               }));
             },
             icon: Badge(
@@ -40,6 +41,7 @@ class FavouriteScreen extends StatelessWidget {
         ],
         iconTheme: const IconThemeData(color: Colors.white),
       ),
+      drawer: AppDrawer(),
       backgroundColor: AppColor.appBackgroundColor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,6 +111,202 @@ class FavouriteScreen extends StatelessWidget {
                       providerRead.favoriteChip('groceries');
                     },
                   ),
+                  FavoriteContainer(
+                    title: 'Home Decoration',
+                    select: providerWatch.selectFavoriteCategories ==
+                            'home-decoration'
+                        ? 'select'
+                        : '',
+                    onTap: () {
+                      providerRead.favoriteChip('home-decoration');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Kitchen Accessories',
+                    select: providerWatch.selectFavoriteCategories ==
+                            'kitchen-accessories'
+                        ? 'select'
+                        : '',
+                    onTap: () {
+                      providerRead.favoriteChip('kitchen-accessories');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Laptops',
+                    select: providerWatch.selectFavoriteCategories == 'laptops'
+                        ? 'select'
+                        : '',
+                    onTap: () {
+                      providerRead.favoriteChip('laptops');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Mens Shirts',
+                    select:
+                        providerWatch.selectFavoriteCategories == 'mens-shirts'
+                            ? 'select'
+                            : '',
+                    onTap: () {
+                      providerRead.favoriteChip('mens-shirts');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Mens Shoes',
+                    select:
+                        providerWatch.selectFavoriteCategories == 'mens-shoes'
+                            ? 'select'
+                            : '',
+                    onTap: () {
+                      providerRead.favoriteChip('mens-shoes');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Mens Watches',
+                    select:
+                        providerWatch.selectFavoriteCategories == 'mens-watches'
+                            ? 'select'
+                            : '',
+                    onTap: () {
+                      providerRead.favoriteChip('mens-watches');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Mobile Accessories',
+                    select: providerWatch.selectFavoriteCategories ==
+                            'mobile-accessories'
+                        ? 'select'
+                        : '',
+                    onTap: () {
+                      providerRead.favoriteChip('mobile-accessories');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Motorcycle',
+                    select:
+                        providerWatch.selectFavoriteCategories == 'motorcycle'
+                            ? 'select'
+                            : '',
+                    onTap: () {
+                      providerRead.favoriteChip('motorcycle');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Skin Care',
+                    select:
+                        providerWatch.selectFavoriteCategories == 'skin-care'
+                            ? 'select'
+                            : '',
+                    onTap: () {
+                      providerRead.favoriteChip('skin-care');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Smartphones',
+                    select:
+                        providerWatch.selectFavoriteCategories == 'smartphones'
+                            ? 'select'
+                            : '',
+                    onTap: () {
+                      providerRead.favoriteChip('smartphones');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Sports Accessories',
+                    select: providerWatch.selectFavoriteCategories ==
+                            'sports-accessories'
+                        ? 'select'
+                        : '',
+                    onTap: () {
+                      providerRead.favoriteChip('sports-accessories');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Sunglasses',
+                    select:
+                        providerWatch.selectFavoriteCategories == 'sunglasses'
+                            ? 'select'
+                            : '',
+                    onTap: () {
+                      providerRead.favoriteChip('sunglasses');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Tablets',
+                    select: providerWatch.selectFavoriteCategories == 'tablets'
+                        ? 'select'
+                        : '',
+                    onTap: () {
+                      providerRead.favoriteChip('tablets');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Tops',
+                    select: providerWatch.selectFavoriteCategories == 'tops'
+                        ? 'select'
+                        : '',
+                    onTap: () {
+                      providerRead.favoriteChip('tops');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Vehicle',
+                    select: providerWatch.selectFavoriteCategories == 'vehicle'
+                        ? 'select'
+                        : '',
+                    onTap: () {
+                      providerRead.favoriteChip('vehicle');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Womens Bags',
+                    select:
+                        providerWatch.selectFavoriteCategories == 'womens-bags'
+                            ? 'select'
+                            : '',
+                    onTap: () {
+                      providerRead.favoriteChip('womens-bags');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Womens Dresses',
+                    select: providerWatch.selectFavoriteCategories ==
+                            'womens-dresses'
+                        ? 'select'
+                        : '',
+                    onTap: () {
+                      providerRead.favoriteChip('womens-dresses');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Womens Jewellery',
+                    select: providerWatch.selectFavoriteCategories ==
+                            'womens-jewellery'
+                        ? 'select'
+                        : '',
+                    onTap: () {
+                      providerRead.favoriteChip('womens-jewellery');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Womens Shoes',
+                    select:
+                        providerWatch.selectFavoriteCategories == 'womens-shoes'
+                            ? 'select'
+                            : '',
+                    onTap: () {
+                      providerRead.favoriteChip('womens-shoes');
+                    },
+                  ),
+                  FavoriteContainer(
+                    title: 'Womens Watches',
+                    select: providerWatch.selectFavoriteCategories ==
+                            'womens-watches'
+                        ? 'select'
+                        : '',
+                    onTap: () {
+                      providerRead.favoriteChip('womens-watches');
+                    },
+                  ),
                 ],
               ),
             ),
@@ -134,259 +332,11 @@ class FavouriteScreen extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
-          Expanded(
-            child: buildFavoriteProductListView(context),
+          const Expanded(
+            child: BuildFavouriteProduct(),
           ),
         ],
       ),
     );
-  }
-
-  Widget buildFavoriteProductListView(BuildContext context) {
-    final providerWatch = context.watch<ProductProvider>();
-    final providerRead = context.read<ProductProvider>();
-
-    final favorites = providerWatch.favoriteProducts
-        .where((favorite) =>
-            favorite.category == providerWatch.selectFavoriteCategories)
-        .toList();
-    return providerWatch.selectFavoriteCategories.isEmpty
-        ? ListView.builder(
-            itemCount: providerWatch.favoriteProducts.length,
-            itemBuilder: (context, index) {
-              final product = providerWatch.favoriteProducts[index];
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10.0),
-                        child: Image.network(
-                          product.images.first,
-                          width: 125.0,
-                          height: 125.0,
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10),
-                            RichText(
-                              text: TextSpan(
-                                text: 'Brand: ',
-                                style: const TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: product.brand,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 2.0),
-                              child: Text(
-                                product.title,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 50),
-                            Text(
-                              '\$ ${product.price}',
-                              style: const TextStyle(
-                                fontSize: 15,
-                                color: AppColor.appColor,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 2.0),
-                              child: Text(
-                                product.rating > 4.50
-                                    ? '⭐⭐⭐⭐⭐'
-                                    : product.rating > 4
-                                        ? '⭐⭐⭐⭐'
-                                        : product.rating > 3
-                                            ? '⭐⭐⭐'
-                                            : product.rating > 2
-                                                ? '⭐⭐'
-                                                : product.rating > 1
-                                                    ? '⭐'
-                                                    : '',
-                              ),
-                            ),
-                            Text(
-                              product.warrantyInformation,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          providerRead.removeProductFromFavorite(product);
-                        },
-                        icon: const Icon(Icons.close),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          )
-        : favorites.isNotEmpty
-            ? ListView.builder(
-                itemCount: favorites.length,
-                itemBuilder: (context, index) {
-                  final product = favorites[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            spreadRadius: 2,
-                            blurRadius: 2,
-                            offset: const Offset(0, 1),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 10.0),
-                            child: Image.network(
-                              product.images.first,
-                              height: 125.0,
-                              width: 125.0,
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 10),
-                                RichText(
-                                  text: TextSpan(
-                                    text: 'Brand: ',
-                                    style: const TextStyle(
-                                      color: Colors.black54,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    children: [
-                                      TextSpan(
-                                        text: product.brand,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w300,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 2.0),
-                                  child: Text(
-                                    product.title,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 50),
-                                Text(
-                                  '\$ ${product.price}',
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    color: AppColor.appColor,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 2.0),
-                                  child: Text(
-                                    product.rating > 4.50
-                                        ? '⭐⭐⭐⭐⭐'
-                                        : product.rating > 4
-                                            ? '⭐⭐⭐⭐'
-                                            : product.rating > 3
-                                                ? '⭐⭐⭐'
-                                                : product.rating > 2
-                                                    ? '⭐⭐'
-                                                    : product.rating > 1
-                                                        ? '⭐'
-                                                        : '',
-                                  ),
-                                ),
-                                Text(
-                                  product.warrantyInformation,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              providerRead.removeProductFromFavorite(product);
-                            },
-                            icon: const Icon(Icons.close),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              )
-            : Center(
-                child: Text(
-                  'No Favorite ❤️ Item Available !!!',
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              );
   }
 }

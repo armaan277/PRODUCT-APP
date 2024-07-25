@@ -31,7 +31,7 @@ class BuildProductCategories extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.only(bottom: 10.0),
         child: ListView.separated(
-          separatorBuilder: (context, index) => SizedBox(width: 5.0),
+          separatorBuilder: (context, index) => const SizedBox(width: 5.0),
           scrollDirection: Axis.horizontal,
           itemCount: categories.length,
           itemBuilder: (context, index) {
@@ -56,7 +56,7 @@ class BuildProductCategories extends StatelessWidget {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) {
-                                  return ProductInfo(
+                                  return ProductInfoScreen(
                                     product: product,
                                   );
                                 },
@@ -67,7 +67,7 @@ class BuildProductCategories extends StatelessWidget {
                             height: 200,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10.0),
-                              color: Color(0xffF1F1F1),
+                              color: const Color(0xffF1F1F1),
                             ),
                             child: Center(
                               child: product.id == 6 ||
