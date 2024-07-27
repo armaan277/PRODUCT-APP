@@ -18,6 +18,7 @@ class _LogInScreenState extends State<LogInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.appBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
@@ -55,7 +56,7 @@ class _LogInScreenState extends State<LogInScreen> {
                     }
                     return null;
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     prefixIcon: Icon(
                       Icons.email,
                       color: Colors.grey,
@@ -136,7 +137,7 @@ class _LogInScreenState extends State<LogInScreen> {
                   onTap: () {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
-                      return BottomNavigation();
+                      return const BottomNavigation();
                     }));
                   },
                   child: GestureDetector(
@@ -144,9 +145,9 @@ class _LogInScreenState extends State<LogInScreen> {
                       if (formKey.currentState?.validate() ?? false) {
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (context) {
-                          return BottomNavigation();
+                          return const BottomNavigation();
                         }));
-                        // Navigator.pushNamed(context, 'routeName');
+                        
                       }
                     },
                     child: Container(

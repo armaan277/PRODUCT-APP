@@ -7,10 +7,14 @@ import 'package:shopping_app/widgets/build_gridview_products.dart';
 import 'package:shopping_app/widgets/favorite_container.dart';
 import 'package:shopping_app/widgets/filter_product_container.dart';
 
-
-class ShopScreen extends StatelessWidget {
+class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
 
+  @override
+  State<ShopScreen> createState() => _ShopScreenState();
+}
+
+class _ShopScreenState extends State<ShopScreen> {
   @override
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();
@@ -40,7 +44,7 @@ class ShopScreen extends StatelessWidget {
         ],
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      drawer: AppDrawer(),
+      drawer: const AppDrawer(),
       body: Column(
         children: [
           SingleChildScrollView(
@@ -314,7 +318,29 @@ class ShopScreen extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
-          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              onChanged: (value) {
+                providerRead.filterProducts(value);
+              },
+              controller: providerRead.searchController,
+              decoration: InputDecoration(
+                isDense: true,
+                prefixIcon: const Icon(Icons.search),
+                hintText: 'Search...',
+                border: const OutlineInputBorder(),
+                suffixIcon: providerWatch.searchController.text.isNotEmpty
+                    ? IconButton(
+                        onPressed: () {
+                          providerRead.searchController.clear();
+                        },
+                        icon: const Icon(Icons.close),
+                      )
+                    : null,
+              ),
+            ),
+          ),
           const Expanded(
             child: BuildGridviewProducts(),
           ),

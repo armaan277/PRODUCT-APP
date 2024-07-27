@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/app_drawer.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
-import 'package:shopping_app/screens/product_cart_screen.dart';
 import '../widgets/build_products.dart';
 
 class HomeScreen extends StatelessWidget {

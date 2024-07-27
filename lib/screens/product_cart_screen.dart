@@ -26,15 +26,13 @@ class ProductCartScreen extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: providerWatch.bagProducts.isEmpty
-          ? const Center(
-              child: Text(
-                'Bag is Empty !!!',
-                style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.network(
+                  'https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-5521508-4610092.png',
                 ),
-              ),
+              ],
             )
           : ListView.separated(
               separatorBuilder: (context, index) => const SizedBox(height: 4.0),

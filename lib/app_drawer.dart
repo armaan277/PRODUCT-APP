@@ -7,6 +7,7 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: AppColor.appBackgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(0.0),
@@ -39,8 +40,7 @@ class AppDrawer extends StatelessWidget {
                     ),
                     child: const CircleAvatar(
                       radius: 54,
-                      backgroundImage:
-                          ExactAssetImage('assets/armaan.png'),
+                      backgroundImage: ExactAssetImage('assets/armaan.png'),
                     ),
                   ),
                   const SizedBox(height: 7),
@@ -90,11 +90,11 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.favorite,
               color: AppColor.appColor,
             ),
-            title: Text(
+            title: const Text(
               'Favorite',
               style: TextStyle(
                 fontSize: 16,
@@ -122,11 +122,11 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.settings,
               color: AppColor.appColor,
             ),
-            title: Text(
+            title: const Text(
               'Settings',
               style: TextStyle(
                 fontSize: 16,
@@ -137,11 +137,11 @@ class AppDrawer extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.help,
               color: AppColor.appColor,
             ),
-            title: Text(
+            title: const Text(
               'Help & Support',
               style: TextStyle(
                 fontSize: 16,

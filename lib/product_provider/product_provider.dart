@@ -24,6 +24,8 @@ class ProductProvider extends ChangeNotifier {
 
   String selectShopCategories = '';
 
+  TextEditingController searchController = TextEditingController();
+
   Future<void> getProducts() async {
     Response response =
         await get(Uri.parse('https://dummyjson.com/products?limit=194'));
@@ -141,6 +143,13 @@ class ProductProvider extends ChangeNotifier {
         }
       }
     }
+    notifyListeners();
+  }
+
+  void filterProducts(String value) {
+    products.where((ele) {
+      return ele.title.toLowerCase().contains(value.toLowerCase());
+    }).toList();
     notifyListeners();
   }
 }

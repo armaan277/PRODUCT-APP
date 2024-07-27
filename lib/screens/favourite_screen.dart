@@ -41,7 +41,7 @@ class FavouriteScreen extends StatelessWidget {
         ],
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      drawer: AppDrawer(),
+      drawer: const AppDrawer(),
       backgroundColor: AppColor.appBackgroundColor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

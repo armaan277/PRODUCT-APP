@@ -35,7 +35,7 @@ class ProfileScreen extends StatelessWidget {
         ],
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      drawer: AppDrawer(),
+      drawer: const AppDrawer(),
       backgroundColor: AppColor.appBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
