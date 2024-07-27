@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/app_drawer.dart';
 import 'package:shopping_app/constant/constant.dart';
@@ -18,9 +19,9 @@ class ShopScreen extends StatelessWidget {
       backgroundColor: AppColor.appBackgroundColor,
       appBar: AppBar(
         backgroundColor: AppColor.appColor,
-        title: const Text(
+        title: Text(
           'Big Sales',
-          style: TextStyle(
+         style: GoogleFonts.pacifico(
             color: Colors.white,
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
@@ -16,12 +17,10 @@ class ProductCartScreen extends StatelessWidget {
       backgroundColor: const Color(0xffF5F5F5),
       appBar: AppBar(
         backgroundColor: AppColor.appColor,
-        title: const Text(
-          'My Bag',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
+        title: Text('My Bag',
+            style: GoogleFonts.pacifico(
+              color: Colors.white,
+            )),
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
       ),

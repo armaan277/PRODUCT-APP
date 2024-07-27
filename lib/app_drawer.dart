@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shopping_app/constant/constant.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -44,9 +45,9 @@ class AppDrawer extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 7),
-                  const Text(
+                  Text(
                     'Khan Armaan',
-                    style: TextStyle(
+                    style: GoogleFonts.pacifico(
                       letterSpacing: 1.1,
                       fontSize: 20,
                       color: Colors.white,
