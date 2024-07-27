@@ -152,4 +152,9 @@ class ProductProvider extends ChangeNotifier {
     }).toList();
     notifyListeners();
   }
+
+  void cancelSearching() {
+    searchController.clear();
+    notifyListeners();
+  }
 }

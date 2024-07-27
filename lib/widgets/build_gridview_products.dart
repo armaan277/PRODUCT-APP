@@ -15,11 +15,17 @@ class BuildGridviewProducts extends StatelessWidget {
     final shopCategories = providerWatch.selectShopCategories == ''
         ? providerWatch.products.where((ele) {
             return ele.title.toLowerCase().contains(
-                  providerRead.searchController.text,
+                  providerRead.searchController.text.toLowerCase(),
                 );
           }).toList()
         : providerWatch.products
-            .where((ele) => ele.category == providerWatch.selectShopCategories)
+            .where(
+              (ele) =>
+                  ele.category == providerWatch.selectShopCategories &&
+                  ele.title.toLowerCase().contains(
+                        providerRead.searchController.text.toLowerCase(),
+                      ),
+            )
             .toList();
 
     return GridView.builder(

@@ -7,14 +7,9 @@ import 'package:shopping_app/widgets/build_gridview_products.dart';
 import 'package:shopping_app/widgets/favorite_container.dart';
 import 'package:shopping_app/widgets/filter_product_container.dart';
 
-class ShopScreen extends StatefulWidget {
+class ShopScreen extends StatelessWidget {
   const ShopScreen({super.key});
 
-  @override
-  State<ShopScreen> createState() => _ShopScreenState();
-}
-
-class _ShopScreenState extends State<ShopScreen> {
   @override
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();
@@ -333,7 +328,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 suffixIcon: providerWatch.searchController.text.isNotEmpty
                     ? IconButton(
                         onPressed: () {
-                          providerRead.searchController.clear();
+                          providerRead.cancelSearching();
                         },
                         icon: const Icon(Icons.close),
                       )
