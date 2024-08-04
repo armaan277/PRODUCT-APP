@@ -21,7 +21,7 @@ class ShopScreen extends StatelessWidget {
         backgroundColor: AppColor.appColor,
         title: Text(
           'Big Sales',
-         style: GoogleFonts.pacifico(
+          style: GoogleFonts.pacifico(
             color: Colors.white,
           ),
         ),
@@ -296,24 +296,26 @@ class ShopScreen extends StatelessWidget {
               ),
             ),
           ),
-          FilterProductContainer(
-            price: providerWatch.selectFilterationShop,
-            onTapHTL: () {
-              providerRead.selectFilterationsShop('High To Low');
-              providerRead.sortProductsByPriceHighToLow(providerWatch.products);
-              Navigator.of(context).pop();
-            },
-            onTapLTH: () {
-              providerRead.selectFilterationsShop('Low To High');
-              providerRead.sortProductsByPriceLowToHigh(providerWatch.products);
-              Navigator.of(context).pop();
-            },
-            onTapBR: () {
-              providerRead.selectFilterationsShop('Best Rating');
-              providerRead.sortProductsByBestRating(providerWatch.products);
-              Navigator.of(context).pop();
-            },
-          ),
+            FilterProductContainer(
+              price: providerWatch.selectFilterationShop,
+              onTapHTL: () {
+                providerRead.selectFilterationsShop('High To Low');
+                providerRead
+                    .sortProductsByPriceHighToLow(providerWatch.products);
+                Navigator.of(context).pop();
+              },
+              onTapLTH: () {
+                providerRead.selectFilterationsShop('Low To High');
+                providerRead
+                    .sortProductsByPriceLowToHigh(providerWatch.products);
+                Navigator.of(context).pop();
+              },
+              onTapBR: () {
+                providerRead.selectFilterationsShop('Best Rating');
+                providerRead.sortProductsByBestRating(providerWatch.products);
+                Navigator.of(context).pop();
+              },
+            ),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: TextField(

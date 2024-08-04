@@ -21,7 +21,7 @@ class FavouriteScreen extends StatelessWidget {
         backgroundColor: AppColor.appColor,
         title: Text(
           'Favorites Products',
-         style: GoogleFonts.pacifico(
+          style: GoogleFonts.pacifico(
             color: Colors.white,
           ),
         ),
@@ -312,27 +312,28 @@ class FavouriteScreen extends StatelessWidget {
               ),
             ),
           ),
-          FilterProductContainer(
-            price: providerWatch.selectFilterationFavorite,
-            onTapHTL: () {
-              providerRead.selectFilterationsFavorite('High To Low');
-              providerRead
-                  .sortProductsByPriceHighToLow(providerWatch.favoriteProducts);
-              Navigator.of(context).pop();
-            },
-            onTapLTH: () {
-              providerRead.selectFilterationsFavorite('Low To High');
-              providerRead
-                  .sortProductsByPriceLowToHigh(providerWatch.favoriteProducts);
-              Navigator.of(context).pop();
-            },
-            onTapBR: () {
-              providerRead.selectFilterationsFavorite('Best Rating');
-              providerRead
-                  .sortProductsByBestRating(providerWatch.favoriteProducts);
-              Navigator.of(context).pop();
-            },
-          ),
+          if (providerRead.favoriteProducts.isNotEmpty)
+            FilterProductContainer(
+              price: providerWatch.selectFilterationFavorite,
+              onTapHTL: () {
+                providerRead.selectFilterationsFavorite('High To Low');
+                providerRead.sortProductsByPriceHighToLow(
+                    providerWatch.favoriteProducts);
+                Navigator.of(context).pop();
+              },
+              onTapLTH: () {
+                providerRead.selectFilterationsFavorite('Low To High');
+                providerRead.sortProductsByPriceLowToHigh(
+                    providerWatch.favoriteProducts);
+                Navigator.of(context).pop();
+              },
+              onTapBR: () {
+                providerRead.selectFilterationsFavorite('Best Rating');
+                providerRead
+                    .sortProductsByBestRating(providerWatch.favoriteProducts);
+                Navigator.of(context).pop();
+              },
+            ),
           const Expanded(
             child: BuildFavouriteProduct(),
           ),

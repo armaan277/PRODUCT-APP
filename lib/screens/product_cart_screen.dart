@@ -28,9 +28,7 @@ class ProductCartScreen extends StatelessWidget {
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.network(
-                  'https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-5521508-4610092.png',
-                ),
+                Image.asset('assets/bag_empty.png'),
               ],
             )
           : ListView.separated(

@@ -19,13 +19,13 @@ class BuildFavouriteProduct extends StatelessWidget {
                   favorite.category == providerWatch.selectFavoriteCategories,
             )
             .toList();
-    return providerRead.favoriteProducts.isEmpty || favorites.isEmpty
-        ? const Center(
+    return  providerRead.favoriteProducts.isEmpty || favorites.isEmpty
+        ? Center(
             child: Text(
               'No Favorite ❤️ Item Available !!!',
               style: TextStyle(
                 color: Colors.black54,
-                fontSize: 16,
+                fontSize: 18,
                 fontWeight: FontWeight.w500,
               ),
             ),
