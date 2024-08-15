@@ -3,8 +3,19 @@ import 'package:provider/provider.dart';
 import '../constant/constant.dart';
 import '../product_provider/product_provider.dart';
 
-class BuildFavouriteProduct extends StatelessWidget {
+class BuildFavouriteProduct extends StatefulWidget {
   const BuildFavouriteProduct({super.key});
+
+  @override
+  State<BuildFavouriteProduct> createState() => _BuildFavouriteProductState();
+}
+
+class _BuildFavouriteProductState extends State<BuildFavouriteProduct> {
+  @override
+  void initState() {
+    context.read<ProductProvider>().getSFProducts();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +30,7 @@ class BuildFavouriteProduct extends StatelessWidget {
                   favorite.category == providerWatch.selectFavoriteCategories,
             )
             .toList();
-    return  providerRead.favoriteProducts.isEmpty || favorites.isEmpty
+    return providerRead.favoriteProducts.isEmpty || favorites.isEmpty
         ? Center(
             child: Text(
               'No Favorite ❤️ Item Available !!!',

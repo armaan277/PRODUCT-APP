@@ -53,8 +53,7 @@ class FilterProductContainer extends StatelessWidget {
                   const SizedBox(height: 10),
                   ListTile(
                     leading: const Icon(
-                      Icons.price_change,
-                      color: Colors.green,
+                      Icons.price_change_outlined,
                     ),
                     title: const Text('Price: High To Low'),
                     onTap: onTapHTL,
@@ -62,7 +61,6 @@ class FilterProductContainer extends StatelessWidget {
                   ListTile(
                     leading: const Icon(
                       Icons.price_change_outlined,
-                      color: Colors.green,
                     ),
                     title: const Text(
                       'Price: Low To High',
@@ -71,8 +69,7 @@ class FilterProductContainer extends StatelessWidget {
                   ),
                   ListTile(
                     leading: const Icon(
-                      Icons.star,
-                      color: Colors.amber,
+                      Icons.star_border,
                     ),
                     title: const Text('Rating: Best Rating'),
                     onTap: onTapBR,
@@ -102,7 +99,7 @@ class FilterProductContainer extends StatelessWidget {
                   color: Colors.grey.shade700,
                   size: 28,
                 ),
-               const Text(
+                const Text(
                   'Filters',
                   style: TextStyle(
                     fontSize: 16,

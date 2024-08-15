@@ -28,8 +28,12 @@ class HomeScreen extends StatelessWidget {
               Navigator.pushNamed(context, 'product_cart_screen');
             },
             icon: Badge(
-              backgroundColor: Colors.black,
-              label: Text('${providerWatch.bagProductscount}'),
+              backgroundColor: Colors.white,
+              label: Text(
+                '${providerWatch.bagProductsCount}',
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
               child: const Icon(Icons.shopping_bag_outlined),
             ),
           ),

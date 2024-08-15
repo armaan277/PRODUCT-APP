@@ -32,8 +32,12 @@ class ShopScreen extends StatelessWidget {
               Navigator.pushNamed(context, 'product_cart_screen');
             },
             icon: Badge(
-              backgroundColor: Colors.black,
-              label: Text('${providerWatch.bagProductscount}'),
+              backgroundColor: Colors.white,
+              label: Text(
+                '${providerWatch.bagProductsCount}',
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
               child: const Icon(Icons.shopping_bag_outlined),
             ),
           ),
@@ -296,26 +300,24 @@ class ShopScreen extends StatelessWidget {
               ),
             ),
           ),
-            FilterProductContainer(
-              price: providerWatch.selectFilterationShop,
-              onTapHTL: () {
-                providerRead.selectFilterationsShop('High To Low');
-                providerRead
-                    .sortProductsByPriceHighToLow(providerWatch.products);
-                Navigator.of(context).pop();
-              },
-              onTapLTH: () {
-                providerRead.selectFilterationsShop('Low To High');
-                providerRead
-                    .sortProductsByPriceLowToHigh(providerWatch.products);
-                Navigator.of(context).pop();
-              },
-              onTapBR: () {
-                providerRead.selectFilterationsShop('Best Rating');
-                providerRead.sortProductsByBestRating(providerWatch.products);
-                Navigator.of(context).pop();
-              },
-            ),
+          FilterProductContainer(
+            price: providerWatch.selectFilterationShop,
+            onTapHTL: () {
+              providerRead.selectFilterationsShop('High To Low');
+              providerRead.sortProductsByPriceHighToLow(providerWatch.products);
+              Navigator.of(context).pop();
+            },
+            onTapLTH: () {
+              providerRead.selectFilterationsShop('Low To High');
+              providerRead.sortProductsByPriceLowToHigh(providerWatch.products);
+              Navigator.of(context).pop();
+            },
+            onTapBR: () {
+              providerRead.selectFilterationsShop('Best Rating');
+              providerRead.sortProductsByBestRating(providerWatch.products);
+              Navigator.of(context).pop();
+            },
+          ),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: TextField(

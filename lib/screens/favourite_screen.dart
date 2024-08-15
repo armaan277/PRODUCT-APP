@@ -30,12 +30,16 @@ class FavouriteScreen extends StatelessWidget {
           IconButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return const ProductCartScreen();
+                return ProductCartScreen();
               }));
             },
             icon: Badge(
-              backgroundColor: Colors.black,
-              label: Text('${providerWatch.bagProductscount}'),
+              backgroundColor: Colors.white,
+              label: Text(
+                '${providerWatch.bagProductsCount}',
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
               child: const Icon(Icons.shopping_bag_outlined),
             ),
           ),

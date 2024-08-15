@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/constant/constant.dart';
+import 'package:shopping_app/main.dart';
 import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -141,13 +144,12 @@ class _LogInScreenState extends State<LogInScreen> {
                     }));
                   },
                   child: GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       if (formKey.currentState?.validate() ?? false) {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return const BottomNavigation();
-                        }));
-                        
+                      isLoggedIn = true;
+                      final SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setBool('isLoggedIn', isLoggedIn);
+                      Navigator.of(context).pushReplacementNamed('bottom_navigation');
                       }
                     },
                     child: Container(

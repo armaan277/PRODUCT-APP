@@ -222,8 +222,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                   radius: 16,
                                   child: IconButton(
                                     onPressed: () {
-                                      providerRead
-                                          .productInfoDec(widget.product);
+                                      providerRead.productInfoDec(widget.product);
                                     },
                                     icon: const Icon(
                                       Icons.remove,
@@ -247,8 +246,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                   radius: 16,
                                   child: IconButton(
                                     onPressed: () {
-                                      providerRead
-                                          .productInfoInc(widget.product);
+                                      providerRead.productInfoInc(widget.product);
                                     },
                                     icon: const Icon(
                                       color: Colors.white,

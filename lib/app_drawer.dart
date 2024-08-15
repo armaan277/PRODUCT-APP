@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/constant/constant.dart';
+import 'package:shopping_app/main.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -152,6 +154,7 @@ class AppDrawer extends StatelessWidget {
             onTap: () {},
           ),
           ListTile(
+            
             leading: const Icon(
               Icons.logout,
               color: AppColor.appColor,
@@ -163,8 +166,11 @@ class AppDrawer extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            onTap: () {
-              Navigator.of(context).pushNamed('login_sreen');
+            onTap: () async {
+              isLoggedIn = false;
+              final SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.setBool('isLoggedIn', isLoggedIn);
+              Navigator.of(context).pushReplacementNamed('login_sreen');
             },
           ),
         ],

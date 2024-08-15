@@ -1,10 +1,12 @@
+import 'dart:convert';
+
 class Product {
   final int id;
   final String thumbnail;
   final String title;
   final String description;
   final String brand;
-  final num price;
+  final double price;
   final num discountPercentage;
   final num rating;
   final String availabilityStatus;
@@ -29,7 +31,31 @@ class Product {
     required this.returnPolicy,
     required this.warrantyInformation,
     required this.category,
+    this.productInfoIncValue = 1,
   });
+
+  Map productToMap() {
+    return {
+      'id': id,
+      'thumbnail': thumbnail,
+      'title': title,
+      'description': description,
+      'price': price,
+      'discountPercentage': discountPercentage,
+      'rating': rating,
+      'brand': brand,
+      'availabilityStatus': availabilityStatus,
+      'images': images,
+      'returnPolicy': returnPolicy,
+      'warrantyInformation': warrantyInformation,
+      'category': category,
+      'productInfoIncValue': productInfoIncValue,
+    };
+  }
+
+  String toJson() {
+    return jsonEncode(productToMap());
+  }
 
   factory Product.fromMap(Map productMap) {
     return Product(
@@ -46,6 +72,14 @@ class Product {
       returnPolicy: productMap['returnPolicy'] ?? '',
       warrantyInformation: productMap['warrantyInformation'] ?? '',
       category: productMap['category'] ?? '',
+      productInfoIncValue: productMap['productInfoIncValue'] ?? 1,
     );
   }
+
+  factory Product.fromJson(String json) {
+    return Product.fromMap(jsonDecode(json));
+  }
+
+  @override
+  bool operator == (covariant Product other) =>  other.id == id;
 }
