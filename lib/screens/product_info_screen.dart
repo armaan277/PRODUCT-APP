@@ -22,7 +22,7 @@ class ProductInfoScreen extends StatefulWidget {
 
 class _ProductInfoScreenState extends State<ProductInfoScreen> {
   int currentIndex = 0;
-  final CarouselController carouselController = CarouselController();
+  // final CarouselController carouselController = CarouselController();
   @override
   Widget build(BuildContext context) {
     final providerRead = context.read<ProductProvider>();
@@ -64,7 +64,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                     });
                   },
                 ),
-                carouselController: carouselController,
+                // carouselController: carouselController,
               ),
             ),
             if (widget.product.images.length > 1)
@@ -81,7 +81,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                   ),
                 ),
                 onTap: (index) {
-                  carouselController.animateToPage(index);
+                  // carouselController.animateToPage(index);
                 },
               ),
             Container(

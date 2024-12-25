@@ -38,7 +38,6 @@ dependencies:
   badges: ^3.1.2
   http: ^1.2.1
   provider: ^6.1.2
-  carousel_slider: ^4.2.1
   dots_indicator: ^3.0.0
   google_fonts: ^6.2.1
   shared_preferences: ^2.3.1
@@ -46,6 +45,7 @@ dependencies:
   geolocator: ^13.0.1
   geocoding: ^3.0.0
   fluttertoast: ^8.2.8
+  carousel_slider: ^5.0.0
 
 dev_dependencies:
   flutter_test:
