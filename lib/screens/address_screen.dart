@@ -82,14 +82,24 @@ class _AddressScreenState extends State<AddressScreen> {
     return Scaffold(
       backgroundColor: Color(0xffF7F7F7),
       appBar: AppBar(
-        backgroundColor: Color(0xffF9F9F9),
-        title: Text('Adding Shipping Address'),
+        backgroundColor: AppColor.appColor,
+        title: Text(
+          'Adding Shipping Address',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
         centerTitle: true,
         leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icon(Icons.arrow_back_ios)),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -111,12 +121,12 @@ class _AddressScreenState extends State<AddressScreen> {
                   ],
                 ),
                 child: TextFormField(
-                  // validator: (value) {
-                  //   if (value == null || value.isEmpty) {
-                  //     return 'Please enter your name';
-                  //   }
-                  //   return null;
-                  // },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
                   controller: providerRead.nameController,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(

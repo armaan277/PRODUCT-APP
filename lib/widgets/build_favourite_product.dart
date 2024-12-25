@@ -67,9 +67,9 @@ class _BuildFavouriteProductState extends State<BuildFavouriteProduct> {
                       Padding(
                         padding: const EdgeInsets.only(right: 10.0),
                         child: Image.network(
-                          product.images.first,
-                          width: 125.0,
-                          height: 125.0,
+                          product.thumbnail,
+                          width: 125,
+                          height: 125,
                         ),
                       ),
                       Expanded(

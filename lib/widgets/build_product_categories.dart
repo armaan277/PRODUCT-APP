@@ -74,7 +74,8 @@ class BuildProductCategories extends StatelessWidget {
                                       product.id == 9 ||
                                       product.id == 19
                                   ? Image.network(
-                                      product.images.first,
+                                      // product.images.first,
+                                      product.thumbnail,
                                     )
                                   : Image.network(
                                       product.thumbnail,

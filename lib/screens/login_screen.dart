@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
+import 'package:shopping_app/screens/sign_up_screen.dart';
 import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -15,8 +17,12 @@ class LogInScreen extends StatefulWidget {
 class _LogInScreenState extends State<LogInScreen> {
   bool isRemember = false;
   bool isPasswordShow = true;
+  String? errorMessage;
 
   final formKey = GlobalKey<FormState>();
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +55,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 ),
                 const SizedBox(height: 40),
                 TextFormField(
+                  controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -60,6 +67,9 @@ class _LogInScreenState extends State<LogInScreen> {
                     return null;
                   },
                   decoration: const InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppColor.appColor),
+                    ),
                     prefixIcon: Icon(
                       Icons.email,
                       color: Colors.grey,
@@ -70,43 +80,49 @@ class _LogInScreenState extends State<LogInScreen> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
+                  controller: passwordController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Password is required';
                     }
-                    if (value.length < 8) {
-                      return 'Password must be at least 8 characters long';
-                    }
                     return null;
                   },
-                  obscureText: isPasswordShow == true ? isPasswordShow : false,
+                  obscureText: isPasswordShow,
                   decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppColor.appColor),
+                    ),
                     prefixIcon: const Icon(
                       Icons.lock,
                       color: Colors.grey,
                     ),
-                    suffixIcon: isPasswordShow == true
-                        ? IconButton(
-                            onPressed: () {
-                              isPasswordShow = false;
-                              setState(() {});
-                            },
-                            icon: const Icon(Icons.visibility),
-                            color: Colors.grey,
-                          )
-                        : IconButton(
-                            onPressed: () {
-                              isPasswordShow = true;
-                              setState(() {});
-                            },
-                            icon: const Icon(
-                              Icons.visibility_off,
-                            ),
-                          ),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          isPasswordShow = !isPasswordShow;
+                        });
+                      },
+                      icon: Icon(
+                        isPasswordShow
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      color: Colors.grey,
+                    ),
                     border: const OutlineInputBorder(),
                     hintText: 'Password',
                   ),
                 ),
+                if (errorMessage != null) ...[
+                  const SizedBox(height: 15),
+                  Text(
+                    errorMessage!,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,8 +133,9 @@ class _LogInScreenState extends State<LogInScreen> {
                           activeColor: AppColor.appColor,
                           value: isRemember,
                           onChanged: (value) {
-                            isRemember = value!;
-                            setState(() {});
+                            setState(() {
+                              isRemember = value!;
+                            });
                           },
                         ),
                         const Text('Remember me'),
@@ -136,37 +153,26 @@ class _LogInScreenState extends State<LogInScreen> {
                   ],
                 ),
                 const SizedBox(height: 30),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return const BottomNavigation();
-                    }));
+                InkWell(
+                  onTap: () async {
+                    if (formKey.currentState?.validate() ?? false) {
+                      postLoginData();
+                    }
                   },
-                  child: GestureDetector(
-                    onTap: () async {
-                      if (formKey.currentState?.validate() ?? false) {
-                      isLoggedIn = true;
-                      final SharedPreferences prefs = await SharedPreferences.getInstance();
-                      prefs.setBool('isLoggedIn', isLoggedIn);
-                      Navigator.of(context).pushReplacementNamed('bottom_navigation');
-                      }
-                    },
-                    child: Container(
-                      height: 55,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: AppColor.appColor,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'Continue',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  child: Container(
+                    height: 55,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppColor.appColor,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Continue',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -226,7 +232,13 @@ class _LogInScreenState extends State<LogInScreen> {
                     const Text("Don't have an account"),
                     const SizedBox(width: 10),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const SignUpScreen(),
+                          ),
+                        );
+                      },
                       child: const Text(
                         'Sign Up',
                         style: TextStyle(
@@ -242,5 +254,37 @@ class _LogInScreenState extends State<LogInScreen> {
         ),
       ),
     );
+  }
+
+  void postLoginData() async {
+    final url = Uri.parse('http://192.168.0.111:3000/login');
+
+    final loginData = {
+      'email': emailController.text,
+      'password': passwordController.text,
+    };
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(loginData),
+    );
+
+    final signUpResponse = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      userUniqueId = signUpResponse['user']['id'] ?? '';
+
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isLoggedIn', true);
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const BottomNavigation()),
+      );
+    } else if (response.statusCode == 401) {
+      setState(() {
+        errorMessage = 'Invalid email or password!';
+      });
+    }
   }
 }

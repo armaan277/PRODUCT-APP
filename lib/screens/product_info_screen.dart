@@ -22,7 +22,8 @@ class ProductInfoScreen extends StatefulWidget {
 
 class _ProductInfoScreenState extends State<ProductInfoScreen> {
   int currentIndex = 0;
-  // final CarouselController carouselController = CarouselController();
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
   @override
   Widget build(BuildContext context) {
     final providerRead = context.read<ProductProvider>();
@@ -34,7 +35,10 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
         backgroundColor: AppColor.appColor,
         title: const Text(
           'Product Detail',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         leading: IconButton(
           icon: const Icon(
@@ -48,42 +52,42 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: CarouselSlider(
-                items: widget.product.images.map((image) {
-                  return Image.network(image);
-                }).toList(),
-                options: CarouselOptions(
-                  height: 300,
-                  autoPlay: widget.product.images.length > 1 ? true : false,
-                  enlargeCenterPage: true,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      currentIndex = index;
-                    });
-                  },
-                ),
-                // carouselController: carouselController,
-              ),
-            ),
-            if (widget.product.images.length > 1)
-              DotsIndicator(
-                dotsCount: widget.product.images.length,
-                position: currentIndex,
-                decorator: DotsDecorator(
-                  color: Colors.grey,
-                  activeColor: AppColor.appColor,
-                  size: const Size.square(9.0),
-                  activeSize: const Size(12.0, 12.0),
-                  activeShape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                onTap: (index) {
-                  // carouselController.animateToPage(index);
-                },
-              ),
+            // Padding(
+              // padding: const EdgeInsets.symmetric(vertical: 8.0),
+              // child: CarouselSlider(
+                // items: widget.product.images.map((image) {
+                //   return Image.network(image);
+                // }).toList(),
+            //     options: CarouselOptions(
+            //       height: 300,
+            //       autoPlay: widget.product.images.length > 1 ? true : false,
+            //       enlargeCenterPage: true,
+            //       onPageChanged: (index, reason) {
+            //         setState(() {
+            //           currentIndex = index;
+            //         });
+            //       },
+            //     ),
+            //     carouselController: carouselController,
+            //   ),
+            // ),
+            // if (widget.product.images.length > 1) 
+              // DotsIndicator(
+                // dotsCount: widget.product.images.length, 
+                // position: currentIndex,
+              //   decorator: DotsDecorator(
+              //     color: Colors.grey,
+              //     activeColor: AppColor.appColor,
+              //     size: const Size.square(9.0),
+              //     activeSize: const Size(12.0, 12.0),
+              //     activeShape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(10.0),
+              //     ),
+              //   ),
+              //   onTap: (index) {
+              //     carouselController.animateToPage(index);
+              //   },
+              // ),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -222,7 +226,8 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                   radius: 16,
                                   child: IconButton(
                                     onPressed: () {
-                                      providerRead.productInfoDec(widget.product);
+                                      providerRead
+                                          .productInfoDec(widget.product);
                                     },
                                     icon: const Icon(
                                       Icons.remove,
@@ -246,7 +251,8 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                   radius: 16,
                                   child: IconButton(
                                     onPressed: () {
-                                      providerRead.productInfoInc(widget.product);
+                                      providerRead
+                                          .productInfoInc(widget.product);
                                     },
                                     icon: const Icon(
                                       color: Colors.white,

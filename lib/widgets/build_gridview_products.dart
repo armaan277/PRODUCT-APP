@@ -78,7 +78,8 @@ class BuildGridviewProducts extends StatelessWidget {
                                         product.id == 19
                                     ? Image(
                                         image: NetworkImage(
-                                          product.images.first,
+                                          product.thumbnail,
+                                          // product.images.first, 
                                         ),
                                         fit: BoxFit.cover,
                                       )

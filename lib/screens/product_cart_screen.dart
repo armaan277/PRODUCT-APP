@@ -32,16 +32,21 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
+            Icons.arrow_back,
+            color: Colors.white,
           ),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: AppColor.appColor,
         title: Text(
           'My Bag',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 20,
+          ),
         ),
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -50,7 +55,12 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/bag_empty.png'),
+                Center(
+                  child: Image.asset(
+                    'assets/bag_empty.png',
+                    height: 150,
+                  ),
+                ),
               ],
             )
           : ListView.separated(

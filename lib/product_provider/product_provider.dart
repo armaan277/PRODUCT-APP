@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shopping_app/config/endponts.dart';
 import 'package:shopping_app/model/product.dart';
 
 class ProductProvider extends ChangeNotifier {
@@ -37,14 +38,16 @@ class ProductProvider extends ChangeNotifier {
   TextEditingController countryController = TextEditingController();
 
   Future<void> getProducts() async {
-    Response response = await get(Uri.parse('https://dummyjson.com/products?limit=194'));
+    // Response response = await get(Uri.parse('https://dummyjson.com/products?limit=194'));
+
+    http.Response response = await http.get(Uri.parse(Endponts.allProductsEndPoint));
 
     final mapResponse = jsonDecode(response.body);
 
-    final mapResponseList = mapResponse['products'];
+    debugPrint('mapResponse : $mapResponse');
 
-    for (int i = 0; i < mapResponseList.length; i++) {
-      products.add(Product.fromMap(mapResponseList[i]));
+    for (int i = 0; i < mapResponse.length; i++) {
+      products.add(Product.fromMap(mapResponse[i]));
     }
     isProductLoading = false;
     getSFProducts();

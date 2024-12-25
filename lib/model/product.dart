@@ -10,7 +10,7 @@ class Product {
   final num discountPercentage;
   final num rating;
   final String availabilityStatus;
-  final List<String> images;
+  // final List<String> images;
   final String returnPolicy;
   final String warrantyInformation;
   final String category;
@@ -27,7 +27,7 @@ class Product {
     required this.rating,
     required this.brand,
     required this.availabilityStatus,
-    required this.images,
+    // required this.images,
     required this.returnPolicy,
     required this.warrantyInformation,
     required this.category,
@@ -41,13 +41,13 @@ class Product {
       'title': title,
       'description': description,
       'price': price,
-      'discountPercentage': discountPercentage,
+      'discountpercentage': discountPercentage,
       'rating': rating,
       'brand': brand,
-      'availabilityStatus': availabilityStatus,
-      'images': images,
-      'returnPolicy': returnPolicy,
-      'warrantyInformation': warrantyInformation,
+      'availabilitystatus': availabilityStatus,
+      // 'images': images,
+      'returnpolicy': returnPolicy,
+      'warrantyinformation': warrantyInformation,
       'category': category,
       'productInfoIncValue': productInfoIncValue,
     };
@@ -64,13 +64,13 @@ class Product {
       title: productMap['title'] ?? '',
       description: productMap['description'] ?? '',
       price: productMap['price'] ?? 0,
-      discountPercentage: productMap['discountPercentage'] ?? 0,
+      discountPercentage: productMap['discountpercentage'] ?? 0.0,
       rating: productMap['rating'] ?? 0,
       brand: productMap['brand'] ?? 'Groceries',
-      availabilityStatus: productMap['availabilityStatus'] ?? '',
-      images: productMap['images'].cast<String>(),
-      returnPolicy: productMap['returnPolicy'] ?? '',
-      warrantyInformation: productMap['warrantyInformation'] ?? '',
+      availabilityStatus: productMap['availabilitystatus'] ?? '',
+      // images: productMap['images'].cast<String>(),
+      returnPolicy: productMap['returnpolicy'] ?? '',
+      warrantyInformation: productMap['warrantyinformation'] ?? '',
       category: productMap['category'] ?? '',
       productInfoIncValue: productMap['productInfoIncValue'] ?? 1,
     );
@@ -81,5 +81,5 @@ class Product {
   }
 
   @override
-  bool operator == (covariant Product other) =>  other.id == id;
+  bool operator == (covariant Product other) => other.id == id;
 }
