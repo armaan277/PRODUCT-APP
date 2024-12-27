@@ -38,7 +38,7 @@ class ProductProvider extends ChangeNotifier {
   TextEditingController zipcodeController = TextEditingController();
   TextEditingController countryController = TextEditingController();
 
-  late final deleteCartProductId;
+  List<dynamic> cartResponse = [];
 
   Future<void> getProducts() async {
     // Response response = await get(Uri.parse('https://dummyjson.com/products?limit=194'));
@@ -54,7 +54,7 @@ class ProductProvider extends ChangeNotifier {
       products.add(Product.fromMap(mapResponse[i]));
     }
     isProductLoading = false;
-    getSFProducts();
+    // getSFProducts();
     notifyListeners();
   }
 
@@ -74,17 +74,17 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void bagProductscountsInc() {
-    bagProductsCount++;
-    setSFProducts();
-    notifyListeners();
-  }
+  // void bagProductscountsInc() {
+  //   bagProductsCount++;
+  //   setSFProducts();
+  //   notifyListeners();
+  // }
 
-  void bagProductscountsDec() {
-    bagProductsCount--;
-    setSFProducts();
-    notifyListeners();
-  }
+  // void bagProductscountsDec() {
+  //   bagProductsCount--;
+  //   setSFProducts();
+  //   notifyListeners();
+  // }
 
   void removeProductFromBag(int index) {
     bagProducts.removeAt(index);
@@ -118,7 +118,7 @@ class ProductProvider extends ChangeNotifier {
     // debugPrint('jsonFavoriteProduct : $jsonFavoriteProduct');
     // prefs.setStringList('favorite', jsonFavoriteProduct);
     // prefs.setStringList('bag', jsonBagProducts);
-    prefs.setInt('bagProCount', bagProductsCount);
+    // prefs.setInt('bagProCount', bagProductsCount);
     prefs.setDouble('total', totalPrice);
 
     prefs.setString('name', nameController.text);
@@ -139,7 +139,7 @@ class ProductProvider extends ChangeNotifier {
     //         [];
     // bagProducts =
     //     jsonBagProducts?.map((json) => Product.fromJson(json)).toList() ?? [];
-    bagProductsCount = prefs.getInt('bagProCount') ?? 0;
+    // bagProductsCount = prefs.getInt('bagProCount') ?? 0;
     totalPrice = prefs.getDouble('total') ?? 0.0;
 
     nameController.text = prefs.getString('name') ?? '';
@@ -258,12 +258,13 @@ class ProductProvider extends ChangeNotifier {
       favoriteProducts = favouriteResponse
           .map((favoritePro) => Product.fromMap(favoritePro))
           .toList();
+      isProductLoading = false;
+      notifyListeners();
 
       debugPrint('favoriteProducts: $favoriteProducts');
     } else {
       debugPrint('Failed to load data');
     }
-    notifyListeners();
   }
 
   Future<void> postFavoriteData(Product favoriteProduct) async {
@@ -324,7 +325,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   // CART
-  void postCartsDataPG(Product bagProducts) {
+  void postCartData(Product bagProducts) {
     final url = Uri.parse('http://192.168.0.111:3000/cartproducts');
 
     final newTodo = {
@@ -345,27 +346,52 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getCartsDataPG(String userId) async {
-    // Only fetch data if the bagProducts is empty (to avoid overwriting data unnecessarily)
+  void getCartsData(String userId) async {
     final url = Uri.parse('http://192.168.0.111:3000/cartproducts/$userId');
     final response = await http.get(url);
     debugPrint('cartResponse: ${response.body}');
 
     if (response.statusCode == 200) {
-      final List<dynamic> cartResponse = jsonDecode(response.body);
-      debugPrint('cartResponse : ${cartResponse[0]['cart_product_id']}');
+      cartResponse = jsonDecode(response.body);
+      debugPrint('cartResponse : $cartResponse');
 
       // Map the response to a List<Product>
       bagProducts =
           cartResponse.map((cartPro) => Product.fromMap(cartPro)).toList();
+      isProductLoading = false;
+      notifyListeners();
+
+      // Debugging purpose: Print all cart product IDs
+      for (var product in cartResponse) {
+        debugPrint('Cart Product ID: ${product['cart_product_id']}');
+      }
     } else {
       debugPrint('Failed to load data');
     }
-    notifyListeners();
   }
 
-  void deleteCartDataPG(int id) async {
-    final url = Uri.parse('http://192.168.0.111:3000/cartproducts/$id');
-    http.delete(url);
+  void deleteCartData(int id) async {
+    final url =
+        Uri.parse('http://192.168.0.111:3000/cartproducts/$id');
+
+    try {
+      final response = await http.delete(url);
+      debugPrint('deleteCartResponse: ${response.body}');
+
+      if (response.statusCode == 200) {
+        // Remove the item from cartResponse after successful deletion
+        cartResponse.removeWhere(
+            (product) => product['cart_product_id'] == id);
+        debugPrint('cartResponse after deletion: $cartResponse');
+
+        // Optionally, remove from bagProducts (UI list)
+        bagProducts.removeWhere((product) => product.id == id);
+
+        // Notify listeners to update the UI
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error deleting cart item: $e');
+    }
   }
 }

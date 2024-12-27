@@ -32,9 +32,11 @@ class ContainerButtonState extends State<ContainerButton> {
           ),
           onPressed: () {
             if (!providerWatch.bagProducts.contains(widget.product)) {
-              providerRead.postCartsDataPG(widget.product);
+              providerRead.postCartData(widget.product);
               providerWatch.bagProducts.add(widget.product);
-              providerRead.bagProductscountsInc();
+
+              // Work Later On
+              // providerRead.bagProductscountsInc();
               providerRead.totalPriceBagItems();
             } else {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {

@@ -21,7 +21,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   @override
   void initState() {
     // context.read<ProductProvider>().setSFProducts();
-    context.read<ProductProvider>().getCartsDataPG(userUniqueId);
+    context.read<ProductProvider>().getCartsData(userUniqueId);
     super.initState();
   }
 
@@ -97,15 +97,25 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                     children: [
                       SlidableAction(
                         onPressed: (context) {
-                          providerRead.deleteCartDataPG(product.id);
-                          debugPrint('product.id : ${product.id}');
+                          // Assuming providerWatch.cartResponse is a list, not a single item
+                          final cartProductId = providerRead.cartResponse[index]
+                              ['cart_product_id'];
+
+                          debugPrint('cartProductId : $cartProductId');
+
+                          // Deleting the product from the cart data
+                          providerRead.deleteCartData(cartProductId);
+
+                          // Optionally, update the UI or list further:
                           providerRead.removeProductFromBag(index);
-                          providerRead.bagProductscountsDec();
+
+                          // Work Later On
+                          // providerRead.bagProductscountsDec();
                         },
                         foregroundColor: AppColor.appColor,
                         icon: Icons.delete,
                         label: 'Delete',
-                      ),
+                      )
                     ],
                   ),
                   child: Padding(
@@ -312,102 +322,101 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                 );
               },
             ),
-
-      // bottomSheet: Container(
-      //   decoration: BoxDecoration(
-      //     color: Colors.white,
-      //     boxShadow: [
-      //       BoxShadow(
-      //         color: Colors.grey.withOpacity(0.5),
-      //         spreadRadius: 3,
-      //         blurRadius: 3,
-      //         offset: const Offset(0, 1),
-      //       ),
-      //     ],
-      //   ),
-      //   child: Padding(
-      //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      //     child: Column(
-      //       mainAxisSize: MainAxisSize.min,
-      //       children: [
-      //         SizedBox(height: 10),
-      //         TextField(
-      //           decoration: InputDecoration(
-      //             hintText: 'Enter your promo code',
-      //             suffixIcon: IconButton(
-      //               onPressed: () {},
-      //               icon: CircleAvatar(
-      //                 backgroundColor: Colors.black,
-      //                 child: Icon(
-      //                   Icons.arrow_right_alt_outlined,
-      //                   color: Colors.white,
-      //                 ),
-      //               ),
-      //             ),
-      //             isDense: true,
-      //             border: OutlineInputBorder(),
-      //           ),
-      //         ),
-      //         Row(
-      //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //           children: [
-      //             Text(
-      //               'Total amount:',
-      //               style: TextStyle(
-      //                 fontSize: 18,
-      //                 color: Colors.black54,
-      //               ),
-      //             ),
-      //             Padding(
-      //               padding: const EdgeInsets.symmetric(vertical: 20.0),
-      //               child: Text(
-      //                 '${providerWatch.totalPrice.toStringAsFixed(2)}\$',
-      //                 style: TextStyle(
-      //                   fontSize: 18,
-      //                   color: Colors.black54,
-      //                 ),
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //         GestureDetector(
-      //           onTap: () {
-      //             Navigator.of(context)
-      //                 .push(MaterialPageRoute(builder: (context) {
-      //               return AddressScreen();
-      //             }));
-      //           },
-      //           child: Container(
-      //             margin: EdgeInsetsDirectional.only(bottom: 20.0),
-      //             height: 55,
-      //             width: double.infinity,
-      //             decoration: BoxDecoration(
-      //               boxShadow: [
-      //                 BoxShadow(
-      //                   color: Colors.grey.withOpacity(0.1),
-      //                   spreadRadius: 2,
-      //                   blurRadius: 2,
-      //                   offset: const Offset(0, 1),
-      //                 ),
-      //               ],
-      //               color: AppColor.appColor,
-      //               borderRadius: BorderRadius.circular(50.0),
-      //             ),
-      //             child: Center(
-      //               child: Text(
-      //                 'CHECK OUT',
-      //                 style: TextStyle(
-      //                   fontSize: 18,
-      //                   color: Colors.white,
-      //                 ),
-      //               ),
-      //             ),
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
+      bottomSheet: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 3,
+              blurRadius: 3,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 10),
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'Enter your promo code',
+                  suffixIcon: IconButton(
+                    onPressed: () {},
+                    icon: CircleAvatar(
+                      backgroundColor: Colors.black,
+                      child: Icon(
+                        Icons.arrow_right_alt_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  isDense: true,
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total amount:',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
+                    child: Text(
+                      '${providerWatch.totalPrice.toStringAsFixed(2)}\$',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return AddressScreen();
+                  }));
+                },
+                child: Container(
+                  margin: EdgeInsetsDirectional.only(bottom: 20.0),
+                  height: 55,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 2,
+                        blurRadius: 2,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
+                    color: AppColor.appColor,
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'CHECK OUT',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
