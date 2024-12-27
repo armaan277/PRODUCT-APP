@@ -274,9 +274,10 @@ class _LogInScreenState extends State<LogInScreen> {
 
     if (response.statusCode == 200) {
       userUniqueId = signUpResponse['user']['id'] ?? '';
+      debugPrint('userUniqueId : $userUniqueId');
 
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool('isLoggedIn', true);
+      // final SharedPreferences prefs = await SharedPreferences.getInstance();
+      // prefs.setBool('isLoggedIn', true);
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const BottomNavigation()),

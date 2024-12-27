@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping_app/main.dart';
 import '../constant/constant.dart';
 import '../product_provider/product_provider.dart';
 
@@ -13,7 +14,8 @@ class BuildFavouriteProduct extends StatefulWidget {
 class _BuildFavouriteProductState extends State<BuildFavouriteProduct> {
   @override
   void initState() {
-    context.read<ProductProvider>().getSFProducts();
+    // context.read<ProductProvider>().getSFProducts();
+    context.read<ProductProvider>().getFavouriteData(userUniqueId);
     super.initState();
   }
 
@@ -144,7 +146,11 @@ class _BuildFavouriteProductState extends State<BuildFavouriteProduct> {
                       ),
                       IconButton(
                         onPressed: () {
-                          providerRead.removeProductFromFavorite(product);
+                          final cartId =
+                              providerRead.favoriteProducts[index].id;
+                          debugPrint('cartId : $cartId');
+                          providerRead.favoriteProducts.removeAt(index);
+                          providerRead.deleteFavouriteData(cartId);
                         },
                         icon: const Icon(Icons.close),
                       ),

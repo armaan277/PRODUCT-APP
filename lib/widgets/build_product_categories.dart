@@ -178,9 +178,12 @@ class BuildProductCategories extends StatelessWidget {
                               )
                             : const Icon(Icons.favorite),
                         onPressed: () {
+                          // context
+                          //     .read<ProductProvider>()
+                          //     .favoriteProduct(product);
                           context
                               .read<ProductProvider>()
-                              .favoriteProduct(product);
+                              .toggleFavoriteStatus(product);
                         },
                         color: Colors.red,
                       ),

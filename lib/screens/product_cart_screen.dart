@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
+import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/screens/address_screen.dart';
 import 'package:shopping_app/widgets/favorite_container.dart';
@@ -19,7 +20,8 @@ class ProductCartScreen extends StatefulWidget {
 class _ProductCartScreenState extends State<ProductCartScreen> {
   @override
   void initState() {
-    context.read<ProductProvider>().setSFProducts();
+    // context.read<ProductProvider>().setSFProducts();
+    context.read<ProductProvider>().getCartsDataPG(userUniqueId);
     super.initState();
   }
 
@@ -79,7 +81,8 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                     children: [
                       SlidableAction(
                         onPressed: (context) {
-                          providerRead.favoriteProduct(product);
+                          // providerRead.favoriteProduct(product);
+                          providerRead.toggleFavoriteStatus(product);
                         },
                         backgroundColor: Colors.white,
                         foregroundColor: AppColor.appColor,
@@ -94,6 +97,8 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                     children: [
                       SlidableAction(
                         onPressed: (context) {
+                          providerRead.deleteCartDataPG(product.id);
+                          debugPrint('product.id : ${product.id}');
                           providerRead.removeProductFromBag(index);
                           providerRead.bagProductscountsDec();
                         },
@@ -235,7 +240,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                                         Text(
                                           '${product.price}',
                                           style: const TextStyle(
-                                            fontSize: 25,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -307,109 +312,105 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                 );
               },
             ),
-      bottomSheet: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 3,
-              blurRadius: 3,
-              offset: const Offset(0, 1),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: 10),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Enter your promo code',
-                  suffixIcon: IconButton(
-                    onPressed: () {},
-                    icon: CircleAvatar(
-                      backgroundColor: Colors.black,
-                      child: Icon(
-                        Icons.arrow_right_alt_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  isDense: true,
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Total amount:',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black54,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: Text(
-                      '${providerWatch.totalPrice.toStringAsFixed(2)}\$',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return AddressScreen();
-                  }));
-                },
-                child: Container(
-                  margin: EdgeInsetsDirectional.only(bottom: 20.0),
-                  height: 55,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                    color: AppColor.appColor,
-                    borderRadius: BorderRadius.circular(50.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'CHECK OUT',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+
+      // bottomSheet: Container(
+      //   decoration: BoxDecoration(
+      //     color: Colors.white,
+      //     boxShadow: [
+      //       BoxShadow(
+      //         color: Colors.grey.withOpacity(0.5),
+      //         spreadRadius: 3,
+      //         blurRadius: 3,
+      //         offset: const Offset(0, 1),
+      //       ),
+      //     ],
+      //   ),
+      //   child: Padding(
+      //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      //     child: Column(
+      //       mainAxisSize: MainAxisSize.min,
+      //       children: [
+      //         SizedBox(height: 10),
+      //         TextField(
+      //           decoration: InputDecoration(
+      //             hintText: 'Enter your promo code',
+      //             suffixIcon: IconButton(
+      //               onPressed: () {},
+      //               icon: CircleAvatar(
+      //                 backgroundColor: Colors.black,
+      //                 child: Icon(
+      //                   Icons.arrow_right_alt_outlined,
+      //                   color: Colors.white,
+      //                 ),
+      //               ),
+      //             ),
+      //             isDense: true,
+      //             border: OutlineInputBorder(),
+      //           ),
+      //         ),
+      //         Row(
+      //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //           children: [
+      //             Text(
+      //               'Total amount:',
+      //               style: TextStyle(
+      //                 fontSize: 18,
+      //                 color: Colors.black54,
+      //               ),
+      //             ),
+      //             Padding(
+      //               padding: const EdgeInsets.symmetric(vertical: 20.0),
+      //               child: Text(
+      //                 '${providerWatch.totalPrice.toStringAsFixed(2)}\$',
+      //                 style: TextStyle(
+      //                   fontSize: 18,
+      //                   color: Colors.black54,
+      //                 ),
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //         GestureDetector(
+      //           onTap: () {
+      //             Navigator.of(context)
+      //                 .push(MaterialPageRoute(builder: (context) {
+      //               return AddressScreen();
+      //             }));
+      //           },
+      //           child: Container(
+      //             margin: EdgeInsetsDirectional.only(bottom: 20.0),
+      //             height: 55,
+      //             width: double.infinity,
+      //             decoration: BoxDecoration(
+      //               boxShadow: [
+      //                 BoxShadow(
+      //                   color: Colors.grey.withOpacity(0.1),
+      //                   spreadRadius: 2,
+      //                   blurRadius: 2,
+      //                   offset: const Offset(0, 1),
+      //                 ),
+      //               ],
+      //               color: AppColor.appColor,
+      //               borderRadius: BorderRadius.circular(50.0),
+      //             ),
+      //             child: Center(
+      //               child: Text(
+      //                 'CHECK OUT',
+      //                 style: TextStyle(
+      //                   fontSize: 18,
+      //                   color: Colors.white,
+      //                 ),
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
     );
   }
 }
-
-
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:google_fonts/google_fonts.dart';

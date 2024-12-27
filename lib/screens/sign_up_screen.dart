@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/screens/home_screen.dart';
+import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
 import 'package:uuid/uuid.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -177,7 +178,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       postSignUpData();
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
+                          builder: (context) => const BottomNavigation(),
                         ),
                       );
                     }

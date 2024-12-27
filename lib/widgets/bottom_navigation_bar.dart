@@ -27,15 +27,26 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.appBackgroundColor,
-      body: IndexedStack(
-        index: selectedIndex,
-        children: const [
-          HomeScreen(),
-          ShopScreen(),
-          FavouriteScreen(),
-          ProfileScreen(),
-        ],
-      ),
+      body: switch (selectedIndex) {
+        0 => HomeScreen(),
+        1 => ShopScreen(),
+        2 => FavouriteScreen(),
+        3 => ProfileScreen(),
+        _ => Scaffold(
+            body: Center(
+              child: Text('Naha Le'),
+            ),
+          )
+      },
+      // body: IndexedStack(
+      //   index: selectedIndex,
+      //   children: const [
+      //     HomeScreen(),
+      //     ShopScreen(),
+      //     FavouriteScreen(),
+      //     ProfileScreen(),
+      //   ],
+      // ),
       bottomNavigationBar: NavigationBar(
         elevation: 10.0,
         backgroundColor: Colors.white,

@@ -57,24 +57,25 @@ class Product {
     return jsonEncode(productToMap());
   }
 
-  factory Product.fromMap(Map productMap) {
-    return Product(
-      id: productMap['id'],
-      thumbnail: productMap['thumbnail'] ?? '',
-      title: productMap['title'] ?? '',
-      description: productMap['description'] ?? '',
-      price: productMap['price'] ?? 0,
-      discountPercentage: productMap['discountpercentage'] ?? 0.0,
-      rating: productMap['rating'] ?? 0,
-      brand: productMap['brand'] ?? 'Groceries',
-      availabilityStatus: productMap['availabilitystatus'] ?? '',
-      // images: productMap['images'].cast<String>(),
-      returnPolicy: productMap['returnpolicy'] ?? '',
-      warrantyInformation: productMap['warrantyinformation'] ?? '',
-      category: productMap['category'] ?? '',
-      productInfoIncValue: productMap['productInfoIncValue'] ?? 1,
-    );
-  }
+ factory Product.fromMap(Map<String, dynamic> productMap) {
+  return Product(
+    id: int.tryParse(productMap['id'].toString()) ?? 0, // Convert to int
+    thumbnail: productMap['thumbnail'] ?? '',
+    title: productMap['title'] ?? '',
+    description: productMap['description'] ?? '',
+    price: double.tryParse(productMap['price'].toString()) ?? 0.0, // Convert to double
+    discountPercentage: num.tryParse(productMap['discountpercentage'].toString()) ?? 0.0,
+    rating: num.tryParse(productMap['rating'].toString()) ?? 0.0,
+    brand: productMap['brand'] ?? 'Groceries',
+    // images: productMap['images'].cast<String>(),
+    availabilityStatus: productMap['availabilitystatus'] ?? '',
+    returnPolicy: productMap['returnpolicy'] ?? '',
+    warrantyInformation: productMap['warrantyinformation'] ?? '',
+    category: productMap['category'] ?? '',
+    productInfoIncValue: int.tryParse(productMap['productInfoIncValue'].toString()) ?? 1,
+  );
+}
+
 
   factory Product.fromJson(String json) {
     return Product.fromMap(jsonDecode(json));
