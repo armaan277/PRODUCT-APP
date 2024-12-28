@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'dart:convert';
+
+import 'package:shopping_app/app.dart';
+import 'package:shopping_app/constant/constant.dart';
+import 'package:shopping_app/product_provider/product_provider.dart';
 
 class MyOrdersListScreen extends StatefulWidget {
   final String orderItemsId;
@@ -13,90 +19,165 @@ class MyOrdersListScreen extends StatefulWidget {
 }
 
 class _MyOrdersListScreenState extends State<MyOrdersListScreen> {
-  List<dynamic> orderItems = [];
-  bool isLoading = true;
-  String errorMessage = '';
+  // List<dynamic> orderItems = [];
+  // bool isLoading = true;
+  // String errorMessage = '';
 
   @override
   void initState() {
     super.initState();
-    fetchOrderItems(widget.orderItemsId);
-  }
-
-  void fetchOrderItems(String orderIdItems) async {
-    final url =
-        Uri.parse('http://192.168.0.111:3000/bookingcarts/$orderIdItems');
-
-    debugPrint('Fetching items for orderItemsId: $orderIdItems');
-
-    try {
-      final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-
-        debugPrint('Response Data: $data');
-
-        setState(() {
-          orderItems = data;
-          isLoading = false;
-        });
-      } else if (response.statusCode == 404) {
-        setState(() {
-          errorMessage = 'No items found for the given order ID.';
-          isLoading = false;
-        });
-      } else {
-        debugPrint('Failed to load data: ${response.statusCode}');
-        debugPrint('Response Body: ${response.body}');
-        setState(() {
-          errorMessage = 'Failed to load data. Please try again later.';
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      debugPrint('Error fetching data: $e');
-      setState(() {
-        errorMessage = 'An error occurred. Please check your connection.';
-        isLoading = false;
-      });
-    }
+    context.read<ProductProvider>().fetchOrderItems(widget.orderItemsId);
   }
 
   @override
   Widget build(BuildContext context) {
+    final providerWatch = context.watch<ProductProvider>();
+    final providerRead = context.read<ProductProvider>();
     return Scaffold(
+      backgroundColor: const Color(0xffF5F5F5),
       appBar: AppBar(
-        title: const Text('Booking Carts'),
+        backgroundColor: AppColor.appColor,
+        title: Text('Orders',
+            style: GoogleFonts.pacifico(
+              color: Colors.white,
+            )),
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : errorMessage.isNotEmpty
+      body: providerWatch.isLoadingOrderList
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : providerRead.errorMessage.isNotEmpty
               ? Center(
-                  child: Text(errorMessage,
-                      style: const TextStyle(color: Colors.red)))
-              : orderItems.isEmpty
-                  ? const Center(child: Text('No items found'))
+                  child: Text(
+                    providerRead.errorMessage,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                )
+              : providerRead.orderItems.isEmpty
+                  ? const Center(
+                      child: Text('No items found'),
+                    )
                   : ListView.builder(
-                      itemCount: orderItems.length,
+                      itemCount: providerRead.orderItems.length,
                       itemBuilder: (context, index) {
-                        final item = orderItems[index];
-
-                        return Card(
-                          margin: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            leading: item['thumbnail'] != null &&
-                                    item['thumbnail'] != ""
-                                ? Image.network(
-                                    item['thumbnail'],
-                                    width: 50,
-                                    height: 50,
-                                    fit: BoxFit.cover,
-                                  )
-                                : const Icon(Icons.image_not_supported),
-                            title: Text(item['title'] ?? 'No Title'),
-                            subtitle: Text(item['brand'] ?? 'No Description'),
-                            trailing: Text('\$${item['price'] ?? 0}'),
+                        final product = providerRead.orderItems[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            top: 10.0,
+                            left: 10.0,
+                            right: 10.0,
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  offset: const Offset(0, 1),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  height: 120,
+                                  width: 120,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 10.0),
+                                    child: Image.network(
+                                      product['thumbnail'],
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 4.0,
+                                        ),
+                                        child: Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          product['title'],
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 4.0),
+                                        child: RichText(
+                                          text: TextSpan(
+                                            text: 'Brand: ',
+                                            style: const TextStyle(
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text: product['brand'],
+                                                style: const TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.black38,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          RichText(
+                                            text: TextSpan(
+                                              text: 'Quantity : ',
+                                              style: const TextStyle(
+                                                color: Colors.black87,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text: '1',
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.black38,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              right: 10.0,
+                                            ),
+                                            child: Text(
+                                              '\$ ${product['price']}',
+                                              style: const TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },

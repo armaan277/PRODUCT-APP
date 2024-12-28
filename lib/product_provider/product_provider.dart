@@ -42,6 +42,19 @@ class ProductProvider extends ChangeNotifier {
 
   bool isAddressStoreInDatabase = false;
 
+  // Orders Details Variable
+  List<dynamic> orders = [];
+  bool isLoadingOrderDetails = true;
+
+  // Orders List Variable
+  List<dynamic> orderItems = [];
+  bool isLoadingOrderList = true;
+  String errorMessage = '';
+
+  // 
+  int temp = 0;
+  
+
   Future<void> getProducts() async {
     // Response response = await get(Uri.parse('https://dummyjson.com/products?limit=194'));
 
@@ -61,17 +74,17 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void productInfoInc(Product product) {
-    product.productInfoIncValue++;
+   temp = product.productInfoIncValue++;
     totalPrice = totalPrice + product.price;
-    setSFProducts();
+    // setSFProducts();
     notifyListeners();
   }
 
   void productInfoDec(Product product) {
     if (product.productInfoIncValue > 1) {
-      product.productInfoIncValue--;
+    temp = product.productInfoIncValue--;
       totalPrice = totalPrice - product.price;
-      setSFProducts();
+      // setSFProducts();
     }
     notifyListeners();
   }
@@ -281,7 +294,7 @@ class ProductProvider extends ChangeNotifier {
       'price': favoriteProduct.price,
       'rating': favoriteProduct.rating,
       'warrantyinformation': favoriteProduct.warrantyInformation,
-      'category' : favoriteProduct.category,
+      'category': favoriteProduct.category,
     };
 
     try {
@@ -331,19 +344,23 @@ class ProductProvider extends ChangeNotifier {
   void postCartData(Product bagProducts) {
     final url = Uri.parse('http://192.168.0.111:3000/cartproducts');
 
-    final newTodo = {
+    final newCart = {
       'id': userUniqueId,
       'thumbnail': bagProducts.thumbnail,
       'title': bagProducts.title,
       'brand': bagProducts.brand,
       'price': bagProducts.price,
       'cart_product_id': bagProducts.id,
+      'quantity': bagProducts.productInfoIncValue,
     };
+
+    debugPrint(
+        ' bagProducts.productInfoIncValue : ${bagProducts.productInfoIncValue}');
 
     http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(newTodo),
+      body: jsonEncode(newCart),
     );
 
     notifyListeners();
@@ -545,4 +562,70 @@ class ProductProvider extends ChangeNotifier {
 
   //   debugPrint('response : ${response.body}');
   // }
+
+// ORDERS API WORKING
+  Future<void> fetchOrders(String userId, BuildContext context) async {
+    final url =
+        Uri.parse('http://192.168.0.111:3000/myorders/$userId'); // Backend URL
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        orders = data; // Extract orders from the response
+        debugPrint("orders : $orders");
+        isLoadingOrderDetails = false;
+        notifyListeners();
+      } else {
+        isLoadingOrderDetails = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load orders!')),
+        );
+        notifyListeners();
+      }
+    } catch (e) {
+      isLoadingOrderDetails = false;
+      notifyListeners();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching orders: $e')),
+      );
+    }
+  }
+
+  void fetchOrderItems(String orderIdItems) async {
+    final url =
+        Uri.parse('http://192.168.0.111:3000/bookingcarts/$orderIdItems');
+
+    debugPrint('Fetching items for orderItemsId: $orderIdItems');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+
+        debugPrint('Response Data: $data');
+
+        orderItems = data;
+        isLoadingOrderList = false;
+        notifyListeners();
+      } else if (response.statusCode == 404) {
+        errorMessage = 'No items found for the given order ID.';
+        isLoadingOrderList = false;
+        notifyListeners();
+      } else {
+        debugPrint('Failed to load data: ${response.statusCode}');
+        debugPrint('Response Body: ${response.body}');
+        errorMessage = 'Failed to load data. Please try again later.';
+        isLoadingOrderList = false;
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error fetching data: $e');
+      errorMessage = 'An error occurred. Please check your connection.';
+      isLoadingOrderList = false;
+      notifyListeners();
+    }
+  }
 }
