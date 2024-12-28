@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/screens/login_screen.dart';
+import 'package:shopping_app/screens/my_orders_sceen.dart';
 import 'package:shopping_app/screens/product_cart_screen.dart';
 import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
 
@@ -19,6 +20,7 @@ class ProductApp extends StatelessWidget {
           'bottom_navigation': (context) => const BottomNavigation(),
           'login_sreen': (context) => const LogInScreen(),
           'product_cart_screen': (context) => const ProductCartScreen(),
+          'my_orders_screen' : (context) => const MyOrdersScreen(),
         },
         debugShowCheckedModeBanner: false,
       ),

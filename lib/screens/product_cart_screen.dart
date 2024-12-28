@@ -250,7 +250,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                                         Text(
                                           '${product.price}',
                                           style: const TextStyle(
-                                            fontSize: 20,
+                                            fontSize: 24,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),

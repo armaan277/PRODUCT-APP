@@ -3,7 +3,9 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
+import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
+import 'package:shopping_app/screens/orders_screen.dart';
 
 class AddressScreen extends StatefulWidget {
   const AddressScreen({super.key});
@@ -72,7 +74,8 @@ class _AddressScreenState extends State<AddressScreen> {
 
   @override
   void initState() {
-    context.read<ProductProvider>().getSFProducts();
+    context.read<ProductProvider>().getAddressData(userUniqueId);
+    // context.read<ProductProvider>().getSFProducts();
     super.initState();
   }
 
@@ -80,10 +83,10 @@ class _AddressScreenState extends State<AddressScreen> {
   Widget build(BuildContext context) {
     final providerRead = context.read<ProductProvider>();
     return Scaffold(
-      backgroundColor: Color(0xffF7F7F7),
+      backgroundColor: const Color(0xffF7F7F7),
       appBar: AppBar(
         backgroundColor: AppColor.appColor,
-        title: Text(
+        title: const Text(
           'Adding Shipping Address',
           style: TextStyle(
             color: Colors.white,
@@ -95,7 +98,7 @@ class _AddressScreenState extends State<AddressScreen> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
@@ -107,253 +110,182 @@ class _AddressScreenState extends State<AddressScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              SizedBox(height: 20.0),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 2,
-                      blurRadius: 2,
-                      offset: const Offset(1, 1.5),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
-                    }
-                    return null;
-                  },
-                  controller: providerRead.nameController,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 12.0,
-                      horizontal: 20.0,
-                    ),
-                    label: Text(
-                      'Full name',
-                      style: TextStyle(fontSize: 18.0, color: Colors.grey),
-                    ),
-                    border: InputBorder.none,
-                  ),
-                ),
+              const SizedBox(height: 20.0),
+              _buildInputField(
+                controller: providerRead.nameController,
+                label: 'Full name',
+                validationMessage: 'Please enter your name',
               ),
-              SizedBox(height: 20.0),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 2,
-                      blurRadius: 2,
-                      offset: const Offset(1, 1.5),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: providerRead.addressController,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 12.0,
-                      horizontal: 20.0,
-                    ),
-                    label: Text(
-                      'Address',
-                      style: TextStyle(fontSize: 18.0, color: Colors.grey),
-                    ),
-                    border: InputBorder.none,
-                  ),
-                ),
+              const SizedBox(height: 20.0),
+              _buildInputField(
+                controller: providerRead.addressController,
+                label: 'Address',
+                validationMessage: 'Please enter your address',
               ),
-              SizedBox(height: 20.0),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 2,
-                      blurRadius: 2,
-                      offset: const Offset(1, 1.5),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: providerRead.cityController,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 12.0,
-                      horizontal: 20.0,
-                    ),
-                    label: Text(
-                      'City',
-                      style: TextStyle(fontSize: 18.0, color: Colors.grey),
-                    ),
-                    border: InputBorder.none,
-                  ),
-                ),
+              const SizedBox(height: 20.0),
+              _buildInputField(
+                controller: providerRead.cityController,
+                label: 'City',
+                validationMessage: 'Please enter your city',
               ),
-              SizedBox(height: 20.0),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 2,
-                      blurRadius: 2,
-                      offset: const Offset(1, 1.5),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: providerRead.stateController,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 12.0,
-                      horizontal: 20.0,
-                    ),
-                    label: Text(
-                      'State/Province/Region',
-                      style: TextStyle(fontSize: 18.0, color: Colors.grey),
-                    ),
-                    border: InputBorder.none,
-                  ),
-                ),
+              const SizedBox(height: 20.0),
+              _buildInputField(
+                controller: providerRead.stateController,
+                label: 'State/Province/Region',
+                validationMessage: 'Please enter your state',
               ),
-              SizedBox(height: 20.0),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 2,
-                      blurRadius: 2,
-                      offset: const Offset(1, 1.5),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: providerRead.zipcodeController,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 12.0,
-                      horizontal: 20.0,
-                    ),
-                    label: Text(
-                      'Zip Code (Postal Code)',
-                      style: TextStyle(fontSize: 18.0, color: Colors.grey),
-                    ),
-                    border: InputBorder.none,
-                  ),
-                ),
+              const SizedBox(height: 20.0),
+              _buildInputField(
+                controller: providerRead.zipcodeController,
+                label: 'Zip Code (Postal Code)',
+                validationMessage: 'Please enter your zip code',
               ),
-              SizedBox(height: 20.0),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 2,
-                      blurRadius: 2,
-                      offset: const Offset(1, 1.5),
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: providerRead.countryController,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 12.0,
-                      horizontal: 20.0,
-                    ),
-                    label: Text(
-                      'Country',
-                      style: TextStyle(fontSize: 18.0, color: Colors.grey),
-                    ),
-                    border: InputBorder.none,
-                  ),
-                ),
+              const SizedBox(height: 20.0),
+              _buildInputField(
+                controller: providerRead.countryController,
+                label: 'Country',
+                validationMessage: 'Please enter your country',
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               GestureDetector(
                 onTap: () {
-                  providerRead.setSFProducts();
-                  // if (_formKey.currentState?.validate() ?? false) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Center(
-                        child: Text('Your Address is Save'),
+                  if (_formKey.currentState?.validate() ?? false) {
+                    if (providerRead.isAddressStoreInDatabase) {
+                      providerRead.addressUpdate(
+                        userUniqueId,
+                        providerRead.nameController.text,
+                        providerRead.addressController.text,
+                        providerRead.cityController.text,
+                        providerRead.stateController.text,
+                        int.parse(providerRead.zipcodeController.text),
+                        providerRead.countryController.text,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Center(
+                            child: Text('Your Updated Address is Saved'),
+                          ),
+                        ),
+                      );
+                    } else {
+                      providerRead.postAddressData();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Center(
+                            child: Text('Your Address is Saved'),
+                          ),
+                        ),
+                      );
+                    }
+                    providerRead.postAddressId(userUniqueId);
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return OrdersScreen();
+                    }));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Center(
+                          child: Text('Please fill in all required fields'),
+                        ),
                       ),
-                    ),
-                  );
-                  // }
+                    );
+                  }
                 },
-                child: Container(
-                  margin: EdgeInsetsDirectional.only(bottom: 20.0),
-                  height: 55,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                    color: AppColor.appColor,
-                    borderRadius: BorderRadius.circular(50.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'SAVE ADDRESS',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                child: _buildSaveButton(
+                  context.watch<ProductProvider>().isAddressStoreInDatabase
+                      ? 'CONFIRM ADDRESS'
+                      : 'SAVE ADDRESS',
+                  AppColor.appColor,
                 ),
               ),
               GestureDetector(
                 onTap: () {
                   getCurrentLocation();
                 },
-                child: Container(
-                  margin: EdgeInsetsDirectional.only(bottom: 20.0),
-                  height: 55,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
-                          spreadRadius: 2,
-                          blurRadius: 2,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50.0),
-                      border: Border.all(color: AppColor.appColor)),
-                  child: Center(
-                    child: Text(
-                      'CURRENT LOCATION',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: AppColor.appColor,
-                      ),
-                    ),
-                  ),
+                child: _buildSaveButton(
+                  'CURRENT LOCATION',
+                  Colors.white,
+                  borderColor: AppColor.appColor,
+                  textColor: AppColor.appColor,
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    required String validationMessage,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 2,
+            offset: const Offset(1, 1.5),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return validationMessage;
+          }
+          return null;
+        },
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 12.0,
+            horizontal: 20.0,
+          ),
+          label: Text(
+            label,
+            style: const TextStyle(fontSize: 18.0, color: Colors.grey),
+          ),
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSaveButton(
+    String text,
+    Color color, {
+    Color? textColor = Colors.white,
+    Color? borderColor,
+  }) {
+    return Container(
+      margin: const EdgeInsetsDirectional.only(bottom: 20.0),
+      height: 55,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          ),
+        ],
+        color: color,
+        borderRadius: BorderRadius.circular(50.0),
+        border: borderColor != null ? Border.all(color: borderColor) : null,
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 18,
+            color: textColor,
           ),
         ),
       ),

@@ -40,6 +40,8 @@ class ProductProvider extends ChangeNotifier {
 
   List<dynamic> cartResponse = [];
 
+  bool isAddressStoreInDatabase = false;
+
   Future<void> getProducts() async {
     // Response response = await get(Uri.parse('https://dummyjson.com/products?limit=194'));
 
@@ -121,12 +123,12 @@ class ProductProvider extends ChangeNotifier {
     // prefs.setInt('bagProCount', bagProductsCount);
     prefs.setDouble('total', totalPrice);
 
-    prefs.setString('name', nameController.text);
-    prefs.setString('address', addressController.text);
-    prefs.setString('city', cityController.text);
-    prefs.setString('state', stateController.text);
-    prefs.setString('zipcode', zipcodeController.text);
-    prefs.setString('country', countryController.text);
+    // prefs.setString('name', nameController.text);
+    // prefs.setString('address', addressController.text);
+    // prefs.setString('city', cityController.text);
+    // prefs.setString('state', stateController.text);
+    // prefs.setString('zipcode', zipcodeController.text);
+    // prefs.setString('country', countryController.text);
   }
 
   void getSFProducts() async {
@@ -142,12 +144,12 @@ class ProductProvider extends ChangeNotifier {
     // bagProductsCount = prefs.getInt('bagProCount') ?? 0;
     totalPrice = prefs.getDouble('total') ?? 0.0;
 
-    nameController.text = prefs.getString('name') ?? '';
-    addressController.text = prefs.getString('address') ?? '';
-    cityController.text = prefs.getString('city') ?? '';
-    stateController.text = prefs.getString('state') ?? '';
-    zipcodeController.text = prefs.getString('zipcode') ?? '';
-    countryController.text = prefs.getString('country') ?? '';
+    // nameController.text = prefs.getString('name') ?? '';
+    // addressController.text = prefs.getString('address') ?? '';
+    // cityController.text = prefs.getString('city') ?? '';
+    // stateController.text = prefs.getString('state') ?? '';
+    // zipcodeController.text = prefs.getString('zipcode') ?? '';
+    // countryController.text = prefs.getString('country') ?? '';
   }
 
   void favoriteChip(String favoriteChip) {
@@ -232,7 +234,7 @@ class ProductProvider extends ChangeNotifier {
     debugPrint('Total Price: $totalPrice');
   }
 
-// FAVORITE WORKING !
+// FAVORITE API WORK
   Future<void> toggleFavoriteStatus(Product favoriteProduct) async {
     if (!favoriteProducts.contains(favoriteProduct)) {
       // Add to favorites
@@ -279,6 +281,7 @@ class ProductProvider extends ChangeNotifier {
       'price': favoriteProduct.price,
       'rating': favoriteProduct.rating,
       'warrantyinformation': favoriteProduct.warrantyInformation,
+      'category' : favoriteProduct.category,
     };
 
     try {
@@ -324,7 +327,7 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
-  // CART
+  // CART API WORK
   void postCartData(Product bagProducts) {
     final url = Uri.parse('http://192.168.0.111:3000/cartproducts');
 
@@ -371,8 +374,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void deleteCartData(int id) async {
-    final url =
-        Uri.parse('http://192.168.0.111:3000/cartproducts/$id');
+    final url = Uri.parse('http://192.168.0.111:3000/cartproducts/$id');
 
     try {
       final response = await http.delete(url);
@@ -380,8 +382,7 @@ class ProductProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         // Remove the item from cartResponse after successful deletion
-        cartResponse.removeWhere(
-            (product) => product['cart_product_id'] == id);
+        cartResponse.removeWhere((product) => product['cart_product_id'] == id);
         debugPrint('cartResponse after deletion: $cartResponse');
 
         // Optionally, remove from bagProducts (UI list)
@@ -394,4 +395,154 @@ class ProductProvider extends ChangeNotifier {
       debugPrint('Error deleting cart item: $e');
     }
   }
+
+  // ADDRESS API WORK
+  Future<void> getAddressData(String userId) async {
+    final url = Uri.parse('http://192.168.0.111:3000/address/$userId');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> responseBody = jsonDecode(response.body);
+        if (responseBody.isNotEmpty) {
+          // Populate the text controllers with existing data
+          nameController.text = responseBody[0]['full_name'] ?? '';
+          addressController.text = responseBody[0]['address'] ?? '';
+          cityController.text = responseBody[0]['city'] ?? '';
+          stateController.text = responseBody[0]['state_region'] ?? '';
+          zipcodeController.text =
+              responseBody[0]['zip_code']?.toString() ?? '';
+          countryController.text = responseBody[0]['country'] ?? '';
+
+          // Address is available in the database
+          isAddressStoreInDatabase = true;
+          notifyListeners();
+          debugPrint('Address data successfully loaded.');
+        } else {
+          // Address not available
+          isAddressStoreInDatabase = false;
+          debugPrint('No address data found.');
+        }
+      } else if (response.statusCode == 404) {
+        // Address not available
+        isAddressStoreInDatabase = false;
+        debugPrint('ADDRESS NOT AVAILABLE !!!');
+      } else {
+        debugPrint('Unexpected response: ${response.statusCode}');
+      }
+      notifyListeners(); // Update the UI based on the flag
+    } catch (e) {
+      debugPrint('Error occurred: $e');
+    }
+  }
+
+  void postAddressData() async {
+    final url = Uri.parse('http://192.168.0.111:3000/address');
+
+    final postAddressData = {
+      'address_id': userUniqueId,
+      'full_name': nameController.text,
+      'address': addressController.text,
+      'city': cityController.text,
+      'state_region': stateController.text,
+      'zip_code': zipcodeController.text,
+      'country': countryController.text,
+    };
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(postAddressData),
+    );
+    notifyListeners();
+    debugPrint('response : ${response.body}');
+  }
+
+  void addressUpdate(
+    String userId,
+    String fullName,
+    String address,
+    String city,
+    String stateRegion,
+    int zipCode,
+    String country,
+  ) {
+    final url = Uri.parse('http://192.168.0.111:3000/address/$userId');
+
+    final updatedTodo = jsonEncode({
+      'address_id': userId,
+      'full_name': fullName,
+      'address': address,
+      'city': city,
+      'state_region': stateRegion,
+      'zip_code': zipCode,
+      'country': country,
+    });
+
+    http.patch(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: updatedTodo,
+    );
+    notifyListeners();
+  }
+
+  void postAddressId(String userId) async {
+    final url = Uri.parse('http://192.168.0.111:3000/orderslist/$userId');
+
+    final data = {
+      'address_id': userId,
+    };
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(data),
+    );
+
+    final orderCreatedResponse = jsonDecode(response.body);
+
+    debugPrint('Order response : ${orderCreatedResponse['message']}');
+    if (orderCreatedResponse['message'] == "Order Created Successfully") {
+      deleteOrderCartProducts(userUniqueId);
+      notifyListeners();
+    }
+  }
+
+  void deleteOrderCartProducts(String userId) async {
+    final url =
+        Uri.parse('http://192.168.0.111:3000/ordercartproducts/$userId');
+
+    try {
+      final response = await http.delete(url);
+
+      if (response.statusCode == 200) {
+        debugPrint('Delete successful: ${response.body}');
+        notifyListeners();
+      } else if (response.statusCode == 404) {
+        debugPrint('Delete failed: No record found with the given ID');
+      } else {
+        debugPrint('Delete failed: ${response.statusCode}, ${response.body}');
+      }
+    } catch (e) {
+      debugPrint('Error during delete: $e');
+    }
+  }
+
+  // void postSignUp(String userId) async {
+  //   final url = Uri.parse('http://192.168.0.111:3000/bookingcarts/$userId');
+
+  //   final data = {
+  //     'id': userId,
+  //   };
+
+  //   final response = await http.post(
+  //     url,
+  //     headers: {'Content-Type': 'application/json'},
+  //     body: jsonEncode(data),
+  //   );
+
+  //   debugPrint('response : ${response.body}');
+  // }
 }

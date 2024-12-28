@@ -78,18 +78,18 @@ class AppDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(
-              Icons.shopping_bag,
+              Icons.shopping_cart,
               color: AppColor.appColor,
             ),
             title: const Text(
-              'My Cart',
+              'My Orders',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
             ),
             onTap: () {
-              Navigator.pushNamed(context, 'product_cart_screen');
+              Navigator.pushNamed(context, 'my_orders_screen');
             },
           ),
           ListTile(
@@ -154,7 +154,6 @@ class AppDrawer extends StatelessWidget {
             onTap: () {},
           ),
           ListTile(
-            
             leading: const Icon(
               Icons.logout,
               color: AppColor.appColor,
@@ -168,7 +167,8 @@ class AppDrawer extends StatelessWidget {
             ),
             onTap: () async {
               isLoggedIn = false;
-              final SharedPreferences prefs = await SharedPreferences.getInstance();
+              final SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
               prefs.setBool('isLoggedIn', isLoggedIn);
               Navigator.of(context).pushReplacementNamed('login_sreen');
             },
