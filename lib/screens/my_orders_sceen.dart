@@ -1,9 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:shopping_app/app.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/screens/my_orders_list_screen.dart';
@@ -16,49 +12,12 @@ class MyOrdersScreen extends StatefulWidget {
 }
 
 class _MyOrdersScreenState extends State<MyOrdersScreen> {
-  // List<dynamic> orders = [];
-  // bool isLoading = true;
-
   @override
   void initState() {
     super.initState();
     context.read<ProductProvider>().fetchOrders(userUniqueId, context);
   }
 
-  // Fetch orders from the backend
-  // Future<void> fetchOrders(String userId) async {
-  //   final url =
-  //       Uri.parse('http://192.168.0.111:3000/myorders/$userId'); // Backend URL
-
-  //   try {
-  //     final response = await http.get(url);
-
-  //     if (response.statusCode == 200) {
-  //       final data = jsonDecode(response.body);
-  //       setState(() {
-  //         orders = data; // Extract orders from the response
-  //         debugPrint("orders : $orders");
-  //         isLoading = false;
-  //       });
-  //     } else {
-  //       setState(() {
-  //         isLoading = false;
-  //       });
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Failed to load orders!')),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Error fetching orders: $e')),
-  //     );
-  //   }
-  // }
-
-  // Build the UI to display orders
   @override
   Widget build(BuildContext context) {
     final providerRead = context.read<ProductProvider>();

@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/config/endponts.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/model/product.dart';
+import 'package:shopping_app/screens/product_cart_screen.dart';
+import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
 
 class ProductProvider extends ChangeNotifier {
   List<Product> products = [];
@@ -38,8 +40,6 @@ class ProductProvider extends ChangeNotifier {
   TextEditingController zipcodeController = TextEditingController();
   TextEditingController countryController = TextEditingController();
 
-  List<dynamic> cartResponse = [];
-
   bool isAddressStoreInDatabase = false;
 
   // Orders Details Variable
@@ -51,15 +51,12 @@ class ProductProvider extends ChangeNotifier {
   bool isLoadingOrderList = true;
   String errorMessage = '';
 
-  // 
-  int temp = 0;
-  
+  // Login TextContreller
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   Future<void> getProducts() async {
-    // Response response = await get(Uri.parse('https://dummyjson.com/products?limit=194'));
-
-    http.Response response =
-        await http.get(Uri.parse(Endponts.allProductsEndPoint));
+    final response = await http.get(Uri.parse(Endponts.allProductsEndPoint));
 
     final mapResponse = jsonDecode(response.body);
 
@@ -69,37 +66,24 @@ class ProductProvider extends ChangeNotifier {
       products.add(Product.fromMap(mapResponse[i]));
     }
     isProductLoading = false;
-    // getSFProducts();
     notifyListeners();
   }
 
   void productInfoInc(Product product) {
-   temp = product.productInfoIncValue++;
-    totalPrice = totalPrice + product.price;
-    // setSFProducts();
+    product.quantity++;
+    debugPrint('product.quantity++ increament : ${product.quantity}');
+    // totalPrice = totalPrice + product.price;
     notifyListeners();
   }
 
   void productInfoDec(Product product) {
-    if (product.productInfoIncValue > 1) {
-    temp = product.productInfoIncValue--;
-      totalPrice = totalPrice - product.price;
-      // setSFProducts();
+    if (product.quantity > 1) {
+      product.quantity--;
+      debugPrint('product.quantity-- decreament : ${product.quantity}');
+      // totalPrice = totalPrice - product.price;
+      notifyListeners();
     }
-    notifyListeners();
   }
-
-  // void bagProductscountsInc() {
-  //   bagProductsCount++;
-  //   setSFProducts();
-  //   notifyListeners();
-  // }
-
-  // void bagProductscountsDec() {
-  //   bagProductsCount--;
-  //   setSFProducts();
-  //   notifyListeners();
-  // }
 
   void removeProductFromBag(int index) {
     bagProducts.removeAt(index);
@@ -114,16 +98,6 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void favoriteProduct(Product product) async {
-  //   if (!favoriteProducts.contains(product)) {
-  //     favoriteProducts.add(product);
-  //   } else {
-  //     favoriteProducts.remove(product);
-  //   }
-  //   setSFProducts();
-  //   notifyListeners();
-  // }
-
   void setSFProducts() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -134,7 +108,7 @@ class ProductProvider extends ChangeNotifier {
     // prefs.setStringList('favorite', jsonFavoriteProduct);
     // prefs.setStringList('bag', jsonBagProducts);
     // prefs.setInt('bagProCount', bagProductsCount);
-    prefs.setDouble('total', totalPrice);
+    // prefs.setDouble('total', totalPrice);
 
     // prefs.setString('name', nameController.text);
     // prefs.setString('address', addressController.text);
@@ -155,7 +129,7 @@ class ProductProvider extends ChangeNotifier {
     // bagProducts =
     //     jsonBagProducts?.map((json) => Product.fromJson(json)).toList() ?? [];
     // bagProductsCount = prefs.getInt('bagProCount') ?? 0;
-    totalPrice = prefs.getDouble('total') ?? 0.0;
+    // totalPrice = prefs.getDouble('total') ?? 0.0;
 
     // nameController.text = prefs.getString('name') ?? '';
     // addressController.text = prefs.getString('address') ?? '';
@@ -247,6 +221,39 @@ class ProductProvider extends ChangeNotifier {
     debugPrint('Total Price: $totalPrice');
   }
 
+// LOGIN WORK
+  void postLoginData(BuildContext context) async {
+    final url = Uri.parse('http://192.168.0.111:3000/login');
+
+    final loginData = {
+      'email': emailController.text,
+      'password': passwordController.text,
+    };
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(loginData),
+    );
+
+    final signUpResponse = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      userUniqueId = signUpResponse['user']['id'] ?? '';
+      debugPrint('userUniqueId : $userUniqueId');
+
+      // final SharedPreferences prefs = await SharedPreferences.getInstance();
+      // prefs.setBool('isLoggedIn', true);
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const BottomNavigation()),
+      );
+    } else if (response.statusCode == 401) {
+        errorMessage = 'Invalid email or password!';
+      notifyListeners();
+    }
+  }
+
 // FAVORITE API WORK
   Future<void> toggleFavoriteStatus(Product favoriteProduct) async {
     if (!favoriteProducts.contains(favoriteProduct)) {
@@ -254,9 +261,8 @@ class ProductProvider extends ChangeNotifier {
       await postFavoriteData(favoriteProduct);
     } else {
       // Remove from favorites
-      await deleteFavouriteData(favoriteProduct.id);
+      await deleteFavourite(favoriteProduct.id);
     }
-
     notifyListeners();
   }
 
@@ -314,7 +320,7 @@ class ProductProvider extends ChangeNotifier {
         }
       } else {
         // Remove from favorites
-        await deleteFavouriteData(favoriteProduct.id);
+        await deleteFavourite(favoriteProduct.id);
       }
       notifyListeners();
     } catch (e) {
@@ -322,7 +328,7 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteFavouriteData(int id) async {
+  Future<void> deleteFavourite(int id) async {
     final url = Uri.parse('http://192.168.0.111:3000/favorite/$id');
 
     try {
@@ -341,43 +347,64 @@ class ProductProvider extends ChangeNotifier {
   }
 
   // CART API WORK
-  void postCartData(Product bagProducts) {
+  void postCartData(Product bagProduct, BuildContext? context) async {
     final url = Uri.parse('http://192.168.0.111:3000/cartproducts');
 
-    final newCart = {
-      'id': userUniqueId,
-      'thumbnail': bagProducts.thumbnail,
-      'title': bagProducts.title,
-      'brand': bagProducts.brand,
-      'price': bagProducts.price,
-      'cart_product_id': bagProducts.id,
-      'quantity': bagProducts.productInfoIncValue,
+    Map<String, dynamic> postCart = {
+      'id': bagProduct.id,
+      'thumbnail': bagProduct.thumbnail,
+      'title': bagProduct.title,
+      'brand': bagProduct.brand,
+      'price': bagProduct.price,
+      'cart_product_id': userUniqueId,
+      'quantity': bagProduct.quantity,
     };
 
-    debugPrint(
-        ' bagProducts.productInfoIncValue : ${bagProducts.productInfoIncValue}');
+    debugPrint('postCart : $postCart');
 
-    http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(newCart),
-    );
+    try {
+      final response = await http.post(
+        url,
+        body: jsonEncode(postCart),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-    notifyListeners();
+      if (response.statusCode == 201) {
+        // Product successfully added
+        // Add the product to bagProducts if it doesn't already exist
+        if (!bagProducts.contains(bagProduct)) {
+          bagProducts.add(bagProduct);
+        }
+        debugPrint('Product added to cart');
+      } else if (response.statusCode == 200) {
+        Navigator.of(context!).push(MaterialPageRoute(builder: (context) {
+          return const ProductCartScreen();
+        }));
+        // Product already in the cart
+        debugPrint('Product already in cart');
+      } else {
+        debugPrint('Failed to add product to cart: ${response.body}');
+      }
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error posting cart data: $e');
+    }
   }
 
   void getCartsData(String userId) async {
     final url = Uri.parse('http://192.168.0.111:3000/cartproducts/$userId');
     final response = await http.get(url);
-    debugPrint('cartResponse: ${response.body}');
 
     if (response.statusCode == 200) {
-      cartResponse = jsonDecode(response.body);
+      final cartResponse = jsonDecode(response.body);
       debugPrint('cartResponse : $cartResponse');
 
       // Map the response to a List<Product>
-      bagProducts =
-          cartResponse.map((cartPro) => Product.fromMap(cartPro)).toList();
+      bagProducts = (cartResponse as List<dynamic>)
+          .map((cartPro) => Product.fromMap(cartPro))
+          .toList();
+
+      debugPrint('bagProducts : $bagProducts');
       isProductLoading = false;
       notifyListeners();
 
@@ -395,14 +422,10 @@ class ProductProvider extends ChangeNotifier {
 
     try {
       final response = await http.delete(url);
+
       debugPrint('deleteCartResponse: ${response.body}');
 
       if (response.statusCode == 200) {
-        // Remove the item from cartResponse after successful deletion
-        cartResponse.removeWhere((product) => product['cart_product_id'] == id);
-        debugPrint('cartResponse after deletion: $cartResponse');
-
-        // Optionally, remove from bagProducts (UI list)
         bagProducts.removeWhere((product) => product.id == id);
 
         // Notify listeners to update the UI
@@ -547,22 +570,6 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
-  // void postSignUp(String userId) async {
-  //   final url = Uri.parse('http://192.168.0.111:3000/bookingcarts/$userId');
-
-  //   final data = {
-  //     'id': userId,
-  //   };
-
-  //   final response = await http.post(
-  //     url,
-  //     headers: {'Content-Type': 'application/json'},
-  //     body: jsonEncode(data),
-  //   );
-
-  //   debugPrint('response : ${response.body}');
-  // }
-
 // ORDERS API WORKING
   Future<void> fetchOrders(String userId, BuildContext context) async {
     final url =
@@ -626,6 +633,38 @@ class ProductProvider extends ChangeNotifier {
       errorMessage = 'An error occurred. Please check your connection.';
       isLoadingOrderList = false;
       notifyListeners();
+    }
+  }
+
+  void updateQuantity(String uniqueId, Product bagProduct) async {
+    // Define the URL
+    final url =
+        Uri.parse('http://192.168.0.111:3000/cartproducts/updateQuantity');
+
+    // Prepare the request body
+    final body = {
+      'id': bagProduct.id,
+      'cart_product_id': uniqueId, // Use cart_product_id from cartResponse
+      'quantity': bagProduct.quantity,
+    };
+
+    try {
+      // Send the PATCH request
+      final response = await http.patch(
+        url,
+        headers: {'Content-Type': 'application/json'}, // Use JSON headers
+        body: jsonEncode(body), // Encode the body to JSON
+      );
+
+      // Handle the response
+      if (response.statusCode == 200) {
+        debugPrint('Quantity updated successfully: ${response.body}');
+      } else {
+        debugPrint(
+            'Failed to update quantity: ${response.statusCode} - ${response.body}');
+      }
+    } catch (error) {
+      debugPrint('Error updating quantity: $error');
     }
   }
 }

@@ -14,8 +14,7 @@ class Product {
   final String returnPolicy;
   final String warrantyInformation;
   final String category;
-
-  int productInfoIncValue = 1;
+  int quantity = 1;
 
   Product({
     required this.id,
@@ -31,7 +30,7 @@ class Product {
     required this.returnPolicy,
     required this.warrantyInformation,
     required this.category,
-    this.productInfoIncValue = 1,
+    this.quantity = 1,
   });
 
   Map productToMap() {
@@ -49,7 +48,7 @@ class Product {
       'returnpolicy': returnPolicy,
       'warrantyinformation': warrantyInformation,
       'category': category,
-      'productInfoIncValue': productInfoIncValue,
+      'quantity': quantity,
     };
   }
 
@@ -57,25 +56,26 @@ class Product {
     return jsonEncode(productToMap());
   }
 
- factory Product.fromMap(Map<String, dynamic> productMap) {
-  return Product(
-    id: int.tryParse(productMap['id'].toString()) ?? 0, // Convert to int
-    thumbnail: productMap['thumbnail'] ?? '',
-    title: productMap['title'] ?? '',
-    description: productMap['description'] ?? '',
-    price: double.tryParse(productMap['price'].toString()) ?? 0.0, // Convert to double
-    discountPercentage: num.tryParse(productMap['discountpercentage'].toString()) ?? 0.0,
-    rating: num.tryParse(productMap['rating'].toString()) ?? 0.0,
-    brand: productMap['brand'] ?? 'Groceries',
-    // images: productMap['images'].cast<String>(),
-    availabilityStatus: productMap['availabilitystatus'] ?? '',
-    returnPolicy: productMap['returnpolicy'] ?? '',
-    warrantyInformation: productMap['warrantyinformation'] ?? '',
-    category: productMap['category'] ?? '',
-    productInfoIncValue: int.tryParse(productMap['productInfoIncValue'].toString()) ?? 1,
-  );
-}
-
+  factory Product.fromMap(Map<String, dynamic> productMap) {
+    return Product(
+      id: int.tryParse(productMap['id'].toString()) ?? 0, // Convert to int
+      thumbnail: productMap['thumbnail'] ?? '',
+      title: productMap['title'] ?? '',
+      description: productMap['description'] ?? '',
+      price: double.tryParse(productMap['price'].toString()) ??
+          0.0, // Convert to double
+      discountPercentage:
+          num.tryParse(productMap['discountpercentage'].toString()) ?? 0.0,
+      rating: num.tryParse(productMap['rating'].toString()) ?? 0.0,
+      brand: productMap['brand'] ?? 'Groceries',
+      // images: productMap['images'].cast<String>(),
+      availabilityStatus: productMap['availabilitystatus'] ?? '',
+      returnPolicy: productMap['returnpolicy'] ?? '',
+      warrantyInformation: productMap['warrantyinformation'] ?? '',
+      category: productMap['category'] ?? '',
+      quantity: productMap['quantity'] ?? 1,
+    );
+  }
 
   factory Product.fromJson(String json) {
     return Product.fromMap(jsonDecode(json));

@@ -30,20 +30,17 @@ class ContainerButtonState extends State<ContainerButton> {
           style: FilledButton.styleFrom(
             backgroundColor: AppColor.appColor,
           ),
-          onPressed: () {
-            if (!providerWatch.bagProducts.contains(widget.product)) {
-              providerRead.postCartData(widget.product);
-              providerWatch.bagProducts.add(widget.product);
+          onPressed: () async {
+            final productExists =
+                providerWatch.bagProducts.contains(widget.product);
 
-              // Work Later On
-              // providerRead.bagProductscountsInc();
-              providerRead.totalPriceBagItems();
+            if (!productExists) {
+               providerRead.postCartData(widget.product, context);
             } else {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return const ProductCartScreen();
               }));
             }
-            setState(() {});
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

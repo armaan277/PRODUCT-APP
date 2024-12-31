@@ -79,7 +79,7 @@ class BuildGridviewProducts extends StatelessWidget {
                                     ? Image(
                                         image: NetworkImage(
                                           product.thumbnail,
-                                          // product.images.first, 
+                                          // product.images.first,
                                         ),
                                         fit: BoxFit.cover,
                                       )
@@ -188,7 +188,7 @@ class BuildGridviewProducts extends StatelessWidget {
                               ? const Icon(Icons.favorite_border)
                               : const Icon(Icons.favorite),
                           onPressed: () {
-                            // providerRead.favoriteProduct(product); 
+                            // providerRead.favoriteProduct(product);
                             providerRead.toggleFavoriteStatus(product);
                           },
                           color: Colors.red,

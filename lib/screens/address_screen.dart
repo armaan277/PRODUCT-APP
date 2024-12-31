@@ -75,7 +75,6 @@ class _AddressScreenState extends State<AddressScreen> {
   @override
   void initState() {
     context.read<ProductProvider>().getAddressData(userUniqueId);
-    // context.read<ProductProvider>().getSFProducts();
     super.initState();
   }
 

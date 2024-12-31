@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
+import 'package:shopping_app/main.dart';
 import 'package:shopping_app/screens/favourite_screen.dart';
 import 'package:shopping_app/screens/home_screen.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
@@ -20,6 +21,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   void initState() {
     context.read<ProductProvider>().getProducts();
+    context.read<ProductProvider>().getCartsData(userUniqueId);
     super.initState();
   }
 

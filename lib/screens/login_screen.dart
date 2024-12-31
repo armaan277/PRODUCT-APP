@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:shopping_app/app.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
+import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/screens/sign_up_screen.dart';
 import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
 
@@ -20,9 +22,6 @@ class _LogInScreenState extends State<LogInScreen> {
   String? errorMessage;
 
   final formKey = GlobalKey<FormState>();
-
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +54,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 ),
                 const SizedBox(height: 40),
                 TextFormField(
-                  controller: emailController,
+                  controller: context.read<ProductProvider>().emailController,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -80,7 +79,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  controller: passwordController,
+                  controller: context.read<ProductProvider>().passwordController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Password is required';
@@ -156,7 +155,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 InkWell(
                   onTap: () async {
                     if (formKey.currentState?.validate() ?? false) {
-                      postLoginData();
+                     context.read<ProductProvider>().postLoginData(context);
                     }
                   },
                   child: Container(
@@ -254,38 +253,5 @@ class _LogInScreenState extends State<LogInScreen> {
         ),
       ),
     );
-  }
-
-  void postLoginData() async {
-    final url = Uri.parse('http://192.168.0.111:3000/login');
-
-    final loginData = {
-      'email': emailController.text,
-      'password': passwordController.text,
-    };
-
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(loginData),
-    );
-
-    final signUpResponse = jsonDecode(response.body);
-
-    if (response.statusCode == 200) {
-      userUniqueId = signUpResponse['user']['id'] ?? '';
-      debugPrint('userUniqueId : $userUniqueId');
-
-      // final SharedPreferences prefs = await SharedPreferences.getInstance();
-      // prefs.setBool('isLoggedIn', true);
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const BottomNavigation()),
-      );
-    } else if (response.statusCode == 401) {
-      setState(() {
-        errorMessage = 'Invalid email or password!';
-      });
-    }
   }
 }

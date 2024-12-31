@@ -70,14 +70,7 @@ class BuildProductCategories extends StatelessWidget {
                               color: const Color(0xffF1F1F1),
                             ),
                             child: Center(
-                              child: product.id == 6 ||
-                                      product.id == 9 ||
-                                      product.id == 19
-                                  ? Image.network(
-                                      // product.images.first,
-                                      product.thumbnail,
-                                    )
-                                  : Image.network(
+                              child: Image.network(
                                       product.thumbnail,
                                     ),
                             ),

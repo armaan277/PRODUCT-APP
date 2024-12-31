@@ -30,9 +30,11 @@ class HomeScreen extends StatelessWidget {
             icon: Badge(
               backgroundColor: Colors.white,
               label: Text(
-                '${providerWatch.bagProductsCount}',
-                style:
-                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                '${providerWatch.bagProducts.length}',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.w900,
+                ),
               ),
               child: const Icon(Icons.shopping_cart_outlined),
             ),

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
-import 'package:shopping_app/screens/home_screen.dart';
 import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
 import 'package:uuid/uuid.dart';
 

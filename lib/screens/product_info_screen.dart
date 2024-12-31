@@ -1,5 +1,4 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
@@ -24,11 +23,12 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
   int currentIndex = 0;
   final CarouselSliderController carouselController =
       CarouselSliderController();
+
   @override
   Widget build(BuildContext context) {
     final providerRead = context.read<ProductProvider>();
     final providerWatch = context.watch<ProductProvider>();
-    final favorite = !providerWatch.favoriteProducts.contains(widget.product);
+    final favorite = providerWatch.favoriteProducts.contains(widget.product);
     return Scaffold(
       backgroundColor: AppColor.appBackgroundColor,
       appBar: AppBar(
@@ -153,8 +153,8 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                     },
                                     icon: Icon(
                                       favorite
-                                          ? Icons.favorite_border
-                                          : Icons.favorite,
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
                                       size: 30,
                                       color: Colors.red,
                                     )),
@@ -199,72 +199,6 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                             color: AppColor.appColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Choose amount:',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  radius: 16,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      providerRead
-                                          .productInfoDec(widget.product);
-                                    },
-                                    icon: const Icon(
-                                      Icons.remove,
-                                      size: 15,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0,
-                                  ),
-                                  child: Text(
-                                    '${widget.product.productInfoIncValue}',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                                CircleAvatar(
-                                  backgroundColor: Colors.black,
-                                  radius: 16,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      providerRead
-                                          .productInfoInc(widget.product);
-                                    },
-                                    icon: const Icon(
-                                      color: Colors.white,
-                                      Icons.add,
-                                      size: 15,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
                         ),
                       ],

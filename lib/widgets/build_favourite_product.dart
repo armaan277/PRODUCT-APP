@@ -14,7 +14,6 @@ class BuildFavouriteProduct extends StatefulWidget {
 class _BuildFavouriteProductState extends State<BuildFavouriteProduct> {
   @override
   void initState() {
-    // context.read<ProductProvider>().getSFProducts();
     context.read<ProductProvider>().getFavouriteData(userUniqueId);
     super.initState();
   }
@@ -150,7 +149,7 @@ class _BuildFavouriteProductState extends State<BuildFavouriteProduct> {
                               providerRead.favoriteProducts[index].id;
                           debugPrint('cartId : $cartId');
                           providerRead.favoriteProducts.removeAt(index);
-                          providerRead.deleteFavouriteData(cartId);
+                          providerRead.deleteFavourite(cartId);
                         },
                         icon: const Icon(Icons.close),
                       ),

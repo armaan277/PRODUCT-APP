@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'dart:convert';
-
-import 'package:shopping_app/app.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 
@@ -19,10 +15,6 @@ class MyOrdersListScreen extends StatefulWidget {
 }
 
 class _MyOrdersListScreenState extends State<MyOrdersListScreen> {
-  // List<dynamic> orderItems = [];
-  // bool isLoading = true;
-  // String errorMessage = '';
-
   @override
   void initState() {
     super.initState();
@@ -37,10 +29,12 @@ class _MyOrdersListScreenState extends State<MyOrdersListScreen> {
       backgroundColor: const Color(0xffF5F5F5),
       appBar: AppBar(
         backgroundColor: AppColor.appColor,
-        title: Text('Orders',
-            style: GoogleFonts.pacifico(
-              color: Colors.white,
-            )),
+        title: Text(
+          'Orders',
+          style: GoogleFonts.pacifico(
+            color: Colors.white,
+          ),
+        ),
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
