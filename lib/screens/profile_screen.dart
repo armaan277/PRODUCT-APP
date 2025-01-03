@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/app_drawer.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
+import 'package:shopping_app/screens/my_orders_sceen.dart';
+import 'package:shopping_app/screens/orders_screen.dart';
 import 'package:shopping_app/widgets/profile_list_tile.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -82,10 +84,19 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 15),
-            const ProfileListTile(
+            ProfileListTile(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return MyOrdersScreen();
+                    },
+                  ),
+                );
+              },
               leading: Icon(Icons.shopping_cart_sharp),
               title: 'My Orders',
-              subTitle: 'Already have 7 orders',
+              subTitle: 'Already have ${providerWatch.orders.length} orders',
               trailing: Icon(Icons.arrow_forward_ios),
             ),
             const Divider(),

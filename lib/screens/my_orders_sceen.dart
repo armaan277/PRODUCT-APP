@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/screens/my_orders_list_screen.dart';
@@ -24,13 +25,17 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     final providerWatch = context.watch<ProductProvider>();
 
     return Scaffold(
+      backgroundColor: AppColor.appBackgroundColor,
       appBar: AppBar(
+        backgroundColor: AppColor.appBackgroundColor,
         title: const Text('Your Orders'),
       ),
       body: providerWatch.isLoadingOrderDetails
           ? const Center(child: CircularProgressIndicator())
           : providerRead.orders.isEmpty
-              ? const Center(child: Text('No orders found'))
+              ? const Center(
+                  child: Text('No orders found'),
+                )
               : ListView.builder(
                   itemCount: providerRead.orders.length,
                   itemBuilder: (context, index) {
@@ -45,57 +50,128 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                             builder: (context) {
                               return MyOrdersListScreen(
                                 orderItemsId: order['order_items_id'],
+                                name: order['name'],
+                                orderDate: order['order_booking_date'],
+                                address: order['address'],
+                                orderStatus: order['order_status'],
                               );
                             },
                           ),
                         );
                       },
-                      child: Card(
-                        margin: const EdgeInsets.all(8.0),
-                        child: ListTile(
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Name : ${order['name'] ?? 'No name'}',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                'Status :${order['order_status']}',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 4.0,
+                        ),
+                        child: Container(
+                          width: 350,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                blurRadius: 8,
+                                spreadRadius: 2,
+                                offset: Offset(0, 4),
                               ),
                             ],
                           ),
-                          subtitle: Column(
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Text(
-                                  'Price : \$${order['price'] ?? 0.0}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                              // Order Number and Date
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Order Id: ${order['orders_id'] ?? ''}",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                    ),
                                   ),
+                                  Text(
+                                    order['order_booking_date'] ?? '',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 8),
+                              // Tracking Number
+                              Text(
+                                "Name: ${order['name'] ?? ''}",
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 14,
                                 ),
                               ),
-                              Text(
-                                'Address : ${order['address'] ?? 'N/A'}',
+                              SizedBox(height: 8),
+                              // Quantity and Amount
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  
+                                  Text(
+                                    "Total Amount: ${order['price'] ?? 0.0}\$",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                "Phone: ${order['phone'] ?? 'N/A'}",
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.blue,
-                                  decoration: TextDecoration.underline,
-                                ),
+                              SizedBox(height: 16),
+                              // Buttons Row
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return MyOrdersListScreen(
+                                                orderItemsId:
+                                                    order['order_items_id'],
+                                                name: order['name'],
+                                                orderDate:
+                                                    order['order_booking_date'],
+                                                address: order['address'],
+                                                orderStatus:
+                                                    order['order_status']);
+                                          },
+                                        ),
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColor.appColor,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: Text("Details"),
+                                  ),
+                                  Text(
+                                    '${order['order_status']}',
+                                    style: TextStyle(
+                                      color:
+                                          order['order_status'] == 'Delivered'
+                                              ? Colors.green
+                                              : Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),

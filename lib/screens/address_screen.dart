@@ -159,13 +159,13 @@ class _AddressScreenState extends State<AddressScreen> {
                         int.parse(providerRead.zipcodeController.text),
                         providerRead.countryController.text,
                       );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Center(
-                            child: Text('Your Updated Address is Saved'),
-                          ),
-                        ),
-                      );
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   const SnackBar(
+                      //     content: Center(
+                      //       child: Text('Your Updated Address is Saved'),
+                      //     ),
+                      //   ),
+                      // );
                     } else {
                       providerRead.postAddressData();
                       ScaffoldMessenger.of(context).showSnackBar(

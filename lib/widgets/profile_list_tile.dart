@@ -5,7 +5,7 @@ class ProfileListTile extends StatelessWidget {
   final String? title;
   final String? subTitle;
   final Icon? trailing;
-  // final VoidCallback? onTap;
+  final VoidCallback? onTap;
 
   const ProfileListTile({
     super.key,
@@ -13,13 +13,13 @@ class ProfileListTile extends StatelessWidget {
     required this.title,
     required this.subTitle,
     required this.trailing,
-    // required this.onTap,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: (){},
+      onTap: onTap,
       leading: leading,
       title: Text(
         '$title',

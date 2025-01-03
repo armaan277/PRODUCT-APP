@@ -6,6 +6,7 @@ import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
 import 'package:uuid/uuid.dart';
+import 'package:nanoid/nanoid.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -23,7 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-  final uuid = const Uuid();
+  final nanoId = nanoid(8);
   late final uniqueId;
 
   @override
@@ -170,8 +171,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 GestureDetector(
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
-                      uniqueId = uuid.v4();
-                      userUniqueId = uniqueId;
+                      uniqueId = nanoId;
+                      userUniqueId = nanoId;
                       debugPrint('SignUp userUniqueId : $userUniqueId');
                       debugPrint('uuid : $uniqueId');
                       postSignUpData();
@@ -230,7 +231,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final url = Uri.parse('http://192.168.0.111:3000/signup');
 
     final signUpData = {
-      'id': uniqueId,
+      'id': userUniqueId,
       'name': nameController.text,
       'phone': phoneController.text,
       'email': emailController.text,

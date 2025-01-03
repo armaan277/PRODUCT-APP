@@ -10,7 +10,7 @@ class Product {
   final num discountPercentage;
   final num rating;
   final String availabilityStatus;
-  // final List<String> images;
+  final List<String> images; 
   final String returnPolicy;
   final String warrantyInformation;
   final String category;
@@ -26,11 +26,12 @@ class Product {
     required this.rating,
     required this.brand,
     required this.availabilityStatus,
-    // required this.images,
+    required this.images, 
     required this.returnPolicy,
     required this.warrantyInformation,
     required this.category,
-    this.quantity = 1,
+    this.quantity = 1,    
+    
   });
 
   Map productToMap() {
@@ -44,7 +45,7 @@ class Product {
       'rating': rating,
       'brand': brand,
       'availabilitystatus': availabilityStatus,
-      // 'images': images,
+      'images': images, 
       'returnpolicy': returnPolicy,
       'warrantyinformation': warrantyInformation,
       'category': category,
@@ -68,7 +69,7 @@ class Product {
           num.tryParse(productMap['discountpercentage'].toString()) ?? 0.0,
       rating: num.tryParse(productMap['rating'].toString()) ?? 0.0,
       brand: productMap['brand'] ?? 'Groceries',
-      // images: productMap['images'].cast<String>(),
+      images: productMap['images'].cast<String>() ?? [],
       availabilityStatus: productMap['availabilitystatus'] ?? '',
       returnPolicy: productMap['returnpolicy'] ?? '',
       warrantyInformation: productMap['warrantyinformation'] ?? '',
@@ -77,7 +78,7 @@ class Product {
     );
   }
 
-  factory Product.fromJson(String json) {
+  factory Product.fromJson(String json) { 
     return Product.fromMap(jsonDecode(json));
   }
 

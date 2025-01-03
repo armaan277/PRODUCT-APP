@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
@@ -52,42 +53,42 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Padding(
-            // padding: const EdgeInsets.symmetric(vertical: 8.0),
-            // child: CarouselSlider(
-            // items: widget.product.images.map((image) {
-            //   return Image.network(image);
-            // }).toList(),
-            //     options: CarouselOptions(
-            //       height: 300,
-            //       autoPlay: widget.product.images.length > 1 ? true : false,
-            //       enlargeCenterPage: true,
-            //       onPageChanged: (index, reason) {
-            //         setState(() {
-            //           currentIndex = index;
-            //         });
-            //       },
-            //     ),
-            //     carouselController: carouselController,
-            //   ),
-            // ),
-            // if (widget.product.images.length > 1)
-            // DotsIndicator(
-            // dotsCount: widget.product.images.length,
-            // position: currentIndex,
-            //   decorator: DotsDecorator(
-            //     color: Colors.grey,
-            //     activeColor: AppColor.appColor,
-            //     size: const Size.square(9.0),
-            //     activeSize: const Size(12.0, 12.0),
-            //     activeShape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(10.0),
-            //     ),
-            //   ),
-            //   onTap: (index) {
-            //     carouselController.animateToPage(index);
-            //   },
-            // ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: CarouselSlider(
+                items: widget.product.images.map((image) {
+                  return Image.network(image);
+                }).toList(),
+                options: CarouselOptions(
+                  height: 300,
+                  autoPlay: widget.product.images.length > 1 ? true : false,
+                  enlargeCenterPage: true,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                  },
+                ),
+                carouselController: carouselController,
+              ),
+            ),
+            if (widget.product.images.length > 1)
+              DotsIndicator(
+                dotsCount: widget.product.images.length,
+                position: currentIndex,
+                decorator: DotsDecorator(
+                  color: Colors.grey,
+                  activeColor: AppColor.appColor,
+                  size: const Size.square(9.0),
+                  activeSize: const Size(12.0, 12.0),
+                  activeShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                onTap: (index) {
+                  carouselController.animateToPage(index);
+                },
+              ),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,

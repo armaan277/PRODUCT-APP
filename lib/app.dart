@@ -20,7 +20,7 @@ class ProductApp extends StatelessWidget {
           'bottom_navigation': (context) => const BottomNavigation(),
           'login_sreen': (context) => const LogInScreen(),
           'product_cart_screen': (context) => const ProductCartScreen(),
-          'my_orders_screen' : (context) => const MyOrdersScreen(),
+          'my_orders_screen': (context) => const MyOrdersScreen(),
         },
         debugShowCheckedModeBanner: false,
       ),

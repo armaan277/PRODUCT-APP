@@ -249,7 +249,7 @@ class ProductProvider extends ChangeNotifier {
         MaterialPageRoute(builder: (context) => const BottomNavigation()),
       );
     } else if (response.statusCode == 401) {
-        errorMessage = 'Invalid email or password!';
+      errorMessage = 'Invalid email or password!';
       notifyListeners();
     }
   }
@@ -577,6 +577,7 @@ class ProductProvider extends ChangeNotifier {
 
     try {
       final response = await http.get(url);
+      debugPrint('response : ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
