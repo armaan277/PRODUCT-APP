@@ -21,6 +21,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
   @override
   void initState() {
     context.read<ProductProvider>().getCartsData(userUniqueId);
+    context.read<ProductProvider>().fetchOrders(userUniqueId, context);
     super.initState();
   }
 
@@ -98,7 +99,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                           debugPrint('index : $index');
 
                           // Deleting the product from the cart data
-                          providerRead.deleteCartData(product.id);
+                          // providerRead.deleteCartData(product.id);
                           debugPrint('product.id : ${product.id}');
 
                           // providerRead.bagProductscountsDec();
@@ -315,7 +316,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
                     child: Text(
-                      '${providerWatch.totalPrice.toStringAsFixed(2)}\$',
+                      '${(providerWatch.totalPrice).toStringAsFixed(2)}\$',
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.black54,

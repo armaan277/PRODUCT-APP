@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
+import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:open_file/open_file.dart';
@@ -31,6 +35,28 @@ class MyOrdersListScreen extends StatefulWidget {
 }
 
 class _MyOrdersListScreenState extends State<MyOrdersListScreen> {
+  int _rating = 0;
+  final ImagePicker _picker = ImagePicker();
+  XFile? _imageFile;
+
+  Future<void> _openCamera() async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: ImageSource.camera, // Opens the camera
+        preferredCameraDevice:
+            CameraDevice.rear, // Optional: Rear or Front camera
+      );
+
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = pickedFile; // Save the picked file
+        });
+      }
+    } catch (e) {
+      print("Error picking image: $e");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -173,44 +199,39 @@ class _MyOrdersListScreenState extends State<MyOrdersListScreen> {
                                               Row(
                                                 children: [
                                                   SizedBox(width: 5),
-                                                  widget.orderStatus ==
-                                                          "Delivered"
-                                                      ? TextButton.icon(
-                                                          label: Row(
-                                                            children: [
-                                                              Icon(
-                                                                Icons.edit,
-                                                                size: 16,
-                                                                color:
-                                                                    Colors.blue,
-                                                              ),
-                                                              SizedBox(
-                                                                  width: 8),
-                                                              Text(
-                                                                'Write a review',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .blue,
-                                                                ),
-                                                              ),
-                                                            ],
+                                                  // widget.orderStatus ==
+                                                  //         "Delivered"
+                                                  //     ?
+                                                  TextButton.icon(
+                                                    label: Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.edit,
+                                                          size: 16,
+                                                          color: Colors.blue,
+                                                        ),
+                                                        SizedBox(width: 8),
+                                                        Text(
+                                                          'Write a review',
+                                                          style: TextStyle(
+                                                            color: Colors.blue,
                                                           ),
-                                                          style: TextButton
-                                                              .styleFrom(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    0.0),
-                                                            minimumSize:
-                                                                Size(0, 0),
-                                                          ),
-                                                          onPressed: () {
-                                                            showMDLBottomSheet(
-                                                              context,
-                                                            );
-                                                          },
-                                                        )
-                                                      : Text(''),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    style: TextButton.styleFrom(
+                                                      padding:
+                                                          EdgeInsets.all(0.0),
+                                                      minimumSize: Size(0, 0),
+                                                    ),
+                                                    onPressed: () {
+                                                      showMDLBottomSheet(
+                                                        context,
+                                                        product,
+                                                      );
+                                                    },
+                                                  )
+                                                  // : Text(''),
                                                 ],
                                               ),
                                             ],
@@ -440,7 +461,7 @@ class _MyOrdersListScreenState extends State<MyOrdersListScreen> {
     await OpenFile.open(file.path);
   }
 
-  void showMDLBottomSheet(BuildContext context) {
+  void showMDLBottomSheet(BuildContext context, Map product) {
     showModalBottomSheet(
       backgroundColor: AppColor.appBackgroundColor,
       context: context,
@@ -449,155 +470,268 @@ class _MyOrdersListScreenState extends State<MyOrdersListScreen> {
       ),
       isScrollControlled: true, // Ensures the sheet can expand based on content
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                bottom: 16.0,
-                top: 16.0,
-              ), // Prevent content from being hidden
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  height: 6,
+                  width: 70,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade400,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+              SizedBox(height: 15),
+              // Product Information Section
+              Row(
                 children: [
-                  Divider(
-                    thickness: 4,
-                    indent: 150,
-                    endIndent: 150,
-                  ),
-                  SizedBox(height: 16),
-                  Center(
-                    child: Text(
-                      "What is your rate?",
-                      style: TextStyle(
-                        color: Color(0xff222222),
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(5, (index) {
-                      return Icon(
-                        Icons.star_border,
-                        size: 40,
-                        color: Colors.grey,
-                      );
-                    }),
-                  ),
-                  SizedBox(height: 18),
-                  Center(
-                    child: Text(
-                      textAlign: TextAlign.center,
-                      "Please share your opinion\n about the product",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Color(0xff222222),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 18),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white, // Background color of the TextField
-                      borderRadius:
-                          BorderRadius.circular(8.0), // Rounded corners
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
-                          spreadRadius: 2,
-                          blurRadius: 2,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      maxLines: 6,
-                      decoration: InputDecoration(
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w300,
-                        ),
-                        border: InputBorder.none, // Removes default border
-                        contentPadding:
-                            EdgeInsets.all(16), // Padding inside the TextField
-                        hintText: "Your review",
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Container(
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white, // Set the background color to white
-                      borderRadius: BorderRadius.circular(
-                        8.0,
-                      ), // Optional: rounded corners
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.2), // Shadow color
-                          spreadRadius: 1, // Spread radius of the shadow
-                          blurRadius: 2, // Blur radius of the shadow
-                          offset: Offset(0, 2), // Offset for the shadow (x, y)
-                        ),
-                      ],
-                    ),
+                  const SizedBox(width: 12),
+                  Expanded(
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          backgroundColor: AppColor.appColor,
-                          radius: 30,
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.camera_alt, color: Colors.white),
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          "Add your photos",
-                          style: TextStyle(fontWeight: FontWeight.w500),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 100,
+                              width: 90,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color:
+                                        Colors.grey), // Add a border if needed
+                                borderRadius:
+                                    BorderRadius.circular(8), // Rounded corners
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  8,
+                                ), // Match the container's radius
+                                child: Image.network(
+                                  product['thumbnail'],
+                                  fit: BoxFit
+                                      .cover, // Ensures the image covers the entire box
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      product['title'],
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Row(
+                                      children: List.generate(5, (index) {
+                                        return InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              _rating = index +
+                                                  1; // Update rating when clicked
+                                              print('_rating : $_rating');
+                                            });
+                                          },
+                                          child: Icon(
+                                            index < _rating
+                                                ? Icons.star
+                                                : Icons
+                                                    .star_border, // Filled if clicked
+                                            color: Colors.amber,
+                                            size: 30,
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Container(
-                    height: 60,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
-                          spreadRadius: 2,
-                          blurRadius: 2,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                      color: Colors.red, // Adjusted color
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'SEND REVIEW',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
                     ),
                   ),
                 ],
               ),
-            ),
+              const SizedBox(height: 16),
+              // Review Input Field
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                    4.0,
+                  ),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 2,
+                      offset: const Offset(1, 1.5),
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: context.read<ProductProvider>().ratingController,
+                  maxLines: 6,
+                  decoration: InputDecoration(
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w300,
+                    ),
+                    border: InputBorder.none, // Removes default border
+                    contentPadding:
+                        EdgeInsets.all(16), // Padding inside the TextField
+                    hintText: "Your review",
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+              Text(
+                "Add your photos",
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white, // Set the background color to white
+                  borderRadius: BorderRadius.circular(
+                    4.0,
+                  ), // Optional: rounded corners
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 2,
+                      offset: const Offset(1, 1.5),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(8.0),
+                      height: 90,
+                      width: 90,
+                      decoration: BoxDecoration(
+                        color: AppColor.appColor,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: IconButton(
+                        onPressed: _openCamera,
+                        icon: Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                    ),
+                    if (_imageFile != null)
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        child: Image.file(
+                          File(_imageFile!.path), // Display the captured image
+                          height: 90,
+                          width: 90,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    else
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          'https://via.placeholder.com/60', // Replace with your image URL
+                          height: 90,
+                          width: 90,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+              // Submit Review Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    postRating(product['id'], userUniqueId);
+                    context.read<ProductProvider>().ratingController.clear();
+                    _rating = 0;
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColor.appColor,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: const Text(
+                    "Submit Review",
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: Colors.white,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },
     );
+  }
+
+  void postRating(int productId, String userId) async {
+    final url = Uri.parse('http://192.168.0.111:3000/reviews/$productId');
+
+    final postRatingData = {
+      'product_id': productId,
+      'rating': _rating, // Replace with dynamic rating if needed
+      'comment': context.read<ProductProvider>().ratingController.text,
+      'id': userId, // Add user ID
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        body: jsonEncode(postRatingData),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Your Review Successfully Submitted'),
+          ),
+        );
+        // Successfully posted the rating
+        debugPrint('Rating submitted successfully: ${response.body}');
+      } else {
+        // Handle errors
+        debugPrint(
+            'Failed to submit rating. Status code: ${response.statusCode}');
+        debugPrint('Response: ${response.body}');
+      }
+    } catch (error) {
+      // Handle network or JSON errors
+      debugPrint('Error submitting rating: $error');
+    }
   }
 }

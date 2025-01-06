@@ -117,7 +117,6 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  
                                   Text(
                                     "Total Amount: ${order['price'] ?? 0.0}\$",
                                     style: TextStyle(

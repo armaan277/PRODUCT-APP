@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/config/endponts.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/model/product.dart';
@@ -55,6 +55,9 @@ class ProductProvider extends ChangeNotifier {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  // Review TextContreller
+  final ratingController = TextEditingController();
+
   Future<void> getProducts() async {
     final response = await http.get(Uri.parse(Endponts.allProductsEndPoint));
 
@@ -72,7 +75,8 @@ class ProductProvider extends ChangeNotifier {
   void productInfoInc(Product product) {
     product.quantity++;
     debugPrint('product.quantity++ increament : ${product.quantity}');
-    // totalPrice = totalPrice + product.price;
+    totalPrice = totalPrice + product.price;
+    // totalPriceBagItems();
     notifyListeners();
   }
 
@@ -80,26 +84,24 @@ class ProductProvider extends ChangeNotifier {
     if (product.quantity > 1) {
       product.quantity--;
       debugPrint('product.quantity-- decreament : ${product.quantity}');
-      // totalPrice = totalPrice - product.price;
+      totalPrice = totalPrice - product.price;
+      // totalPriceBagItems();
       notifyListeners();
     }
   }
 
   void removeProductFromBag(int index) {
     bagProducts.removeAt(index);
-    setSFProducts();
-    totalPriceBagItems();
     notifyListeners();
   }
 
   void removeProductFromFavorite(Product product) {
     favoriteProducts.removeWhere((ele) => ele.id == product.id);
-    setSFProducts();
     notifyListeners();
   }
 
   void setSFProducts() async {
-    final prefs = await SharedPreferences.getInstance();
+    // final prefs = await SharedPreferences.getInstance();
 
     // final jsonFavoriteProduct =
     //     favoriteProducts.map((p) => p.toJson()).toList();
@@ -119,7 +121,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void getSFProducts() async {
-    final prefs = await SharedPreferences.getInstance();
+    // final prefs = await SharedPreferences.getInstance();
     // final List<String>? jsonFavoriteProduct = prefs.getStringList('favorite');
     // final List<String>? jsonBagProducts = prefs.getStringList('bag');
 
@@ -215,11 +217,12 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void totalPriceBagItems() {
-    totalPrice = bagProducts.fold(0.0, (total, cur) => total + cur.price);
-    getSFProducts();
-    debugPrint('Total Price: $totalPrice');
-  }
+  // void totalPriceBagItems() {
+  //   totalPrice = bagProducts.fold(0.0, (total, cur) => total + cur.price);
+  //   debugPrint('totalPrice : $totalPrice');
+  //   getSFProducts();
+  //   debugPrint('Total Price: $totalPrice');
+  // }
 
 // LOGIN WORK
   void postLoginData(BuildContext context) async {
@@ -394,10 +397,28 @@ class ProductProvider extends ChangeNotifier {
   void getCartsData(String userId) async {
     final url = Uri.parse('http://192.168.0.111:3000/cartproducts/$userId');
     final response = await http.get(url);
+    List<double> total = [];
 
     if (response.statusCode == 200) {
       final cartResponse = jsonDecode(response.body);
       debugPrint('cartResponse : $cartResponse');
+
+      if (cartResponse.isEmpty) {
+        debugPrint('Cart is empty.');
+        totalPrice = 0.0;
+        isProductLoading = false;
+        notifyListeners();
+        return;
+      }
+
+      for (int i = 0; i < cartResponse.length; i++) {
+        totalPrice = cartResponse[i]['quantity'] * cartResponse[i]['price'];
+        total.add(totalPrice);
+        debugPrint('total : $total');
+      }
+
+      totalPrice = total.reduce((pre, cur) => pre + cur);
+      debugPrint('totalPrice : $totalPrice');
 
       // Map the response to a List<Product>
       bagProducts = (cartResponse as List<dynamic>)
@@ -427,7 +448,6 @@ class ProductProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         bagProducts.removeWhere((product) => product.id == id);
-
         // Notify listeners to update the UI
         notifyListeners();
       }
@@ -576,6 +596,10 @@ class ProductProvider extends ChangeNotifier {
         Uri.parse('http://192.168.0.111:3000/myorders/$userId'); // Backend URL
 
     try {
+      // Clear existing orders and set loading state
+      isLoadingOrderDetails = true;
+      orders.clear();
+      notifyListeners();
       final response = await http.get(url);
       debugPrint('response : ${response.body}');
 
@@ -606,7 +630,11 @@ class ProductProvider extends ChangeNotifier {
         Uri.parse('http://192.168.0.111:3000/bookingcarts/$orderIdItems');
 
     debugPrint('Fetching items for orderItemsId: $orderIdItems');
-
+    // Clear existing data and set loading state BEFORE making the network call
+    isLoadingOrderList = true;
+    orderItems.clear();
+    errorMessage = ''; // Clear any previous error messages
+    notifyListeners();
     try {
       final response = await http.get(url);
 

@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:shopping_app/app.dart';
 import 'package:shopping_app/constant/constant.dart';
-import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/screens/sign_up_screen.dart';
-import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
@@ -22,6 +17,13 @@ class _LogInScreenState extends State<LogInScreen> {
   String? errorMessage;
 
   final formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    context.read<ProductProvider>().emailController.clear();
+    context.read<ProductProvider>().passwordController.clear();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +81,8 @@ class _LogInScreenState extends State<LogInScreen> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  controller: context.read<ProductProvider>().passwordController,
+                  controller:
+                      context.read<ProductProvider>().passwordController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Password is required';
@@ -155,7 +158,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 InkWell(
                   onTap: () async {
                     if (formKey.currentState?.validate() ?? false) {
-                     context.read<ProductProvider>().postLoginData(context);
+                      context.read<ProductProvider>().postLoginData(context);
                     }
                   },
                   child: Container(
