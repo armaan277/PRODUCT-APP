@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
-import 'package:shopping_app/screens/orders_screen.dart';
+import 'package:shopping_app/screens/order_success_screen.dart';
 
 class AddressScreen extends StatefulWidget {
   const AddressScreen({super.key});
@@ -67,7 +67,7 @@ class _AddressScreenState extends State<AddressScreen> {
     } else {
       debugPrint('Current position is null');
     }
-    context.read<ProductProvider>().setSFProducts();
+    // context.read<ProductProvider>().setSFProducts();
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -179,7 +179,7 @@ class _AddressScreenState extends State<AddressScreen> {
                     providerRead.postAddressId(userUniqueId);
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
-                      return OrdersScreen();
+                      return OrderSuccessScreen();
                     }));
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(

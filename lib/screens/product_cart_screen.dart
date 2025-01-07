@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
+import 'package:shopping_app/custom_toast.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/screens/address_screen.dart';
@@ -20,9 +19,13 @@ class ProductCartScreen extends StatefulWidget {
 class _ProductCartScreenState extends State<ProductCartScreen> {
   @override
   void initState() {
-    context.read<ProductProvider>().getCartsData(userUniqueId);
-    context.read<ProductProvider>().fetchOrders(userUniqueId, context);
     super.initState();
+
+    // Delay the state update after the current build phase
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProductProvider>().getCartsData(userUniqueId);
+      context.read<ProductProvider>().fetchOrders(userUniqueId, context);
+    });
   }
 
   @override
@@ -70,39 +73,19 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
               itemCount: providerWatch.bagProducts.length,
               itemBuilder: (context, index) {
                 final product = providerWatch.bagProducts[index];
-                final isFavorite =
-                    providerWatch.favoriteProducts.contains(product);
-
+                debugPrint('Hello product : $product');
                 return Slidable(
                   key: ValueKey(product.id), // Ensure this is unique
-                  startActionPane: ActionPane(
-                    motion: const ScrollMotion(),
-                    children: [
-                      SlidableAction(
-                        onPressed: (context) {
-                          providerRead.toggleFavoriteStatus(product);
-                        },
-                        backgroundColor: Colors.white,
-                        foregroundColor: AppColor.appColor,
-                        icon:
-                            isFavorite ? Icons.favorite : Icons.favorite_border,
-                        label: isFavorite ? 'Favorite' : 'Unfavorite',
-                      ),
-                    ],
-                  ),
                   endActionPane: ActionPane(
                     motion: const ScrollMotion(),
                     children: [
                       SlidableAction(
                         onPressed: (context) {
-                          providerRead.removeProductFromBag(index);
+                          providerRead.removeProductFromBag(index, product);
                           debugPrint('index : $index');
-
                           // Deleting the product from the cart data
-                          // providerRead.deleteCartData(product.id);
+                          providerRead.deleteCartData(product.id);
                           debugPrint('product.id : ${product.id}');
-
-                          // providerRead.bagProductscountsDec();
                         },
                         foregroundColor: AppColor.appColor,
                         icon: Icons.delete,
@@ -315,22 +298,41 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: Text(
-                      '${(providerWatch.totalPrice).toStringAsFixed(2)}\$',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black54,
-                      ),
+                    child: Consumer<ProductProvider>(
+                      // This listens for changes in ProductProvider
+                      builder: (context, providerWatch, child) {
+                        return Text(
+                          '${(providerWatch.totalPrice).toStringAsFixed(2)}\$',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black54,
+                          ),
+                        );
+                      },
                     ),
-                  ),
+                  )
+
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 20.0),
+                  //   child: Text(
+                  //     '${(providerWatch.totalPrice).toStringAsFixed(2)}\$',
+                  //     style: TextStyle(
+                  //       fontSize: 18,
+                  //       color: Colors.black54,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return AddressScreen();
-                  }));
+                  providerRead.bagProducts.isEmpty
+                      ? CustomToast.showCustomToast(context,
+                          message: 'Please Add The Cart')
+                      : Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                          return AddressScreen();
+                        }));
                 },
                 child: Container(
                   margin: EdgeInsetsDirectional.only(bottom: 20.0),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
+import 'package:shopping_app/custom_toast.dart';
 import 'package:shopping_app/model/product.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import '../screens/product_cart_screen.dart';
@@ -35,7 +36,11 @@ class ContainerButtonState extends State<ContainerButton> {
                 providerWatch.bagProducts.contains(widget.product);
 
             if (!productExists) {
-               providerRead.postCartData(widget.product, context);
+              providerRead.postCartData(widget.product, context);
+              CustomToast.showCustomToast(
+                context,
+                message: 'Added Cart Successfully',
+              );
             } else {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return const ProductCartScreen();

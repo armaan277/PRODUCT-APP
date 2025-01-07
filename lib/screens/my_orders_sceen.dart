@@ -27,8 +27,20 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     return Scaffold(
       backgroundColor: AppColor.appBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColor.appBackgroundColor,
-        title: const Text('Your Orders'),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+        ),
+        backgroundColor: AppColor.appColor,
+        title: const Text(
+          'Your Orders',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
       ),
       body: providerWatch.isLoadingOrderDetails
           ? const Center(child: CircularProgressIndicator())
@@ -118,7 +130,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Total Amount: ${order['price'] ?? 0.0}\$",
+                                    "Total Amount: ${order['price']?.toStringAsFixed(2) ?? '0.00'}\$",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,

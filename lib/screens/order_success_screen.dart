@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shopping_app/constant/constant.dart';
 
-class OrdersScreen extends StatelessWidget {
-  const OrdersScreen({super.key});
+class OrderSuccessScreen extends StatelessWidget {
+  const OrderSuccessScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

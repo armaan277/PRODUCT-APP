@@ -5,7 +5,7 @@ import 'package:shopping_app/app_drawer.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/screens/my_orders_sceen.dart';
-import 'package:shopping_app/screens/orders_screen.dart';
+import 'package:shopping_app/screens/order_success_screen.dart';
 import 'package:shopping_app/widgets/profile_list_tile.dart';
 
 class ProfileScreen extends StatelessWidget {

@@ -145,7 +145,10 @@ class _AllReviewScreenState extends State<AllReviewScreen> {
                               onTap: () {
                                 Navigator.of(context).pop();
                               },
-                              child: const Icon(Icons.close),
+                              child: const Icon(
+                                Icons.close,
+                                color: AppColor.appColor,
+                              ),
                             ),
                           ),
                         ),
@@ -170,6 +173,9 @@ class _AllReviewScreenState extends State<AllReviewScreen> {
                             leading: Text(
                               '$i Star${i > 1 ? 's' : ''}',
                               style: TextStyle(
+                                color: selectedRatingFilter == i
+                                    ? AppColor.appColor
+                                    : null,
                                 fontSize: 16,
                               ),
                             ),
@@ -180,6 +186,7 @@ class _AllReviewScreenState extends State<AllReviewScreen> {
                               Navigator.of(context).pop();
                             },
                             trailing: Icon(
+                              color: AppColor.appColor,
                               selectedRatingFilter == i ? Icons.check : null,
                             ),
                           ),

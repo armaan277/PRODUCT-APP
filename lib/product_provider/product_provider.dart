@@ -90,8 +90,9 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
-  void removeProductFromBag(int index) {
+  void removeProductFromBag(int index, Product product) {
     bagProducts.removeAt(index);
+    totalPrice = totalPrice - (product.price * product.quantity);
     notifyListeners();
   }
 
@@ -100,46 +101,46 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSFProducts() async {
-    // final prefs = await SharedPreferences.getInstance();
+  // void setSFProducts() async {
+  // final prefs = await SharedPreferences.getInstance();
 
-    // final jsonFavoriteProduct =
-    //     favoriteProducts.map((p) => p.toJson()).toList();
-    // final jsonBagProducts = bagProducts.map((p) => p.toJson()).toList();
-    // debugPrint('jsonFavoriteProduct : $jsonFavoriteProduct');
-    // prefs.setStringList('favorite', jsonFavoriteProduct);
-    // prefs.setStringList('bag', jsonBagProducts);
-    // prefs.setInt('bagProCount', bagProductsCount);
-    // prefs.setDouble('total', totalPrice);
+  // final jsonFavoriteProduct =
+  //     favoriteProducts.map((p) => p.toJson()).toList();
+  // final jsonBagProducts = bagProducts.map((p) => p.toJson()).toList();
+  // debugPrint('jsonFavoriteProduct : $jsonFavoriteProduct');
+  // prefs.setStringList('favo)rite', jsonFavoriteProduct);
+  // prefs.setStringList('bag', jsonBagProducts);
+  // prefs.setInt('bagProCount', bagProductsCount);
+  // prefs.setDouble('total', totalPrice);
 
-    // prefs.setString('name', nameController.text);
-    // prefs.setString('address', addressController.text);
-    // prefs.setString('city', cityController.text);
-    // prefs.setString('state', stateController.text);
-    // prefs.setString('zipcode', zipcodeController.text);
-    // prefs.setString('country', countryController.text);
-  }
+  // prefs.setString('name', nameController.text);
+  // prefs.setString('address', addressController.text);
+  // prefs.setString('city', cityController.text);
+  // prefs.setString('state', stateController.text);
+  // prefs.setString('zipcode', zipcodeController.text);
+  // prefs.setString('country', countryController.text);
+  // }
 
-  void getSFProducts() async {
-    // final prefs = await SharedPreferences.getInstance();
-    // final List<String>? jsonFavoriteProduct = prefs.getStringList('favorite');
-    // final List<String>? jsonBagProducts = prefs.getStringList('bag');
+  // void getSFProducts() async {
+  // final prefs = await SharedPreferences.getInstance();
+  // final List<String>? jsonFavoriteProduct = prefs.getStringList('favorite');
+  // final List<String>? jsonBagProducts = prefs.getStringList('bag');
 
-    // favoriteProducts =
-    //     jsonFavoriteProduct?.map((json) => Product.fromJson(json)).toList() ??
-    //         [];
-    // bagProducts =
-    //     jsonBagProducts?.map((json) => Product.fromJson(json)).toList() ?? [];
-    // bagProductsCount = prefs.getInt('bagProCount') ?? 0;
-    // totalPrice = prefs.getDouble('total') ?? 0.0;
+  // favoriteProducts =
+  //     jsonFavoriteProduct?.map((json) => Product.fromJson(json)).toList() ??
+  //         [];
+  // bagProducts =
+  //     jsonBagProducts?.map((json) => Product.fromJson(json)).toList() ?? [];
+  // bagProductsCount = prefs.getInt('bagProCount') ?? 0;
+  // totalPrice = prefs.getDouble('total') ?? 0.0;
 
-    // nameController.text = prefs.getString('name') ?? '';
-    // addressController.text = prefs.getString('address') ?? '';
-    // cityController.text = prefs.getString('city') ?? '';
-    // stateController.text = prefs.getString('state') ?? '';
-    // zipcodeController.text = prefs.getString('zipcode') ?? '';
-    // countryController.text = prefs.getString('country') ?? '';
-  }
+  // nameController.text = prefs.getString('name') ?? '';
+  // addressController.text = prefs.getString('address') ?? '';
+  // cityController.text = prefs.getString('city') ?? '';
+  // stateController.text = prefs.getString('state') ?? '';
+  // zipcodeController.text = prefs.getString('zipcode') ?? '';
+  // countryController.text = prefs.getString('country') ?? '';
+  // }
 
   void favoriteChip(String favoriteChip) {
     selectFavoriteCategories = favoriteChip;
@@ -220,7 +221,6 @@ class ProductProvider extends ChangeNotifier {
   // void totalPriceBagItems() {
   //   totalPrice = bagProducts.fold(0.0, (total, cur) => total + cur.price);
   //   debugPrint('totalPrice : $totalPrice');
-  //   getSFProducts();
   //   debugPrint('Total Price: $totalPrice');
   // }
 
@@ -430,9 +430,9 @@ class ProductProvider extends ChangeNotifier {
       notifyListeners();
 
       // Debugging purpose: Print all cart product IDs
-      for (var product in cartResponse) {
-        debugPrint('Cart Product ID: ${product['cart_product_id']}');
-      }
+      // for (var product in cartResponse) {
+      //   debugPrint('Cart Product ID: ${product['cart_product_id']}');
+      // }
     } else {
       debugPrint('Failed to load data');
     }
@@ -449,6 +449,10 @@ class ProductProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         bagProducts.removeWhere((product) => product.id == id);
         // Notify listeners to update the UI
+        totalPrice = bagProducts.fold(0.0,
+            (total, product) => total + (product.price * product.quantity));
+
+        debugPrint('Updated Total Price: $totalPrice');
         notifyListeners();
       }
     } catch (e) {
