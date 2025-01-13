@@ -15,12 +15,17 @@ class MyOrdersScreen extends StatefulWidget {
 class _MyOrdersScreenState extends State<MyOrdersScreen> {
   @override
   void initState() {
+    debugPrint('initState Call()');
     super.initState();
-    context.read<ProductProvider>().fetchOrders(userUniqueId, context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      debugPrint('addPostFrameCallback Call()');
+      context.read<ProductProvider>().fetchOrders(userUniqueId, context);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('BuildContext build()');
     final providerRead = context.read<ProductProvider>();
     final providerWatch = context.watch<ProductProvider>();
 

@@ -71,8 +71,8 @@ class BuildProductCategories extends StatelessWidget {
                             ),
                             child: Center(
                               child: Image.network(
-                                      product.thumbnail,
-                                    ),
+                                product.thumbnail,
+                              ),
                             ),
                           ),
                         ),
@@ -171,9 +171,6 @@ class BuildProductCategories extends StatelessWidget {
                               )
                             : const Icon(Icons.favorite),
                         onPressed: () {
-                          // context
-                          //     .read<ProductProvider>()
-                          //     .favoriteProduct(product);
                           context
                               .read<ProductProvider>()
                               .toggleFavoriteStatus(product);

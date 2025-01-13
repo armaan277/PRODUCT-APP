@@ -24,7 +24,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
     // Delay the state update after the current build phase
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProductProvider>().getCartsData(userUniqueId);
-      context.read<ProductProvider>().fetchOrders(userUniqueId, context);
+      // context.read<ProductProvider>().fetchOrders(userUniqueId, context);
     });
   }
 
@@ -171,6 +171,8 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                                               child: IconButton(
                                                 onPressed: () {
                                                   providerRead
+                                                      .totalPriceCartItems();
+                                                  providerRead
                                                       .productInfoDec(product);
                                                   providerRead.updateQuantity(
                                                     userUniqueId,
@@ -200,6 +202,8 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                                               radius: 16,
                                               child: IconButton(
                                                 onPressed: () {
+                                                  providerRead
+                                                      .totalPriceCartItems();
                                                   providerRead
                                                       .productInfoInc(product);
                                                   providerRead.updateQuantity(
@@ -298,37 +302,23 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: Consumer<ProductProvider>(
-                      // This listens for changes in ProductProvider
-                      builder: (context, providerWatch, child) {
-                        return Text(
-                          '${(providerWatch.totalPrice).toStringAsFixed(2)}\$',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black54,
-                          ),
-                        );
-                      },
+                    child: Text(
+                      '${(providerWatch.totalPrice) < 0 ? 0.0 : (providerWatch.totalPrice).toStringAsFixed(2)}\$',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black54,
+                      ),
                     ),
-                  )
-
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  //   child: Text(
-                  //     '${(providerWatch.totalPrice).toStringAsFixed(2)}\$',
-                  //     style: TextStyle(
-                  //       fontSize: 18,
-                  //       color: Colors.black54,
-                  //     ),
-                  //   ),
-                  // ),
+                  ),
                 ],
               ),
               GestureDetector(
                 onTap: () {
                   providerRead.bagProducts.isEmpty
-                      ? CustomToast.showCustomToast(context,
-                          message: 'Please Add The Cart')
+                      ? CustomToast.showCustomToast(
+                          context,
+                          message: 'Please Add The Cart',
+                        )
                       : Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
                           return AddressScreen();

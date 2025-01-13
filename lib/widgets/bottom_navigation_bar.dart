@@ -36,7 +36,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         3 => ProfileScreen(),
         _ => Scaffold(
             body: Center(
-              child: Text('Naha Le'),
+              child: Text('Not Found Screen'),
             ),
           )
       },

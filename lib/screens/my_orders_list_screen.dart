@@ -60,11 +60,18 @@ class _MyOrdersListScreenState extends State<MyOrdersListScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ProductProvider>().fetchOrderItems(widget.orderItemsId);
+    debugPrint('initState Call()');
+
+    // Delay the state update after the current build phase
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      debugPrint('addPostFrameCallback Call()');
+      context.read<ProductProvider>().fetchOrderItems(widget.orderItemsId);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('BuildContext Call()');
     final providerWatch = context.watch<ProductProvider>();
     final providerRead = context.read<ProductProvider>();
     return Scaffold(

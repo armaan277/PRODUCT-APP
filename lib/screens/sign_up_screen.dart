@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
-import 'package:uuid/uuid.dart';
 import 'package:nanoid/nanoid.dart';
 
 class SignUpScreen extends StatefulWidget {

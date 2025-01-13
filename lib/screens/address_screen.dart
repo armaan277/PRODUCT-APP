@@ -67,7 +67,6 @@ class _AddressScreenState extends State<AddressScreen> {
     } else {
       debugPrint('Current position is null');
     }
-    // context.read<ProductProvider>().setSFProducts();
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -159,22 +158,8 @@ class _AddressScreenState extends State<AddressScreen> {
                         int.parse(providerRead.zipcodeController.text),
                         providerRead.countryController.text,
                       );
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      //   const SnackBar(
-                      //     content: Center(
-                      //       child: Text('Your Updated Address is Saved'),
-                      //     ),
-                      //   ),
-                      // );
                     } else {
                       providerRead.postAddressData();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Center(
-                            child: Text('Your Address is Saved'),
-                          ),
-                        ),
-                      );
                     }
                     providerRead.postAddressId(userUniqueId);
                     Navigator.of(context)

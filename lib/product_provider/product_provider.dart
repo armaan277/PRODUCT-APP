@@ -74,18 +74,12 @@ class ProductProvider extends ChangeNotifier {
 
   void productInfoInc(Product product) {
     product.quantity++;
-    debugPrint('product.quantity++ increament : ${product.quantity}');
-    totalPrice = totalPrice + product.price;
-    // totalPriceBagItems();
     notifyListeners();
   }
 
   void productInfoDec(Product product) {
     if (product.quantity > 1) {
       product.quantity--;
-      debugPrint('product.quantity-- decreament : ${product.quantity}');
-      totalPrice = totalPrice - product.price;
-      // totalPriceBagItems();
       notifyListeners();
     }
   }
@@ -93,6 +87,7 @@ class ProductProvider extends ChangeNotifier {
   void removeProductFromBag(int index, Product product) {
     bagProducts.removeAt(index);
     totalPrice = totalPrice - (product.price * product.quantity);
+    debugPrint('removeProductFromBagTotalPrice : $totalPrice');
     notifyListeners();
   }
 
@@ -217,12 +212,6 @@ class ProductProvider extends ChangeNotifier {
     searchController.clear();
     notifyListeners();
   }
-
-  // void totalPriceBagItems() {
-  //   totalPrice = bagProducts.fold(0.0, (total, cur) => total + cur.price);
-  //   debugPrint('totalPrice : $totalPrice');
-  //   debugPrint('Total Price: $totalPrice');
-  // }
 
 // LOGIN WORK
   void postLoginData(BuildContext context) async {
@@ -358,7 +347,7 @@ class ProductProvider extends ChangeNotifier {
       'thumbnail': bagProduct.thumbnail,
       'title': bagProduct.title,
       'brand': bagProduct.brand,
-      'price': bagProduct.price,
+      'price': bagProduct.price.toDouble(),
       'cart_product_id': userUniqueId,
       'quantity': bagProduct.quantity,
     };
@@ -394,45 +383,32 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
+  void totalPriceCartItems() {
+    totalPrice = 0.0;
+    for (var bagProduct in bagProducts) {
+      totalPrice += bagProduct.price * bagProduct.quantity;
+    }
+    notifyListeners();
+  }
+
   void getCartsData(String userId) async {
     final url = Uri.parse('http://192.168.0.111:3000/cartproducts/$userId');
     final response = await http.get(url);
-    List<double> total = [];
 
     if (response.statusCode == 200) {
       final cartResponse = jsonDecode(response.body);
       debugPrint('cartResponse : $cartResponse');
-
-      if (cartResponse.isEmpty) {
-        debugPrint('Cart is empty.');
-        totalPrice = 0.0;
-        isProductLoading = false;
-        notifyListeners();
-        return;
-      }
-
-      for (int i = 0; i < cartResponse.length; i++) {
-        totalPrice = cartResponse[i]['quantity'] * cartResponse[i]['price'];
-        total.add(totalPrice);
-        debugPrint('total : $total');
-      }
-
-      totalPrice = total.reduce((pre, cur) => pre + cur);
-      debugPrint('totalPrice : $totalPrice');
 
       // Map the response to a List<Product>
       bagProducts = (cartResponse as List<dynamic>)
           .map((cartPro) => Product.fromMap(cartPro))
           .toList();
 
-      debugPrint('bagProducts : $bagProducts');
+      totalPriceCartItems();
+
+      debugPrint('bagProducts bagProducts : ${bagProducts}');
       isProductLoading = false;
       notifyListeners();
-
-      // Debugging purpose: Print all cart product IDs
-      // for (var product in cartResponse) {
-      //   debugPrint('Cart Product ID: ${product['cart_product_id']}');
-      // }
     } else {
       debugPrint('Failed to load data');
     }
@@ -448,9 +424,6 @@ class ProductProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         bagProducts.removeWhere((product) => product.id == id);
-        // Notify listeners to update the UI
-        totalPrice = bagProducts.fold(0.0,
-            (total, product) => total + (product.price * product.quantity));
 
         debugPrint('Updated Total Price: $totalPrice');
         notifyListeners();
