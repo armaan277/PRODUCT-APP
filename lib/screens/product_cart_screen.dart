@@ -5,7 +5,7 @@ import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/custom_toast.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
-import 'package:shopping_app/screens/address_screen.dart';
+import 'package:shopping_app/screens/payment_screen.dart';
 
 class ProductCartScreen extends StatefulWidget {
   const ProductCartScreen({
@@ -321,7 +321,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                         )
                       : Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                          return AddressScreen();
+                          return PaymentScreen();
                         }));
                 },
                 child: Container(
