@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-// import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/config/endponts.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/model/product.dart';
@@ -59,7 +59,7 @@ class ProductProvider extends ChangeNotifier {
   final ratingController = TextEditingController();
 
   Future<void> getProducts() async {
-    final response = await http.get(Uri.parse(Endponts.allProductsEndPoint));
+    final response = await http.get(Uri.parse(Endponts.getAllProductsEndPoint));
 
     final mapResponse = jsonDecode(response.body);
 
@@ -74,19 +74,21 @@ class ProductProvider extends ChangeNotifier {
 
   void productInfoInc(Product product) {
     product.quantity++;
+    totalPriceCartItems();
     notifyListeners();
   }
 
   void productInfoDec(Product product) {
     if (product.quantity > 1) {
       product.quantity--;
+      totalPriceCartItems();
       notifyListeners();
     }
   }
 
   void removeProductFromBag(int index, Product product) {
     bagProducts.removeAt(index);
-    totalPrice = totalPrice - (product.price * product.quantity);
+    totalPriceCartItems();
     debugPrint('removeProductFromBagTotalPrice : $totalPrice');
     notifyListeners();
   }
@@ -234,8 +236,9 @@ class ProductProvider extends ChangeNotifier {
       userUniqueId = signUpResponse['user']['id'] ?? '';
       debugPrint('userUniqueId : $userUniqueId');
 
-      // final SharedPreferences prefs = await SharedPreferences.getInstance();
-      // prefs.setBool('isLoggedIn', true);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isLoggedIn', true);
+      prefs.setString('userUniqueId', userUniqueId);
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const BottomNavigation()),
@@ -434,15 +437,19 @@ class ProductProvider extends ChangeNotifier {
   }
 
   // ADDRESS API WORK
-  Future<void> getAddressData(String userId) async {
-    final url = Uri.parse('http://192.168.0.111:3000/address/$userId');
+  Future<void> getAddressData() async {
+    final url = Uri.parse('http://192.168.0.111:3000/address/$userUniqueId');
+    debugPrint('getAddressData : $userUniqueId');
 
     try {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
+        debugPrint('response.statusCode == 200');
         final List<dynamic> responseBody = jsonDecode(response.body);
+        debugPrint('responseBody : $responseBody');
         if (responseBody.isNotEmpty) {
+          debugPrint('responseBody.isNotEmpty');
           // Populate the text controllers with existing data
           nameController.text = responseBody[0]['full_name'] ?? '';
           addressController.text = responseBody[0]['address'] ?? '';
@@ -462,8 +469,18 @@ class ProductProvider extends ChangeNotifier {
           debugPrint('No address data found.');
         }
       } else if (response.statusCode == 404) {
+        nameController.clear();
+        addressController.clear();
+        cityController.clear();
+        stateController.clear();
+        zipcodeController.clear();
+        countryController.clear();
         // Address not available
+        debugPrint('response.statusCode == 404');
         isAddressStoreInDatabase = false;
+
+        debugPrint('isAddressStoreInDatabase : $isAddressStoreInDatabase');
+        notifyListeners();
         debugPrint('ADDRESS NOT AVAILABLE !!!');
       } else {
         debugPrint('Unexpected response: ${response.statusCode}');

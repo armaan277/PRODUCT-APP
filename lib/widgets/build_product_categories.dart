@@ -21,9 +21,11 @@ class BuildProductCategories extends StatelessWidget {
     final providerWatch = context.watch<ProductProvider>();
 
     final categories = providerWatch.products
-        .where((categories) =>
-            categories.category == selectCategory &&
-            categories.id != product?.id)
+        .where(
+          (categories) =>
+              categories.category == selectCategory &&
+              categories.id != product?.id,
+        )
         .toList();
 
     return Scaffold(

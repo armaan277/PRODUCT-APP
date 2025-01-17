@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
@@ -40,12 +41,13 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
           color: Colors.white,
         ),
         backgroundColor: AppColor.appColor,
-        title: const Text(
-          'Your Orders',
-          style: TextStyle(
+        title: Text(
+          'My Orders',
+          style: GoogleFonts.pacifico(
             color: Colors.white,
           ),
         ),
+        centerTitle: true,
       ),
       body: providerWatch.isLoadingOrderDetails
           ? const Center(child: CircularProgressIndicator())

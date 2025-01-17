@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
@@ -168,10 +169,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 30),
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     if (_formKey.currentState!.validate()) {
+                      final SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
                       uniqueId = nanoId;
                       userUniqueId = nanoId;
+                      prefs.setString('userUniqueId', userUniqueId ?? '');
+                      prefs.setBool('isLoggedIn', true);
                       debugPrint('SignUp userUniqueId : $userUniqueId');
                       debugPrint('uuid : $uniqueId');
                       postSignUpData();

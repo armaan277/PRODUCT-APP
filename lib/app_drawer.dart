@@ -73,7 +73,7 @@ class AppDrawer extends StatelessWidget {
               ),
             ),
             onTap: () {
-              // Navigator.of(context).pushNamed('home_screen');
+              Navigator.of(context).pushNamed('bottom_navigation');
             },
           ),
           ListTile(
@@ -167,9 +167,11 @@ class AppDrawer extends StatelessWidget {
             ),
             onTap: () async {
               isLoggedIn = false;
+              userUniqueId = '';
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
               prefs.setBool('isLoggedIn', isLoggedIn);
+              prefs.setString('userUniqueId', userUniqueId);
               Navigator.of(context).pushReplacementNamed('login_sreen');
             },
           ),

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
-import 'package:shopping_app/screens/order_success_screen.dart';
+import 'package:shopping_app/screens/payment_screen.dart';
 
 class AddressScreen extends StatefulWidget {
   const AddressScreen({super.key});
@@ -73,7 +73,7 @@ class _AddressScreenState extends State<AddressScreen> {
 
   @override
   void initState() {
-    context.read<ProductProvider>().getAddressData(userUniqueId);
+    context.read<ProductProvider>().getAddressData();
     super.initState();
   }
 
@@ -164,7 +164,7 @@ class _AddressScreenState extends State<AddressScreen> {
                     providerRead.postAddressId(userUniqueId);
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
-                      return OrderSuccessScreen();
+                      return PaymentScreen();
                     }));
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(

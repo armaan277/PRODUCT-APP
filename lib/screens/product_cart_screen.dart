@@ -5,7 +5,7 @@ import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/custom_toast.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
-import 'package:shopping_app/screens/payment_screen.dart';
+import 'package:shopping_app/screens/address_screen.dart';
 
 class ProductCartScreen extends StatefulWidget {
   const ProductCartScreen({
@@ -303,7 +303,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
                     child: Text(
-                      '${(providerWatch.totalPrice) < 0 ? 0.0 : (providerWatch.totalPrice).toStringAsFixed(2)}\$',
+                      '${(providerWatch.totalPrice).toStringAsFixed(2)}\$',
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.black54,
@@ -321,7 +321,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                         )
                       : Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                          return PaymentScreen();
+                          return AddressScreen();
                         }));
                 },
                 child: Container(

@@ -35,7 +35,7 @@ class ProfileScreen extends StatelessWidget {
                 style:
                     TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
               ),
-              child: const Icon(Icons.shopping_bag_outlined),
+              child: const Icon(Icons.shopping_cart),
             ),
           ),
         ],

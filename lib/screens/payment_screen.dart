@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shopping_app/constant/constant.dart';
-import 'package:shopping_app/screens/add_new_card_payment_screen.dart';
+import 'package:shopping_app/product_provider/product_provider.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -9,13 +11,18 @@ class PaymentScreen extends StatefulWidget {
   PaymentScreenState createState() => PaymentScreenState();
 }
 
-class PaymentScreenState extends State<PaymentScreen>
-    with TickerProviderStateMixin {
+class PaymentScreenState extends State<PaymentScreen> {
   int? expandedIndex; // Tracks the currently expanded payment option
-  int? selectedPaymentOption; // Tracks the selected sub-option (radio button)
+  // int? selectedPaymentOption; // Tracks the selected sub-option (radio button)
+  String payment = 'Make Payment';
+  int selectedPaymentMethod = 1;
+
+  final Razorpay _razorpay = Razorpay();
 
   @override
   Widget build(BuildContext context) {
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     return Scaffold(
       backgroundColor: AppColor.appBackgroundColor,
       appBar: AppBar(
@@ -41,72 +48,36 @@ class PaymentScreenState extends State<PaymentScreen>
                 child: Column(
                   children: [
                     buildCustomPaymentOption(
-                      icon: Icons.credit_card,
-                      title: 'Credit/Debit Card',
-                      index: 0,
+                      title: 'Credit/Debit Card/UPI',
+                      index: 1,
+                      selectedPaymentMethod: selectedPaymentMethod!,
+                      onSelectOption: (int newValue) {
+                        setState(() {
+                          selectedPaymentMethod = newValue;
+                          payment = 'Make Payment';
+
+                          debugPrint(
+                              'selectedPaymentMethod : $selectedPaymentMethod');
+                        });
+                      },
                       children: [
-                        Divider(
-                          color: Colors.grey,
-                        ),
-                        buildElevatedListTile(
-                          trailingWidget: Padding(
-                            padding: const EdgeInsets.only(right: 14.0),
-                            child: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 16,
-                              color: AppColor.appColor,
-                            ),
-                          ),
-                          leadingIcon: Icons.add_circle_outline,
-                          title: 'Add New Card',
-                          onTap: () {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return AddNewCardScreenPayment();
-                            }));
-                          },
-                        ),
-                        buildElevatedListTile(
-                          leadingIcon: Icons.credit_card,
-                          title: '**** **** **** 1234',
-                          onTap: () {},
-                          trailingWidget: Radio(
-                            value: 1,
-                            groupValue: selectedPaymentOption,
-                            onChanged: (int? newValue) {
-                              setState(() {
-                                selectedPaymentOption = newValue!;
-                              });
-                            },
-                            activeColor: AppColor.appColor,
-                          ),
-                        ),
+                        Text("Enter card details here..."),
                       ],
                     ),
                     buildCustomPaymentOption(
-                      icon: Icons.money,
                       title: 'Cash On Delivery',
-                      index: 1,
+                      index: 2,
+                      selectedPaymentMethod: selectedPaymentMethod!,
+                      onSelectOption: (int newValue) {
+                        setState(() {
+                          selectedPaymentMethod = newValue;
+                          payment = 'Place Order';
+                          debugPrint(
+                              'selectedPaymentMethod : $selectedPaymentMethod');
+                        });
+                      },
                       children: [
-                        buildElevatedListTile(
-                          leadingIcon: Icons.attach_money,
-                          title: 'Pay on delivery',
-                          onTap: () {
-                            setState(() {
-                              selectedPaymentOption = 2;
-                            });
-                          },
-                          trailingWidget: Radio(
-                            value: 2,
-                            groupValue: selectedPaymentOption,
-                            onChanged: (int? newValue) {
-                              setState(() {
-                                selectedPaymentOption = newValue!;
-                              });
-                            },
-                            activeColor: AppColor.appColor,
-                          ),
-                        ),
+                        Text("Enter PayPal account details..."),
                       ],
                     ),
                   ],
@@ -144,7 +115,7 @@ class PaymentScreenState extends State<PaymentScreen>
                     ),
                     SizedBox(height: 4.0),
                     Text(
-                      '\$28.6',
+                      '\$${context.read<ProductProvider>().totalPrice}',
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w600,
@@ -154,7 +125,25 @@ class PaymentScreenState extends State<PaymentScreen>
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Payment action
+                    if (selectedPaymentMethod == 1) {
+                      var options = {
+                        'key': 'rzp_test_YghCO1so2pwPnx',
+                        'amount': (context.read<ProductProvider>().totalPrice *
+                                100)
+                            .toInt(), // Amount in paise (e.g., 500.00 INR = 50000 paise)
+                        'currency': 'USD', // Specify the currency
+                        'name': 'AM Coders.',
+                        'description': 'Flutter Developer',
+                        'prefill': {
+                          'contact': '8080773680',
+                          'email': 'am@gmail.com',
+                        }
+                      };
+
+                      _razorpay.open(options);
+                    } else {
+                      Navigator.of(context).pushNamed('order_success_screen');
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(0.0, 52),
@@ -164,7 +153,7 @@ class PaymentScreenState extends State<PaymentScreen>
                     ),
                   ),
                   child: Text(
-                    'Make Payment',
+                    payment,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -182,9 +171,10 @@ class PaymentScreenState extends State<PaymentScreen>
   }
 
   Widget buildCustomPaymentOption({
-    required IconData icon,
     required String title,
     required int index,
+    required int selectedPaymentMethod,
+    required ValueChanged<int> onSelectOption, // Callback to handle selection
     required List<Widget> children,
   }) {
     return Container(
@@ -203,75 +193,60 @@ class PaymentScreenState extends State<PaymentScreen>
       ),
       child: Column(
         children: [
-          InkWell(
-            onTap: () {
-              setState(() {
-                expandedIndex = (expandedIndex == index) ? null : index;
-              });
-            },
-            child: Container(
-              height: 60,
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-              child: Row(
-                children: [
-                  Icon(icon, color: AppColor.appColor),
-                  SizedBox(width: 16.0),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16.0,
-                      ),
+          Container(
+            height: 60,
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16.0,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 14.0),
-                    child: Icon(
-                      expandedIndex == index
-                          ? Icons.keyboard_arrow_up
-                          : Icons.keyboard_arrow_down,
-                      color: AppColor.appColor,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                Radio<int>(
+                  value: index,
+                  groupValue: selectedPaymentMethod,
+                  onChanged: (int? newValue) {
+                    if (newValue != null) {
+                      onSelectOption(newValue); // Call the provided callback
+                    }
+                  },
+                  activeColor: AppColor.appColor,
+                ),
+              ],
             ),
-          ),
-          AnimatedSize(
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            child: expandedIndex == index
-                ? Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: Column(children: children),
-                  )
-                : SizedBox.shrink(),
           ),
         ],
       ),
     );
   }
 
-  Widget buildElevatedListTile({
-    required IconData leadingIcon,
-    required String title,
-    Widget? trailingWidget,
-    required VoidCallback onTap,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(8.0),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(8.0),
-        onTap: onTap,
-        child: ListTile(
-          leading: Icon(leadingIcon, color: AppColor.appColor),
-          title: Text(title),
-          trailing: trailingWidget,
-        ),
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Navigator.of(context).pushNamed('order_success_screen');
+    debugPrint('response : ${response.data}');
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Payment Failed'),
+        duration: Duration(seconds: 1),
       ),
     );
+    debugPrint('response : $response');
+  }
+
+  @override
+  void dispose() {
+    try {
+      _razorpay.clear();
+    } catch (e) {
+      debugPrint('dispose() Catch Block : $e');
+    }
+    super.dispose();
   }
 }
