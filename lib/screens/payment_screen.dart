@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shopping_app/constant/constant.dart';
+import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -50,7 +51,7 @@ class PaymentScreenState extends State<PaymentScreen> {
                     buildCustomPaymentOption(
                       title: 'Credit/Debit Card/UPI',
                       index: 1,
-                      selectedPaymentMethod: selectedPaymentMethod!,
+                      selectedPaymentMethod: selectedPaymentMethod,
                       onSelectOption: (int newValue) {
                         setState(() {
                           selectedPaymentMethod = newValue;
@@ -67,7 +68,7 @@ class PaymentScreenState extends State<PaymentScreen> {
                     buildCustomPaymentOption(
                       title: 'Cash On Delivery',
                       index: 2,
-                      selectedPaymentMethod: selectedPaymentMethod!,
+                      selectedPaymentMethod: selectedPaymentMethod,
                       onSelectOption: (int newValue) {
                         setState(() {
                           selectedPaymentMethod = newValue;
@@ -139,9 +140,11 @@ class PaymentScreenState extends State<PaymentScreen> {
                           'email': 'am@gmail.com',
                         }
                       };
-
                       _razorpay.open(options);
                     } else {
+                      context
+                          .read<ProductProvider>()
+                          .postAddressId(userUniqueId);
                       Navigator.of(context).pushNamed('order_success_screen');
                     }
                   },
@@ -226,6 +229,7 @@ class PaymentScreenState extends State<PaymentScreen> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    context.read<ProductProvider>().postAddressId(userUniqueId);
     Navigator.of(context).pushNamed('order_success_screen');
     debugPrint('response : ${response.data}');
   }

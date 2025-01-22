@@ -1,12 +1,20 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/config/endponts.dart';
+import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/model/product.dart';
 import 'package:shopping_app/screens/product_cart_screen.dart';
 import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:path/path.dart' as p;
+import 'package:shopping_app/widgets/show_mdl_bottom_sheet_review.dart';
 
 class ProductProvider extends ChangeNotifier {
   List<Product> products = [];
@@ -39,6 +47,7 @@ class ProductProvider extends ChangeNotifier {
   TextEditingController stateController = TextEditingController();
   TextEditingController zipcodeController = TextEditingController();
   TextEditingController countryController = TextEditingController();
+  final phoneController = TextEditingController();
 
   bool isAddressStoreInDatabase = false;
 
@@ -57,6 +66,16 @@ class ProductProvider extends ChangeNotifier {
 
   // Review TextContreller
   final ratingController = TextEditingController();
+
+  int rating = 0;
+
+  List reviews = [];
+
+  final signupNameController = TextEditingController();
+  final signupPhoneController = TextEditingController();
+  final signupEmailController = TextEditingController();
+  final signupPasswordController = TextEditingController();
+  final signupConfirmPasswordController = TextEditingController();
 
   Future<void> getProducts() async {
     final response = await http.get(Uri.parse(Endponts.getAllProductsEndPoint));
@@ -97,47 +116,6 @@ class ProductProvider extends ChangeNotifier {
     favoriteProducts.removeWhere((ele) => ele.id == product.id);
     notifyListeners();
   }
-
-  // void setSFProducts() async {
-  // final prefs = await SharedPreferences.getInstance();
-
-  // final jsonFavoriteProduct =
-  //     favoriteProducts.map((p) => p.toJson()).toList();
-  // final jsonBagProducts = bagProducts.map((p) => p.toJson()).toList();
-  // debugPrint('jsonFavoriteProduct : $jsonFavoriteProduct');
-  // prefs.setStringList('favo)rite', jsonFavoriteProduct);
-  // prefs.setStringList('bag', jsonBagProducts);
-  // prefs.setInt('bagProCount', bagProductsCount);
-  // prefs.setDouble('total', totalPrice);
-
-  // prefs.setString('name', nameController.text);
-  // prefs.setString('address', addressController.text);
-  // prefs.setString('city', cityController.text);
-  // prefs.setString('state', stateController.text);
-  // prefs.setString('zipcode', zipcodeController.text);
-  // prefs.setString('country', countryController.text);
-  // }
-
-  // void getSFProducts() async {
-  // final prefs = await SharedPreferences.getInstance();
-  // final List<String>? jsonFavoriteProduct = prefs.getStringList('favorite');
-  // final List<String>? jsonBagProducts = prefs.getStringList('bag');
-
-  // favoriteProducts =
-  //     jsonFavoriteProduct?.map((json) => Product.fromJson(json)).toList() ??
-  //         [];
-  // bagProducts =
-  //     jsonBagProducts?.map((json) => Product.fromJson(json)).toList() ?? [];
-  // bagProductsCount = prefs.getInt('bagProCount') ?? 0;
-  // totalPrice = prefs.getDouble('total') ?? 0.0;
-
-  // nameController.text = prefs.getString('name') ?? '';
-  // addressController.text = prefs.getString('address') ?? '';
-  // cityController.text = prefs.getString('city') ?? '';
-  // stateController.text = prefs.getString('state') ?? '';
-  // zipcodeController.text = prefs.getString('zipcode') ?? '';
-  // countryController.text = prefs.getString('country') ?? '';
-  // }
 
   void favoriteChip(String favoriteChip) {
     selectFavoriteCategories = favoriteChip;
@@ -217,7 +195,7 @@ class ProductProvider extends ChangeNotifier {
 
 // LOGIN WORK
   void postLoginData(BuildContext context) async {
-    final url = Uri.parse('http://192.168.0.111:3000/login');
+    final url = Uri.parse(Endponts.loginEndPoint);
 
     final loginData = {
       'email': emailController.text,
@@ -249,6 +227,27 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
+  // SignUp Work
+  void postSignUpData() {
+    final url = Uri.parse(Endponts.signUpEndPoint);
+
+    final signUpData = {
+      'id': userUniqueId,
+      'name': signupNameController.text,
+      'phone': signupPhoneController.text,
+      'email': signupEmailController.text,
+      'password': signupPasswordController.text,
+    };
+
+    debugPrint('');
+
+    http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(signUpData),
+    );
+  }
+
 // FAVORITE API WORK
   Future<void> toggleFavoriteStatus(Product favoriteProduct) async {
     if (!favoriteProducts.contains(favoriteProduct)) {
@@ -262,7 +261,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void getFavouriteData(String userId) async {
-    final url = Uri.parse('http://192.168.0.111:3000/favorite/$userId');
+    final url = Uri.parse('${Endponts.getUserFavouritesEndPoint}/$userId');
     final response = await http.get(url);
 
     debugPrint('favouriteResponse : ${response.body}');
@@ -284,7 +283,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<void> postFavoriteData(Product favoriteProduct) async {
-    final url = Uri.parse('http://192.168.0.111:3000/favorite');
+    final url = Uri.parse(Endponts.postUserFavouriteEndPoint);
 
     Map<String, dynamic> postFavorite = {
       'id': favoriteProduct.id,
@@ -324,7 +323,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<void> deleteFavourite(int id) async {
-    final url = Uri.parse('http://192.168.0.111:3000/favorite/$id');
+    final url = Uri.parse('${Endponts.deleteUserFavouriteEndPoint}/$id');
 
     try {
       final response = await http.delete(url);
@@ -343,7 +342,7 @@ class ProductProvider extends ChangeNotifier {
 
   // CART API WORK
   void postCartData(Product bagProduct, BuildContext? context) async {
-    final url = Uri.parse('http://192.168.0.111:3000/cartproducts');
+    final url = Uri.parse(Endponts.postUserCartProductsEndPoint);
 
     Map<String, dynamic> postCart = {
       'id': bagProduct.id,
@@ -395,7 +394,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void getCartsData(String userId) async {
-    final url = Uri.parse('http://192.168.0.111:3000/cartproducts/$userId');
+    final url = Uri.parse('${Endponts.getUserCartsProductsEndPoint}/$userId');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -409,7 +408,7 @@ class ProductProvider extends ChangeNotifier {
 
       totalPriceCartItems();
 
-      debugPrint('bagProducts bagProducts : ${bagProducts}');
+      debugPrint('bagProducts bagProducts : $bagProducts');
       isProductLoading = false;
       notifyListeners();
     } else {
@@ -418,7 +417,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void deleteCartData(int id) async {
-    final url = Uri.parse('http://192.168.0.111:3000/cartproducts/$id');
+    final url = Uri.parse('${Endponts.deleteUserCartProductsEndPoint}/$id');
 
     try {
       final response = await http.delete(url);
@@ -438,7 +437,7 @@ class ProductProvider extends ChangeNotifier {
 
   // ADDRESS API WORK
   Future<void> getAddressData() async {
-    final url = Uri.parse('http://192.168.0.111:3000/address/$userUniqueId');
+    final url = Uri.parse('${Endponts.getUserAddressEndPoint}/$userUniqueId');
     debugPrint('getAddressData : $userUniqueId');
 
     try {
@@ -492,7 +491,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void postAddressData() async {
-    final url = Uri.parse('http://192.168.0.111:3000/address');
+    final url = Uri.parse(Endponts.postUserAddressEndPoint);
 
     final postAddressData = {
       'address_id': userUniqueId,
@@ -522,7 +521,7 @@ class ProductProvider extends ChangeNotifier {
     int zipCode,
     String country,
   ) {
-    final url = Uri.parse('http://192.168.0.111:3000/address/$userId');
+    final url = Uri.parse('${Endponts.postUserAddressEndPoint}/$userId');
 
     final updatedTodo = jsonEncode({
       'address_id': userId,
@@ -543,7 +542,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void postAddressId(String userId) async {
-    final url = Uri.parse('http://192.168.0.111:3000/orderslist/$userId');
+    final url = Uri.parse('${Endponts.postUserAddressIDEndPoint}/$userId');
 
     final data = {
       'address_id': userId,
@@ -565,8 +564,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void deleteOrderCartProducts(String userId) async {
-    final url =
-        Uri.parse('http://192.168.0.111:3000/ordercartproducts/$userId');
+    final url = Uri.parse('${Endponts.deleteUserOrderCartsProducts}/$userId');
 
     try {
       final response = await http.delete(url);
@@ -587,7 +585,7 @@ class ProductProvider extends ChangeNotifier {
 // ORDERS API WORKING
   Future<void> fetchOrders(String userId, BuildContext context) async {
     final url =
-        Uri.parse('http://192.168.0.111:3000/myorders/$userId'); // Backend URL
+        Uri.parse('${Endponts.getUserOrdersEndPoint}/$userId'); // Backend URL
 
     try {
       // Clear existing orders and set loading state
@@ -621,7 +619,7 @@ class ProductProvider extends ChangeNotifier {
 
   void fetchOrderItems(String orderIdItems) async {
     final url =
-        Uri.parse('http://192.168.0.111:3000/bookingcarts/$orderIdItems');
+        Uri.parse('${Endponts.getUserOrderItemsEndPoint}/$orderIdItems');
 
     debugPrint('Fetching items for orderItemsId: $orderIdItems');
     // Clear existing data and set loading state BEFORE making the network call
@@ -661,8 +659,7 @@ class ProductProvider extends ChangeNotifier {
 
   void updateQuantity(String uniqueId, Product bagProduct) async {
     // Define the URL
-    final url =
-        Uri.parse('http://192.168.0.111:3000/cartproducts/updateQuantity');
+    final url = Uri.parse(Endponts.patchUserCartQtyUpdateEndPoint);
 
     // Prepare the request body
     final body = {
@@ -689,5 +686,253 @@ class ProductProvider extends ChangeNotifier {
     } catch (error) {
       debugPrint('Error updating quantity: $error');
     }
+  }
+
+  // Rating Work
+  void postRating(BuildContext context, int productId, String userId,
+      List<String> reviewImages) async {
+    final url = Uri.parse('${Endponts.postUserReviewsEndPoint}/$productId');
+
+    final postRatingData = {
+      'product_id': productId,
+      'rating': rating, // Replace with dynamic rating if needed
+      'comment': ratingController.text,
+      'id': userId, // Add user ID
+      'reviewer_images': reviewImages,
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        body: jsonEncode(postRatingData),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Your Review Successfully Submitted'),
+          ),
+        );
+        // Successfully posted the rating
+        debugPrint('Rating submitted successfully: ${response.body}');
+      } else {
+        // Handle errors
+        debugPrint(
+            'Failed to submit rating. Status code: ${response.statusCode}');
+        debugPrint('Response: ${response.body}');
+      }
+    } catch (error) {
+      // Handle network or JSON errors
+      debugPrint('Error submitting rating: $error');
+    }
+  }
+
+  Future<void> getReviewData(int productId) async {
+    try {
+      // Construct the API URL
+      final url = Uri.parse('${Endponts.getUserReviewsEndPoint}/$productId');
+
+      // Send GET request
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        // Decode the response body
+        final reviewsResponse = jsonDecode(response.body);
+        reviews = reviewsResponse;
+        debugPrint('Reviews: $reviews'); // Debugging log
+      } else {
+        debugPrint(
+            'Failed to load reviews. Status code: ${response.statusCode}');
+        if (response.statusCode == 404) { 
+          reviews = [];
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching reviews: $e'); // Handle errors
+    }
+  }
+
+// This Function used in OrderItems Screen for Post Reviews
+  void showMDLBottomSheet(BuildContext context, Map product) {
+    showModalBottomSheet(
+      backgroundColor: AppColor.appBackgroundColor,
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      isScrollControlled: true, // Ensures the sheet can expand based on content
+      builder: (context) {
+        return ShowMdlBottomSheetReview(product: product);
+      },
+    );
+  }
+
+  // Generate PDF
+  void generatePDF(
+    List<dynamic> orderItems,
+    String name,
+    String address,
+    String orderDate,
+  ) async {
+    final pdf = pw.Document();
+
+    // Calculate subtotal
+    double subtotal = orderItems.fold(
+      0,
+      (sum, item) => sum + (item['price'] * item['quantity']),
+    );
+    double tax = subtotal * 0.10; // Example: 10% tax
+    double total = subtotal + tax;
+
+    // Create PDF content
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                'Invoice',
+                style: pw.TextStyle(
+                  fontSize: 24,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+              pw.SizedBox(height: 20),
+              pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text('E-commerce App'),
+                  pw.Text('123, AM Company'),
+                  pw.Text('Mumbai, India'),
+                  pw.Text('Email: am@gmail.com'),
+                ],
+              ),
+
+              pw.SizedBox(height: 20),
+
+              // Bill To Section
+              pw.Text(
+                'Bill To:',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+              ),
+              pw.Text(name),
+              pw.Text(address),
+              pw.Text('Order ID: XYZ12345'),
+              pw.Text('Order Date: ${orderDate}'),
+
+              pw.SizedBox(height: 20),
+
+              // Table for Order Items
+              pw.Table(
+                border: pw.TableBorder.all(color: PdfColors.grey),
+                columnWidths: {
+                  0: pw.FlexColumnWidth(2),
+                  1: pw.FlexColumnWidth(1),
+                  2: pw.FlexColumnWidth(1),
+                  3: pw.FlexColumnWidth(1),
+                },
+                children: [
+                  // Table Header
+                  pw.TableRow(
+                    decoration: pw.BoxDecoration(color: PdfColors.grey300),
+                    children: [
+                      pw.Padding(
+                        padding: const pw.EdgeInsets.all(8),
+                        child: pw.Text(
+                          'Item',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                      ),
+                      pw.Padding(
+                        padding: const pw.EdgeInsets.all(8),
+                        child: pw.Text(
+                          'Quantity',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                      ),
+                      pw.Padding(
+                        padding: const pw.EdgeInsets.all(8),
+                        child: pw.Text(
+                          'Unit Price',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                      ),
+                      pw.Padding(
+                        padding: const pw.EdgeInsets.all(8),
+                        child: pw.Text(
+                          'Total',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Table Rows for Items
+                  ...orderItems.map((item) {
+                    return pw.TableRow(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8),
+                          child: pw.Text(item['title']),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8),
+                          child: pw.Text('${item['quantity']}'),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8),
+                          child: pw.Text('\$${item['price']}'),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(8),
+                          child: pw.Text(
+                            '\$${item['price'] * item['quantity']}',
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+                ],
+              ),
+              pw.SizedBox(height: 20),
+
+              // Subtotal, Tax, Total
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.end,
+                children: [
+                  pw.Text('Subtotal: \$${subtotal.toStringAsFixed(2)}'),
+                ],
+              ),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.end,
+                children: [
+                  pw.Text('Tax (10%): \$${tax.toStringAsFixed(2)}'),
+                ],
+              ),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.end,
+                children: [
+                  pw.Text(
+                    'Total: \$${total.toStringAsFixed(2)}',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                ],
+              ),
+              pw.SizedBox(height: 20),
+              pw.Text('Thank you for shopping with us!'),
+            ],
+          );
+        },
+      ),
+    );
+
+    // Save PDF
+    final dir = await getTemporaryDirectory();
+    final file = File(p.join(dir.path, 'invoice.pdf'));
+    await file.writeAsBytes(await pdf.save());
+
+    // Open the PDF
+    await OpenFile.open(file.path);
   }
 }

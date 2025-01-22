@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/model/product.dart';
@@ -71,12 +72,13 @@ class _AllReviewScreenState extends State<AllReviewScreen> {
         const SizedBox(height: 8),
 
         // Optional Images
-        if (review['images'] != null && review['images'] is List)
+        if (review['reviewer_images'] != null &&
+            review['reviewer_images'] is List)
           SizedBox(
             height: 80,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              itemCount: review['images'].length,
+              itemCount: review['reviewer_images'].length,
               separatorBuilder: (context, index) => const SizedBox(width: 8),
               itemBuilder: (context, index) {
                 return Container(
@@ -89,7 +91,7 @@ class _AllReviewScreenState extends State<AllReviewScreen> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
-                      review['images'][index],
+                      review['reviewer_images'][index],
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -114,11 +116,32 @@ class _AllReviewScreenState extends State<AllReviewScreen> {
     return Scaffold(
       backgroundColor: AppColor.appBackgroundColor,
       appBar: AppBar(
-        title: const Text('All Reviews'),
-        backgroundColor: AppColor.appBackgroundColor,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+        ),
+        title: Text(
+          'All Reviews',
+          style: GoogleFonts.pacifico(
+            letterSpacing: 1.1,
+            fontSize: 20,
+            color: Colors.white,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppColor.appColor,
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list),
+            icon: const Icon(
+              Icons.filter_list,
+              color: Colors.white,
+            ),
             onPressed: () {
               showModalBottomSheet(
                 context: context,

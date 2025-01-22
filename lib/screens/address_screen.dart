@@ -161,7 +161,6 @@ class _AddressScreenState extends State<AddressScreen> {
                     } else {
                       providerRead.postAddressData();
                     }
-                    providerRead.postAddressId(userUniqueId);
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
                       return PaymentScreen();

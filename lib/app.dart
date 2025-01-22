@@ -23,7 +23,6 @@ class ProductApp extends StatelessWidget {
           'product_cart_screen': (context) => const ProductCartScreen(),
           'my_orders_screen': (context) => const MyOrdersScreen(),
           'order_success_screen': (context) => const OrderSuccessScreen(),
-
         },
         debugShowCheckedModeBanner: false,
       ),

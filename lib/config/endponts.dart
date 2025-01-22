@@ -1,32 +1,30 @@
 class Endponts {
-  static const loginEndPoint = 'http://192.168.0.111:3000/login';
-  static const signUpEndPoint = 'http://192.168.0.111:3000/signup';
+  static const _baseEndpoint = 'https://ecommerce-rendered.onrender.com';
+  static const loginEndPoint = '$_baseEndpoint/login';
+  static const signUpEndPoint = '$_baseEndpoint/signup';
 
 // All Get End Points
-  static const getAllProductsEndPoint = 'http://192.168.0.111:3000/product';
-  static const getUserCartsProductsEndPoint = 'http://192.168.0.111:3000/cartproducts/';
-  static const getUserFavouritesEndPoint = 'http://192.168.0.111:3000/favorite/';
-  static const getUserAddressEndPoint = 'http://192.168.0.111:3000/address/';
-  static const getUserOrdersEndPoint = 'http://192.168.0.111:3000/myorders/';
-  static const getUserOrderItemsEndPoint = 'http://192.168.0.111:3000/bookingcarts/';
-
-
+  static const getAllProductsEndPoint = '$_baseEndpoint/products';
+  static const getUserCartsProductsEndPoint = '$_baseEndpoint/cartproducts';
+  static const getUserFavouritesEndPoint = '$_baseEndpoint/favorite';
+  static const getUserAddressEndPoint = '$_baseEndpoint/address';
+  static const getUserOrdersEndPoint = '$_baseEndpoint/myorders';
+  static const getUserOrderItemsEndPoint = '$_baseEndpoint/bookingcarts';
+  static const getUserReviewsEndPoint = '$_baseEndpoint/reviews';
 
 // All Post End Points
-  static const postUserCartProductsEndPoint = 'http://192.168.0.111:3000/cartproducts';
-  static const postUserFavouriteEndPoint = 'http://192.168.0.111:3000/favorite';
-  static const postUserAddressIDEndPoint = 'http://192.168.0.111:3000/orderslist';
-  static const postUserAddressEndPoint = 'http://192.168.0.111:3000/address';
+  static const postUserCartProductsEndPoint = '$_baseEndpoint/cartproducts';
+  static const postUserFavouriteEndPoint = '$_baseEndpoint/favorite';
+  static const postUserAddressIDEndPoint = '$_baseEndpoint/orderslist';
+  static const postUserAddressEndPoint = '$_baseEndpoint/address';
+  static const postUserReviewsEndPoint = '$_baseEndpoint/reviews';
 
 // All Patch End Points
- static const patchUserAddressEndPoint = 'http://192.168.0.111:3000/address/';
- static const patchUserCartQtyUpdateEndPoint = 'http://192.168.0.111:3000/cartproducts/updateQuantity';
+  static const patchUserAddressEndPoint = '$_baseEndpoint/address';
+  static const patchUserCartQtyUpdateEndPoint ='$_baseEndpoint/cartproducts/updateQuantity';
 
-  
 // All Delete End Points
- static const deleteUserCartProductsEndPoint = 'http://192.168.0.111:3000/cartproducts/';
- static const deleteUserFavouriteEndPoint = 'http://192.168.0.111:3000/favorite/';
- static const deleteUserOrderCartsProducts = 'http://192.168.0.111:3000/ordercartproducts/';
-
- 
+  static const deleteUserCartProductsEndPoint = '$_baseEndpoint/cartproducts';
+  static const deleteUserFavouriteEndPoint = '$_baseEndpoint/favorite';
+  static const deleteUserOrderCartsProducts ='$_baseEndpoint/ordercartproducts';
 }

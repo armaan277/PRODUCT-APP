@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:http/http.dart' as http;
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
@@ -32,15 +32,13 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
   }
 
   Future<void> fetchReviews() async {
-    await getReviewData(widget.product.id); // Fetch reviews
+    final providerRead = context.read<ProductProvider>();
+    await providerRead.getReviewData(widget.product.id); // Fetch reviews
     setState(() {}); // Update the UI after fetching data
   }
 
   int currentIndex = 0;
-  final CarouselSliderController carouselController =
-      CarouselSliderController();
-
-  List reviews = [];
+  final carouselController = CarouselSliderController();
 
   String formattedDate(String apiDate) {
     DateTime parsedDate = DateTime.parse(apiDate); // Parse the date string
@@ -48,8 +46,10 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
   }
 
   double calculateReviews() {
+    final providerRead = context.read<ProductProvider>();
+
     // Calculate the total sum of all ratings
-    double total = reviews
+    double total = providerRead.reviews
         .map((ele) => ele['rating']) // Extract ratings
         .fold(0, (prev, rating) => prev + rating); // Accumulate the sum
     print('Total ratings: $total');
@@ -62,15 +62,19 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
     final providerRead = context.read<ProductProvider>();
     final providerWatch = context.watch<ProductProvider>();
     final favorite = providerWatch.favoriteProducts.contains(widget.product);
+    final lastReviewImages =
+        providerRead.reviews.isNotEmpty ? providerRead.reviews.last : [];
     return Scaffold(
       backgroundColor: AppColor.appBackgroundColor,
       appBar: AppBar(
         backgroundColor: AppColor.appColor,
-        title: const Text(
+        title: Text(
           'Product Detail',
-          style: TextStyle(
+          style: GoogleFonts.pacifico(
+            letterSpacing: 1.1,
+            fontSize: 20,
             color: Colors.white,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w300,
           ),
         ),
         leading: IconButton(
@@ -85,42 +89,42 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(vertical: 8.0),
-            //   child: CarouselSlider(
-            //     items: widget.product.images.map((image) {
-            //       return Image.network(image);
-            //     }).toList(),
-            //     options: CarouselOptions(
-            //       height: 300,
-            //       autoPlay: widget.product.images.length > 1 ? true : false,
-            //       enlargeCenterPage: true,
-            //       onPageChanged: (index, reason) {
-            //         setState(() {
-            //           currentIndex = index;
-            //         });
-            //       },
-            //     ),
-            //     carouselController: carouselController,
-            //   ),
-            // ),
-            // if (widget.product.images.length > 1)
-            //   DotsIndicator(
-            //     dotsCount: widget.product.images.length,
-            //     position: currentIndex,
-            //     decorator: DotsDecorator(
-            //       color: Colors.grey,
-            //       activeColor: AppColor.appColor,
-            //       size: const Size.square(9.0),
-            //       activeSize: const Size(12.0, 12.0),
-            //       activeShape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(10.0),
-            //       ),
-            //     ),
-            //     onTap: (index) {
-            //       carouselController.animateToPage(index);
-            //     },
-            //   ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: CarouselSlider(
+                items: widget.product.images.map((image) {
+                  return Image.network(image);
+                }).toList(),
+                options: CarouselOptions(
+                  height: 300,
+                  autoPlay: widget.product.images.length > 1 ? true : false,
+                  enlargeCenterPage: true,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                  },
+                ),
+                carouselController: carouselController,
+              ),
+            ),
+            if (widget.product.images.length > 1)
+              DotsIndicator(
+                dotsCount: widget.product.images.length,
+                position: currentIndex,
+                decorator: DotsDecorator(
+                  color: Colors.grey,
+                  activeColor: AppColor.appColor,
+                  size: const Size.square(9.0),
+                  activeSize: const Size(12.0, 12.0),
+                  activeShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                onTap: (index) {
+                  carouselController.animateToPage(index);
+                },
+              ),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -239,7 +243,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '⭐ ${calculateReviews() / reviews.length}',
+                          '⭐ ${(calculateReviews() / providerRead.reviews.length).toStringAsFixed(1)}',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -275,7 +279,6 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                 selectCategory: widget.product.category,
               ),
             ),
-
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -289,7 +292,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                   ),
                 ],
               ),
-              child: reviews.isNotEmpty
+              child: providerRead.reviews.isNotEmpty
                   ? Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
@@ -330,7 +333,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                     children: [
                                       SizedBox(width: 10),
                                       Text(
-                                        "${(calculateReviews() / reviews.length).toStringAsFixed(1)}/",
+                                        "${(calculateReviews() / providerRead.reviews.length).toStringAsFixed(1)}/",
                                         style: TextStyle(
                                           fontSize: 30,
                                           fontWeight: FontWeight.w500,
@@ -356,7 +359,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        "${reviews.length} Ratings",
+                                        "${providerRead.reviews.length} Ratings",
                                         style: TextStyle(
                                             color: Colors.grey, fontSize: 14),
                                       ),
@@ -366,7 +369,8 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                               ),
                               RatingBarIndicator(
                                 rating: calculateReviews() /
-                                    reviews.length, // Average rating
+                                    providerRead
+                                        .reviews.length, // Average rating
                                 itemBuilder: (context, index) => Icon(
                                   Icons.star,
                                   color: Colors.amber,
@@ -392,7 +396,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
 
                           // Review Description
                           Text(
-                            reviews.last['comment'] ?? '',
+                            providerRead.reviews.last['comment'] ?? '',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.grey,
@@ -400,44 +404,93 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                           ),
                           const SizedBox(height: 8),
                           // Images Row
-                          Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  'https://via.placeholder.com/60', // Replace with your image URL
-                                  height: 70,
-                                  width: 70,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  'https://via.placeholder.com/60', // Replace with your image URL
-                                  height: 70,
-                                  width: 70,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  'https://via.placeholder.com/60', // Replace with your image URL
-                                  height: 70,
-                                  width: 70,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ],
-                          ),
+                          if (lastReviewImages != null &&
+                              lastReviewImages["reviewer_images"] != null)
+                            Row(
+                              children: List.generate(
+                                  (lastReviewImages["reviewer_images"] as List)
+                                      .length, (index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return Dialog(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Stack(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  child: Image.network(
+                                                    lastReviewImages[
+                                                            'reviewer_images'][
+                                                        index], // Replace with your image URL
+                                                    height:
+                                                        300, // Increased height for better display
+                                                    width:
+                                                        300, // Increased width for better display
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  top: 4, // Adjust positioning
+                                                  right:
+                                                      4, // Adjust positioning
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.of(context)
+                                                          .pop(); // Close the dialog
+                                                    },
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.all(4.0),
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: Colors.black
+                                                            .withOpacity(
+                                                                0.6), // Background for better visibility
+                                                      ),
+                                                      child: Icon(
+                                                        Icons.close,
+                                                        color: Colors
+                                                            .white, // Close icon color
+                                                        size:
+                                                            20, // Close icon size
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.network(
+                                        lastReviewImages['reviewer_images'][
+                                            index], // Replace with your image URL
+                                        height: 70,
+                                        width: 70,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ),
+                          const SizedBox(width: 10),
                           const SizedBox(height: 10),
-
                           // Reviewer Info
                           Text(
-                            "${reviews.last['reviewer_name'] ?? ''}, ${formattedDate(reviews.last['date'] ?? '')}",
+                            "${providerRead.reviews.last['reviewer_name'] ?? ''}, ${formattedDate(providerRead.reviews.last['date'] ?? '')}",
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.grey,
@@ -463,7 +516,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (context) {
                                 return AllReviewScreen(
-                                  reviews: reviews,
+                                  reviews: providerRead.reviews,
                                   product: widget.product,
                                 );
                               }));
@@ -472,7 +525,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "View All ${reviews.length} Reviews",
+                                  "View All ${providerRead.reviews.length} Reviews",
                                   style: TextStyle(
                                     color: AppColor.appColor,
                                     fontSize: 16,
@@ -497,27 +550,5 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> getReviewData(int productId) async {
-    try {
-      // Construct the API URL
-      final url = Uri.parse('http://192.168.0.111:3000/reviews/$productId');
-
-      // Send GET request
-      final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        // Decode the response body
-        final reviewsResponse = jsonDecode(response.body);
-        reviews = reviewsResponse;
-        debugPrint('Reviews: $reviews'); // Debugging log
-      } else {
-        debugPrint(
-            'Failed to load reviews. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      debugPrint('Error fetching reviews: $e'); // Handle errors
-    }
   }
 }

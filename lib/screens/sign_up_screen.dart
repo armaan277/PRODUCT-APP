@@ -1,10 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
+import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
 import 'package:nanoid/nanoid.dart';
 
@@ -16,11 +16,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final nameController = TextEditingController();
-  final phoneController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+
 
   final _formKey = GlobalKey<FormState>();
 
@@ -29,6 +25,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final providerRead = context.read<ProductProvider>();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -68,7 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 40),
                 TextFormField(
-                  controller: nameController,
+                  controller: providerRead.signupNameController,
                   decoration: const InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: AppColor.appColor),
@@ -88,7 +85,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 TextFormField(
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  controller: phoneController,
+                  controller: providerRead.signupPhoneController,
                   decoration: const InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: AppColor.appColor),
@@ -106,7 +103,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  controller: emailController,
+                  controller: providerRead.signupEmailController,
                   decoration: const InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: AppColor.appColor),
@@ -127,7 +124,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  controller: passwordController,
+                  controller: providerRead.signupPasswordController,
                   obscureText: true,
                   decoration: const InputDecoration(
                     focusedBorder: OutlineInputBorder(
@@ -148,7 +145,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  controller: confirmPasswordController,
+                  controller: providerRead.signupConfirmPasswordController,
                   obscureText: true,
                   decoration: const InputDecoration(
                     focusedBorder: OutlineInputBorder(
@@ -161,7 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Confirm password is required';
-                    } else if (value != passwordController.text) {
+                    } else if (value != providerRead.signupPasswordController.text) {
                       return 'Passwords do not match';
                     }
                     return null;
@@ -175,11 +172,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           await SharedPreferences.getInstance();
                       uniqueId = nanoId;
                       userUniqueId = nanoId;
-                      prefs.setString('userUniqueId', userUniqueId ?? '');
+                      prefs.setString('userUniqueId', userUniqueId);
                       prefs.setBool('isLoggedIn', true);
                       debugPrint('SignUp userUniqueId : $userUniqueId');
                       debugPrint('uuid : $uniqueId');
-                      postSignUpData();
+                      providerRead.postSignUpData();
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const BottomNavigation(),
@@ -231,21 +228,5 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void postSignUpData() {
-    final url = Uri.parse('http://192.168.0.111:3000/signup');
-
-    final signUpData = {
-      'id': userUniqueId,
-      'name': nameController.text,
-      'phone': phoneController.text,
-      'email': emailController.text,
-      'password': passwordController.text,
-    };
-
-    http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(signUpData),
-    );
-  }
+  
 }

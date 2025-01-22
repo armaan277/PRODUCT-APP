@@ -50,7 +50,11 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
         centerTitle: true,
       ),
       body: providerWatch.isLoadingOrderDetails
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: CircularProgressIndicator(
+                color: AppColor.appColor,
+              ),
+            )
           : providerRead.orders.isEmpty
               ? const Center(
                   child: Text('No orders found'),
