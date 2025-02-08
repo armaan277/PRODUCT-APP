@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -76,6 +77,12 @@ class ProductProvider extends ChangeNotifier {
   final signupEmailController = TextEditingController();
   final signupPasswordController = TextEditingController();
   final signupConfirmPasswordController = TextEditingController();
+
+  List<dynamic> userDetails = [];
+  bool isUserDetailsLoad = true;
+
+  List<dynamic> userReviews = [];
+  bool isUserReviewsLoad = true;
 
   Future<void> getProducts() async {
     final response = await http.get(Uri.parse(Endponts.getAllProductsEndPoint));
@@ -542,10 +549,13 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void postAddressId(String userId) async {
+    DateTime now = DateTime.now();
+    String formattedTime = DateFormat('HH:mm:ss').format(now); // 24-hour format
     final url = Uri.parse('${Endponts.postUserAddressIDEndPoint}/$userId');
 
     final data = {
       'address_id': userId,
+      'order_booking_time': formattedTime,
     };
 
     final response = await http.post(
@@ -731,7 +741,7 @@ class ProductProvider extends ChangeNotifier {
   Future<void> getReviewData(int productId) async {
     try {
       // Construct the API URL
-      final url = Uri.parse('${Endponts.getUserReviewsEndPoint}/$productId');
+      final url = Uri.parse('${Endponts.getAllReviewsEndPoint}/$productId');
 
       // Send GET request
       final response = await http.get(url);
@@ -744,7 +754,7 @@ class ProductProvider extends ChangeNotifier {
       } else {
         debugPrint(
             'Failed to load reviews. Status code: ${response.statusCode}');
-        if (response.statusCode == 404) { 
+        if (response.statusCode == 404) {
           reviews = [];
         }
       }
@@ -934,5 +944,95 @@ class ProductProvider extends ChangeNotifier {
 
     // Open the PDF
     await OpenFile.open(file.path);
+  }
+
+  Future<bool> cancelStatusInDatabase(
+      String orderId, String orderStatus) async {
+    final url = Uri.parse(
+        '${Endponts.cancelStatusInDatabaseEndPoint}/$orderId'); // Fixed endpoint
+
+    try {
+      final response = await http.patch(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'order_status': orderStatus}),
+      );
+
+      if (response.statusCode == 200) {
+        debugPrint('Status updated successfully: $orderStatus');
+        notifyListeners();
+        return true;
+      } else {
+        debugPrint('Failed to update status: ${response.statusCode}');
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      debugPrint('Error updating status: $e');
+      notifyListeners();
+      return false;
+    }
+  }
+
+  // This code is used in app_drawer.dart file
+  void getUserDetails(String id) async {
+    try {
+      final response =
+          await http.get(Uri.parse('${Endponts.getUserDetailsEndPoint}/$id'));
+
+      if (response.statusCode == 200) {
+        // Ensure response is successful
+        final listResponse = jsonDecode(response.body);
+        debugPrint('mapResponse : $listResponse');
+
+        userDetails.clear(); // Clear old data before adding new
+
+        for (var item in listResponse) {
+          userDetails.add(item);
+        }
+        isUserDetailsLoad = false;
+        notifyListeners();
+      } else {
+        debugPrint('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      debugPrint('Exception: $e'); // Handle any unexpected errors
+    }
+  }
+
+  String newName(String name) {
+    String newName = name[0];
+
+    for (int i = 0; i < name.length - 1; i++) {
+      if (name[i] == ' ') {
+        newName = newName + name[i + 1];
+      }
+    }
+    return newName;
+  }
+
+  void getUserReviews(String id) async {
+    try {
+      final response = await http
+          .get(Uri.parse('${Endponts.getUserReviewsEndPoint}/$id'));
+
+      if (response.statusCode == 200) {
+        // Ensure response is successful
+        final listResponse = jsonDecode(response.body);
+        debugPrint('mapResponse : $listResponse');
+
+        userReviews.clear(); // Clear old data before adding new
+
+        for (var item in listResponse) {
+          userReviews.add(item);
+        }
+        isUserReviewsLoad = false;
+        notifyListeners();
+      } else {
+        debugPrint('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      debugPrint('Exception: $e'); // Handle any unexpected errors
+    }
   }
 }

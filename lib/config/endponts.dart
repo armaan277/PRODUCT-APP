@@ -1,5 +1,7 @@
 class Endponts {
   static const _baseEndpoint = 'https://ecommerce-rendered.onrender.com';
+  // static const _baseEndpoint = 'http://192.168.0.109:3000';
+
   static const loginEndPoint = '$_baseEndpoint/login';
   static const signUpEndPoint = '$_baseEndpoint/signup';
 
@@ -10,7 +12,9 @@ class Endponts {
   static const getUserAddressEndPoint = '$_baseEndpoint/address';
   static const getUserOrdersEndPoint = '$_baseEndpoint/myorders';
   static const getUserOrderItemsEndPoint = '$_baseEndpoint/bookingcarts';
-  static const getUserReviewsEndPoint = '$_baseEndpoint/reviews';
+  static const getAllReviewsEndPoint = '$_baseEndpoint/reviews';
+  static const getUserDetailsEndPoint = '$_baseEndpoint/signup';
+  static const getUserReviewsEndPoint = '$_baseEndpoint/userreviews';
 
 // All Post End Points
   static const postUserCartProductsEndPoint = '$_baseEndpoint/cartproducts';
@@ -21,10 +25,13 @@ class Endponts {
 
 // All Patch End Points
   static const patchUserAddressEndPoint = '$_baseEndpoint/address';
-  static const patchUserCartQtyUpdateEndPoint ='$_baseEndpoint/cartproducts/updateQuantity';
+  static const patchUserCartQtyUpdateEndPoint =
+      '$_baseEndpoint/cartproducts/updateQuantity';
+  static const cancelStatusInDatabaseEndPoint = '$_baseEndpoint/orderlist';
 
 // All Delete End Points
   static const deleteUserCartProductsEndPoint = '$_baseEndpoint/cartproducts';
   static const deleteUserFavouriteEndPoint = '$_baseEndpoint/favorite';
-  static const deleteUserOrderCartsProducts ='$_baseEndpoint/ordercartproducts';
+  static const deleteUserOrderCartsProducts =
+      '$_baseEndpoint/ordercartproducts';
 }

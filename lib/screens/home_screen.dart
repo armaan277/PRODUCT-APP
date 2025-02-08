@@ -1,3 +1,5 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -6,12 +8,34 @@ import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import '../widgets/build_products.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int currentIndex = 0;
+
+  final carouselController = CarouselSliderController();
+
+  List<String> images = [
+    'images/beauty_offer_img.avif',
+    'images/shoes_offer_img.avif',
+    'images/fashion_offer_img.avif'
+  ];
+
+  final searchProductsController = TextEditingController();
+  @override
   Widget build(BuildContext context) {
     final providerWatch = context.watch<ProductProvider>();
+//    final searchProducts = providerWatch.products.where(
+//   (product) => product.title.toLowerCase().contains(
+//         searchProductsController.text.toLowerCase(),
+//       ),
+// ).toList();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.appColor,
@@ -50,12 +74,68 @@ class HomeScreen extends StatelessWidget {
                 color: AppColor.appColor,
               ),
             )
-          : const Padding(
+          : Padding(
               padding: EdgeInsets.symmetric(vertical: 8.0),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: TextField(
+                        controller: searchProductsController,
+                        decoration: InputDecoration(
+                          hintText: 'Search...',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.search, size: 28),
+                        ),
+                        onChanged: (value) {
+                          // setState(() {
+                          //   searchProducts = value;
+                          // });
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    CarouselSlider(
+                      items: images.map((image) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: Image.asset(
+                            image,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      }).toList(),
+                      options: CarouselOptions(
+                        enlargeCenterPage: true,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            currentIndex = index;
+                          });
+                        },
+                        autoPlay: true,
+                      ),
+                      carouselController: carouselController,
+                    ),
+                    Center(
+                      child: DotsIndicator(
+                        dotsCount: images.length,
+                        position: currentIndex,
+                        decorator: DotsDecorator(
+                          color: Colors.grey,
+                          activeColor: AppColor.appColor,
+                          size: const Size.square(9.0),
+                          activeSize: const Size(12.0, 12.0),
+                          activeShape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        onTap: (index) {
+                          carouselController.animateToPage(index);
+                        },
+                      ),
+                    ),
                     BuildProducts(
                       title: 'Beauty',
                       productCategory: 'beauty',

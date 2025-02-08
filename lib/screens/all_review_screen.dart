@@ -6,13 +6,15 @@ import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/model/product.dart';
 
 class AllReviewScreen extends StatefulWidget {
-  final Product product;
-  final List reviews;
+  final Product? product;
+  final List? reviews;
+  final String? userUniqueId;
 
   const AllReviewScreen({
     super.key,
-    required this.reviews,
-    required this.product,
+    this.reviews,
+    this.product,
+    this.userUniqueId,
   });
 
   @override
@@ -24,9 +26,9 @@ class _AllReviewScreenState extends State<AllReviewScreen> {
 
   List getFilteredReviews() {
     if (selectedRatingFilter == null) {
-      return widget.reviews; // Show all reviews if no filter is applied
+      return widget.reviews!; // Show all reviews if no filter is applied
     }
-    return widget.reviews
+    return widget.reviews!
         .where((review) => review['rating'] == selectedRatingFilter)
         .toList();
   }
@@ -59,7 +61,7 @@ class _AllReviewScreenState extends State<AllReviewScreen> {
 
         // Product Title
         Text(
-          widget.product.title,
+          widget.product!.title,
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),

@@ -116,7 +116,7 @@ class PaymentScreenState extends State<PaymentScreen> {
                     ),
                     SizedBox(height: 4.0),
                     Text(
-                      '\$${context.read<ProductProvider>().totalPrice}',
+                      '\$${context.read<ProductProvider>().totalPrice.toStringAsFixed(2)}',
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w600,

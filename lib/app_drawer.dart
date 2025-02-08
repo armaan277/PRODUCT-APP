@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
+import 'package:shopping_app/product_provider/product_provider.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
   const AppDrawer({super.key});
 
   @override
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
+  @override
+  void initState() {
+    context.read<ProductProvider>().getUserDetails(userUniqueId);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final providerWatch = context.watch<ProductProvider>();
+    final providerRead = context.read<ProductProvider>();
     return Drawer(
       backgroundColor: AppColor.appBackgroundColor,
       shape: const RoundedRectangleBorder(
@@ -30,34 +45,61 @@ class AppDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            height: 240,
+            height: 260,
             width: double.infinity,
             child: SafeArea(
-              child: Column(
-                children: [
-                  const SizedBox(height: 40),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(54),
+              child: providerWatch.isUserDetailsLoad
+                  ? Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    )
+                  : Column(
+                      children: [
+                        const SizedBox(height: 40),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(54),
+                          ),
+                          child: CircleAvatar(
+                            backgroundColor: AppColor.appBackgroundColor,
+                            radius: 50,
+                            // backgroundImage: ExactAssetImage('assets/armaan.png'),
+                            child: Text(
+                              providerRead.userDetails.isNotEmpty
+                                  ? providerRead.newName(
+                                      providerRead.userDetails.first['name'])
+                                  : 'GU',
+                              style: TextStyle(
+                                fontSize: 40,
+                                color: AppColor.appColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 7),
+                        Text(
+                          providerRead.userDetails.isNotEmpty
+                              ? providerRead.userDetails.first['name']
+                              : 'Guest User',
+                          style: GoogleFonts.pacifico(
+                            letterSpacing: 1.1,
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                        Text(
+                          providerRead.userDetails.isNotEmpty
+                              ? providerRead.userDetails.first['email']
+                              : 'guest@gmail.com',
+                          style: TextStyle(
+                            letterSpacing: 1.1,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ],
                     ),
-                    child: const CircleAvatar(
-                      radius: 54,
-                      backgroundImage: ExactAssetImage('assets/armaan.png'),
-                    ),
-                  ),
-                  const SizedBox(height: 7),
-                  Text(
-                    'Khan Armaan',
-                    style: GoogleFonts.pacifico(
-                      letterSpacing: 1.1,
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
           ListTile(
@@ -124,35 +166,7 @@ class AppDrawer extends StatelessWidget {
               // Navigator.of(context).pushNamed('profile_screen');
             },
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.settings,
-              color: AppColor.appColor,
-            ),
-            title: const Text(
-              'Settings',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            onTap: () {},
-          ),
           const Divider(),
-          ListTile(
-            leading: const Icon(
-              Icons.help,
-              color: AppColor.appColor,
-            ),
-            title: const Text(
-              'Help & Support',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            onTap: () {},
-          ),
           ListTile(
             leading: const Icon(
               Icons.logout,

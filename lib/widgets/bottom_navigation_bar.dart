@@ -24,6 +24,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     context.read<ProductProvider>().getCartsData(userUniqueId);
     context.read<ProductProvider>().getFavouriteData(userUniqueId);
     context.read<ProductProvider>().getAddressData();
+    context.read<ProductProvider>().getUserReviews(userUniqueId);
     super.initState();
   }
 
