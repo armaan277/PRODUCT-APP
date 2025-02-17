@@ -53,11 +53,11 @@ Using Provider State Management.
 
 1. **Clone the Repository**
    ```sh
-   git clone https://github.com/armaan277/FOOD-APP.git
+   git clone https://github.com/armaan277/PRODUCT-APP.git
 
 2. **Navigate to the Project Directory**
    ```sh
-   cd FOOD-APP
+   cd PRODUCT-APP
 
 3. **Get Flutter Dependencies**
    ```sh
