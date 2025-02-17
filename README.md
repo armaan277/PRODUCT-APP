@@ -46,7 +46,7 @@
 
 # PRODUCTS-APP
 
-This is a Flutter project for a products application. <br>
+This is a Flutter project for a e-commerce products application. <br>
 Using Provider State Management.
 
 ## Simple Setup Steps
