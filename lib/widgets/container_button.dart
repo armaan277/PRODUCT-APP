@@ -36,7 +36,7 @@ class ContainerButtonState extends State<ContainerButton> {
                 providerWatch.bagProducts.contains(widget.product);
 
             if (!productExists) {
-              providerRead.postCartData(widget.product, context);
+              await providerRead.postCartData(widget.product, context);
               CustomToast.showCustomToast(
                 context,
                 message: 'Added Cart Successfully',

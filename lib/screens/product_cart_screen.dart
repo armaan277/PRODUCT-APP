@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/custom_toast.dart';
@@ -47,10 +48,9 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
         backgroundColor: AppColor.appColor,
         title: Text(
           'My Bag',
-          style: TextStyle(
+          style: GoogleFonts.pacifico(
             color: Colors.white,
             fontWeight: FontWeight.w500,
-            fontSize: 20,
           ),
         ),
         centerTitle: true,

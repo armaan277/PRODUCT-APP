@@ -1,6 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/app.dart';
+import 'package:shopping_app/firebase_options.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // My Reviews -> Reviews for items static items
@@ -9,6 +11,7 @@ String userUniqueId = "";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Supabase.initialize(
     url: 'https://qackrunhjegacjcljwyn.supabase.co',
     anonKey:

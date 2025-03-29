@@ -74,6 +74,8 @@ class _ShowMdlBottomSheetReviewState extends State<ShowMdlBottomSheetReview> {
   @override
   Widget build(BuildContext context) {
     final providerRead = context.read<ProductProvider>();
+    final providerWatch = context.watch<ProductProvider>();
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -304,37 +306,48 @@ class _ShowMdlBottomSheetReviewState extends State<ShowMdlBottomSheetReview> {
           ),
 
           const SizedBox(height: 24),
-          // Submit Review Button
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () async {
-                List<String> imageUrls = await _uploadImages();
-                debugPrint('imageUrls : $imageUrls');
-                providerRead.postRating(
-                  context,
-                  widget.product['id'],
-                  userUniqueId,
-                  imageUrls,
-                );
-                providerRead.ratingController.clear();
-                providerRead.rating = 0;
-                Navigator.of(context).pop();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColor.appColor,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: const Text(
-                "Submit Review",
-                style: TextStyle(
-                  fontSize: 17,
-                  color: Colors.white,
-                  letterSpacing: 0.5,
-                ),
-              ),
+         SizedBox(
+  width: double.infinity,
+  child: ElevatedButton(
+    onPressed: providerRead.isReviewPost
+        ? null // Agar already posting ho raha hai toh button disable hoga
+        : () async {
+            providerRead.setReviewPosting(true); // ✅ Loading Start
+            
+            List<String> imageUrls = await _uploadImages();
+            debugPrint('imageUrls : $imageUrls');
+
+            await providerRead.postRating(
+              context,
+              widget.product['id'],
+              userUniqueId,
+              imageUrls,
+            );
+
+            providerRead.ratingController.clear();
+            providerRead.rating = 0;
+            providerRead.setReviewPosting(false); // ✅ Loading Stop
+            Navigator.of(context).pop();
+          },
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColor.appColor,
+      padding: const EdgeInsets.symmetric(vertical: 16),
+    ),
+    child: providerWatch.isReviewPost
+        ? const CircularProgressIndicator(color: Colors.white)
+        : const Text(
+            "Submit Review",
+            style: TextStyle(
+              fontSize: 17,
+              color: Colors.white,
+              letterSpacing: 0.5,
             ),
           ),
+  ),
+),
+
+       
+
         ],
       ),
     );

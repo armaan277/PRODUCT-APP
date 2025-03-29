@@ -335,15 +335,21 @@ class ShopScreen extends StatelessWidget {
                         onPressed: () {
                           providerRead.cancelSearching();
                         },
-                        icon: const Icon(Icons.close),
+                        icon: const Icon(Icons.close,size: 24),
                       )
                     : null,
               ),
             ),
           ),
-          const Expanded(
-            child: BuildGridviewProducts(),
-          ),
+          providerWatch.products.isEmpty
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: AppColor.appColor,
+                  ),
+                )
+              : Expanded(
+                  child: BuildGridviewProducts(),
+                ),
         ],
       ),
     );

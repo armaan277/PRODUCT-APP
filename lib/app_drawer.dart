@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
+import 'package:shopping_app/screens/refund_policy_faqs_screen.dart';
 
 class AppDrawer extends StatefulWidget {
   const AppDrawer({super.key});
@@ -48,7 +49,7 @@ class _AppDrawerState extends State<AppDrawer> {
             height: 260,
             width: double.infinity,
             child: SafeArea(
-              child: providerWatch.isUserDetailsLoad
+              child: providerWatch.userDetails.isEmpty
                   ? Center(
                       child: CircularProgressIndicator(color: Colors.white),
                     )
@@ -65,10 +66,9 @@ class _AppDrawerState extends State<AppDrawer> {
                             radius: 50,
                             // backgroundImage: ExactAssetImage('assets/armaan.png'),
                             child: Text(
-                              providerRead.userDetails.isNotEmpty
-                                  ? providerRead.newName(
-                                      providerRead.userDetails.first['name'])
-                                  : 'GU',
+                              // providerRead.userDetails.isNotEmpty
+                              providerRead.newName(
+                                  providerRead.userDetails.first['name']),
                               style: TextStyle(
                                 fontSize: 40,
                                 color: AppColor.appColor,
@@ -78,9 +78,8 @@ class _AppDrawerState extends State<AppDrawer> {
                         ),
                         const SizedBox(height: 7),
                         Text(
-                          providerRead.userDetails.isNotEmpty
-                              ? providerRead.userDetails.first['name']
-                              : 'Guest User',
+                          // providerRead.userDetails.isNotEmpty
+                          providerRead.userDetails.first['name'],
                           style: GoogleFonts.pacifico(
                             letterSpacing: 1.1,
                             fontSize: 20,
@@ -89,9 +88,7 @@ class _AppDrawerState extends State<AppDrawer> {
                           ),
                         ),
                         Text(
-                          providerRead.userDetails.isNotEmpty
-                              ? providerRead.userDetails.first['email']
-                              : 'guest@gmail.com',
+                          providerRead.userDetails.first['email'],
                           style: TextStyle(
                             letterSpacing: 1.1,
                             color: Colors.white,
@@ -101,22 +98,6 @@ class _AppDrawerState extends State<AppDrawer> {
                       ],
                     ),
             ),
-          ),
-          ListTile(
-            leading: const Icon(
-              Icons.home,
-              color: AppColor.appColor,
-            ),
-            title: const Text(
-              'Home',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            onTap: () {
-              Navigator.of(context).pushNamed('bottom_navigation');
-            },
           ),
           ListTile(
             leading: const Icon(
@@ -136,34 +117,43 @@ class _AppDrawerState extends State<AppDrawer> {
           ),
           ListTile(
             leading: const Icon(
-              Icons.favorite,
+              Icons.attach_money,
               color: AppColor.appColor,
             ),
             title: const Text(
-              'Favorite',
+              'Refund Policy',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
             ),
             onTap: () {
-              // Navigator.pushNamed(context, 'favourite_screen');
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return RefundPolicyFaqsScreen(
+                  url:
+                      'https://armaan277.github.io/simple-website/refund-policy.html',
+                );
+              }));
             },
           ),
           ListTile(
             leading: const Icon(
-              Icons.person,
+              Icons.help_outline,
               color: AppColor.appColor,
             ),
             title: const Text(
-              'Profile',
+              'FAQs',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
             ),
             onTap: () {
-              // Navigator.of(context).pushNamed('profile_screen');
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return RefundPolicyFaqsScreen(
+                  url: 'https://armaan277.github.io/simple-website/FAQs.html',
+                );
+              }));
             },
           ),
           const Divider(),

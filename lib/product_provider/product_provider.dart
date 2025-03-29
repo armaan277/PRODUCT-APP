@@ -60,6 +60,7 @@ class ProductProvider extends ChangeNotifier {
   List<dynamic> orderItems = [];
   bool isLoadingOrderList = true;
   String errorMessage = '';
+  String? errorMessageLogIn;
 
   // Login TextContreller
   final emailController = TextEditingController();
@@ -79,10 +80,15 @@ class ProductProvider extends ChangeNotifier {
   final signupConfirmPasswordController = TextEditingController();
 
   List<dynamic> userDetails = [];
-  bool isUserDetailsLoad = true;
 
   List<dynamic> userReviews = [];
   bool isUserReviewsLoad = true;
+
+  bool isLogin = false;
+
+  bool isFavorite = false;
+
+  bool isProductAddInCart = false;
 
   Future<void> getProducts() async {
     final response = await http.get(Uri.parse(Endponts.getAllProductsEndPoint));
@@ -201,13 +207,16 @@ class ProductProvider extends ChangeNotifier {
   }
 
 // LOGIN WORK
-  void postLoginData(BuildContext context) async {
+  Future<void> postLoginData(BuildContext context) async {
     final url = Uri.parse(Endponts.loginEndPoint);
 
     final loginData = {
       'email': emailController.text,
       'password': passwordController.text,
     };
+
+    isLogin = true;
+    notifyListeners();
 
     final response = await http.post(
       url,
@@ -219,7 +228,9 @@ class ProductProvider extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       userUniqueId = signUpResponse['user']['id'] ?? '';
+      isLogin = false;
       debugPrint('userUniqueId : $userUniqueId');
+      debugPrint('Successfully LogedIn');
 
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('isLoggedIn', true);
@@ -228,14 +239,22 @@ class ProductProvider extends ChangeNotifier {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const BottomNavigation()),
       );
+      errorMessageLogIn = '';
+      notifyListeners();
     } else if (response.statusCode == 401) {
-      errorMessage = 'Invalid email or password!';
+      errorMessageLogIn = 'Invalid email or password!';
+      isLogin = false;
+      debugPrint('errorMessage : $errorMessageLogIn');
+      notifyListeners();
+    } else {
+      isLogin = false;
+      debugPrint('Invalid email or password !!!');
       notifyListeners();
     }
   }
 
   // SignUp Work
-  void postSignUpData() {
+  void postSignUpData() async {
     final url = Uri.parse(Endponts.signUpEndPoint);
 
     final signUpData = {
@@ -245,8 +264,6 @@ class ProductProvider extends ChangeNotifier {
       'email': signupEmailController.text,
       'password': signupPasswordController.text,
     };
-
-    debugPrint('');
 
     http.post(
       url,
@@ -291,6 +308,8 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> postFavoriteData(Product favoriteProduct) async {
     final url = Uri.parse(Endponts.postUserFavouriteEndPoint);
+    isFavorite = true;
+    notifyListeners();
 
     Map<String, dynamic> postFavorite = {
       'id': favoriteProduct.id,
@@ -315,8 +334,12 @@ class ProductProvider extends ChangeNotifier {
 
         debugPrint('responseFavorite : ${response.body}');
         if (response.statusCode == 201) {
+          isFavorite = false;
           favoriteProducts.add(favoriteProduct);
+          notifyListeners();
         } else {
+          isFavorite = false;
+
           debugPrint('Failed to add favorite: ${response.body}');
         }
       } else {
@@ -331,13 +354,15 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> deleteFavourite(int id) async {
     final url = Uri.parse('${Endponts.deleteUserFavouriteEndPoint}/$id');
-
+    isFavorite = true;
+    notifyListeners();
     try {
       final response = await http.delete(url);
 
       debugPrint('deleteFavouriteResponse : ${response.body}');
       if (response.statusCode == 200) {
         favoriteProducts.removeWhere((product) => product.id == id);
+        isFavorite = false;
         notifyListeners();
       } else {
         debugPrint('Failed to delete favorite: ${response.body}');
@@ -348,8 +373,11 @@ class ProductProvider extends ChangeNotifier {
   }
 
   // CART API WORK
-  void postCartData(Product bagProduct, BuildContext? context) async {
+  Future<void> postCartData(Product bagProduct, BuildContext? context) async {
     final url = Uri.parse(Endponts.postUserCartProductsEndPoint);
+
+    isProductAddInCart = true;
+    notifyListeners();
 
     Map<String, dynamic> postCart = {
       'id': bagProduct.id,
@@ -373,6 +401,7 @@ class ProductProvider extends ChangeNotifier {
       if (response.statusCode == 201) {
         // Product successfully added
         // Add the product to bagProducts if it doesn't already exist
+        isProductAddInCart = false;
         if (!bagProducts.contains(bagProduct)) {
           bagProducts.add(bagProduct);
         }
@@ -698,9 +727,20 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
+  bool isReviewPost = false;
+
+  void setReviewPosting(bool value) {
+    isReviewPost = value;
+    notifyListeners(); // UI Update Hoga
+  }
+
   // Rating Work
-  void postRating(BuildContext context, int productId, String userId,
-      List<String> reviewImages) async {
+  Future<void> postRating(
+    BuildContext context,
+    int productId,
+    String userId,
+    List<String> reviewImages,
+  ) async {
     final url = Uri.parse('${Endponts.postUserReviewsEndPoint}/$productId');
 
     final postRatingData = {
@@ -987,10 +1027,7 @@ class ProductProvider extends ChangeNotifier {
 
         userDetails.clear(); // Clear old data before adding new
 
-        for (var item in listResponse) {
-          userDetails.add(item);
-        }
-        isUserDetailsLoad = false;
+        userDetails = listResponse;
         notifyListeners();
       } else {
         debugPrint('Error: ${response.statusCode} - ${response.reasonPhrase}');
@@ -1013,8 +1050,8 @@ class ProductProvider extends ChangeNotifier {
 
   void getUserReviews(String id) async {
     try {
-      final response = await http
-          .get(Uri.parse('${Endponts.getUserReviewsEndPoint}/$id'));
+      final response =
+          await http.get(Uri.parse('${Endponts.getUserReviewsEndPoint}/$id'));
 
       if (response.statusCode == 200) {
         // Ensure response is successful

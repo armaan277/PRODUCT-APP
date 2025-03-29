@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/screens/login_screen.dart';
@@ -16,6 +17,10 @@ class ProductApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => ProductProvider(),
       child: MaterialApp(
+        theme: ThemeData(
+            colorScheme: ColorScheme.light(
+          primary: AppColor.appColor,
+        )),
         initialRoute: isLoggedIn ? 'bottom_navigation' : 'login_sreen',
         routes: {
           'bottom_navigation': (context) => const BottomNavigation(),

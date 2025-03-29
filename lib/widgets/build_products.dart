@@ -30,7 +30,7 @@ class BuildProducts extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 310,
+          height: 312,
           child: BuildProductCategories(
             selectColor: AppColor.appBackgroundColor,
             selectCategory: productCategory,

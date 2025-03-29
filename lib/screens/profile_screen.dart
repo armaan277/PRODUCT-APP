@@ -67,7 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       drawer: const AppDrawer(),
       backgroundColor: AppColor.appBackgroundColor,
-      body: providerWatch.isUserDetailsLoad
+      body: providerWatch.userDetails.isEmpty
           ? Center(
               child: CircularProgressIndicator(
                 color: AppColor.appColor,
