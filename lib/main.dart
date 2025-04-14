@@ -23,7 +23,7 @@ void main() async {
   userUniqueId = prefs.getString('userUniqueId') ?? '';
   debugPrint('userUniqueId : $userUniqueId');
 
-  runApp(
+runApp(
     const ProductApp(),
   );
 }

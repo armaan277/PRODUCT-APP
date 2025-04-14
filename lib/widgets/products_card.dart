@@ -55,7 +55,7 @@ class ProductsCard extends StatelessWidget {
                   child: GestureDetector(
                     onTap: onTap,
                     child: Center(
-                      child: Image(
+                      child: Image(errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
                         image: NetworkImage(
                           thumbnail,
                         ),
@@ -72,7 +72,7 @@ class ProductsCard extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
-                      child: Text('$rating'),
+                      child: Text(rating.toString()),
                     ),
                     Text(
                       brand,
@@ -91,7 +91,7 @@ class ProductsCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '$price',
+                      '\$$price',
                       style: const TextStyle(
                         color: AppColor.appColor,
                         fontSize: 16,
@@ -117,10 +117,10 @@ class ProductsCard extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              '${discountPercentage.toInt()}%',
+              '-${discountPercentage.toInt()}%',
               style: const TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w300,
               ),
             ),
           ),

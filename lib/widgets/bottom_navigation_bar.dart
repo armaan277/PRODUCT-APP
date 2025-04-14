@@ -53,6 +53,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       //   ],
       // ),
       bottomNavigationBar: NavigationBar(
+        indicatorColor: AppColor.appColor.withOpacity(0.2),
         elevation: 10.0,
         backgroundColor: Colors.white,
         selectedIndex: selectedIndex,

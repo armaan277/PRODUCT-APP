@@ -71,6 +71,9 @@ class _SearchProductScreenState extends State<SearchProductScreen> {
           Padding(
             padding: EdgeInsets.all(8.0),
             child: TextField(
+              onTapOutside: (event) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
               controller: searchProductsController,
               autofocus: true,
               decoration: InputDecoration(
@@ -106,6 +109,7 @@ class _SearchProductScreenState extends State<SearchProductScreen> {
                 final product = shopCategories[index];
                 final favorite =
                     !providerWatch.favoriteProducts.contains(product);
+
                 return ProductsCard(
                   onTap: () {
                     Navigator.of(context).push(

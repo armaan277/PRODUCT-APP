@@ -11,6 +11,7 @@ import 'package:shopping_app/config/endponts.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/model/product.dart';
+import 'package:shopping_app/screens/otp_sent_forget_screen.dart';
 import 'package:shopping_app/screens/product_cart_screen.dart';
 import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -89,6 +90,9 @@ class ProductProvider extends ChangeNotifier {
   bool isFavorite = false;
 
   bool isProductAddInCart = false;
+
+  // Controller for the forget email input
+  final TextEditingController forgetEmailController = TextEditingController();
 
   Future<void> getProducts() async {
     final response = await http.get(Uri.parse(Endponts.getAllProductsEndPoint));
@@ -254,23 +258,143 @@ class ProductProvider extends ChangeNotifier {
   }
 
   // SignUp Work
-  void postSignUpData() async {
-    final url = Uri.parse(Endponts.signUpEndPoint);
+  // bool isSignUp = false;
+
+  // Future<void> postSignUpData(BuildContext context) async {
+  //   final url = Uri.parse(Endponts.signUpEndPoint);
+  //   isSignUp = true;
+
+  //   final signUpData = {
+  //     'id': userUniqueId,
+  //     'name': signupNameController.text,
+  //     'phone': signupPhoneController.text,
+  //     'email': signupEmailController.text,
+  //     'password': signupPasswordController.text,
+  //   };
+
+  //   final response = await http.post(
+  //     url,
+  //     headers: {'Content-Type': 'application/json'},
+  //     body: jsonEncode(signUpData),
+  //   );
+  //   debugPrint('response.statusCode : ${response.statusCode}');
+  //   if (response.statusCode == 201) {
+  //     isSignUp = false;
+  //     Navigator.of(context).push(
+  //       MaterialPageRoute(
+  //         builder: (context) => const BottomNavigation(),
+  //       ),
+  //     );
+  //   }
+  // }
+  String? _signupError;
+  String? get signupError => _signupError;
+  bool _isSignUp = false;
+  bool get isSignUp => _isSignUp;
+
+  Future<void> postSignUpData(BuildContext context, String userUniqueId) async {
+    if (_isSignUp) return;
+    _isSignUp = true;
+    _signupError = null;
+    notifyListeners();
 
     final signUpData = {
       'id': userUniqueId,
-      'name': signupNameController.text,
-      'phone': signupPhoneController.text,
-      'email': signupEmailController.text,
-      'password': signupPasswordController.text,
+      'name': signupNameController.text.trim(),
+      'phone': signupPhoneController.text.trim(),
+      'email': signupEmailController.text.trim(),
+      'password': signupPasswordController.text.trim(),
     };
 
-    http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(signUpData),
-    );
+    try {
+      final response = await http.post(
+        Uri.parse(Endponts.signUpEndPoint),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(signUpData),
+      );
+      debugPrint('Signup response: ${response.statusCode} - ${response.body}');
+
+      if (response.statusCode == 201) {
+        final email = signupEmailController.text.trim();
+        await _sendOTP(email, context);
+        debugPrint('Navigating to /otp_screen with email: $email');
+        Navigator.pushReplacementNamed(
+          context,
+          '/otp_screen', // Matches updated routes
+          arguments: email,
+        );
+      } else {
+        final responseData = jsonDecode(response.body);
+        _signupError = responseData['error']?.contains('email') ?? false
+            ? 'Email already exists, please use a different email.'
+            : 'Failed to sign up. Please try again.';
+        debugPrint('Signup failed: ${response.body}');
+      }
+    } catch (e) {
+      _signupError = 'An error occurred. Please check your connection.';
+      debugPrint('Error during signup: $e');
+    } finally {
+      _isSignUp = false;
+      notifyListeners();
+    }
   }
+
+  // Helper function to send OTP
+  Future<void> _sendOTP(String email, BuildContext context) async {
+    final response = await http.post(
+      Uri.parse('http://192.168.0.104:3000/send-otp'), // Match with backend
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email}),
+    );
+    if (response.statusCode != 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to send OTP'),
+        ),
+      );
+    }
+  }
+  // Future<void> postSignUpData(BuildContext context, String userUniqueId) async {
+  //   if (_isSignUp) return;
+  //   final url = Uri.parse(Endponts.signUpEndPoint);
+  //   _isSignUp = true;
+  //   _signupError = null;
+  //   notifyListeners();
+
+  //   final signUpData = {
+  //     'id': userUniqueId,
+  //     'name': signupNameController.text,
+  //     'phone': signupPhoneController.text,
+  //     'email': signupEmailController.text,
+  //     'password': signupPasswordController.text,
+  //   };
+
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       headers: {'Content-Type': 'application/json'},
+  //       body: jsonEncode(signUpData),
+  //     );
+  //     if (response.statusCode == 201) {
+  //       // Clear form and navigate
+  //       Navigator.pushReplacementNamed(context, 'otp_screen',arguments: 'Hello');
+  //     } else {
+  //       final responseData = jsonDecode(response.body);
+  //       if (responseData['error']?.contains('email') ?? false) {
+  //         _signupError = 'Email already exists, Please use a different email.';
+  //       } else {
+  //         _signupError = 'Failed to sign up. Please try again.';
+  //       }
+  //       debugPrint('Signup failed: ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     _signupError = 'An error occurred. Please check your connection.';
+  //     debugPrint('Error during signup: $e');
+  //   } finally {
+  //     _isSignUp = false;
+  //     notifyListeners();
+  //   }
+  // }
 
 // FAVORITE API WORK
   Future<void> toggleFavoriteStatus(Product favoriteProduct) async {
@@ -1070,6 +1194,53 @@ class ProductProvider extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Exception: $e'); // Handle any unexpected errors
+    }
+  }
+
+  // Forget Password & New Password Work
+
+  bool _isLoadingForget = false;
+  bool get isLoadingForget => _isLoadingForget;
+  String? _errorMessageForget;
+  String? get errorMessageForget => _errorMessageForget;
+
+Future<void> postForgetData(BuildContext context) async {
+    if (_isLoadingForget) return;
+    _isLoadingForget = true;
+    _errorMessageForget = null;
+    notifyListeners();
+
+    final url = Uri.parse('http://192.168.0.104:3000/forget-password');
+    final forgetData = {'email': forgetEmailController.text.trim()};
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(forgetData),
+      );
+
+      final responseData = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        if (responseData['exists']) {
+          // Navigate to OTPSentForgetScreen with email
+          Navigator.pushNamed(
+            context,
+            'otp_sent_forget_screen', // Match this with routes
+            arguments: forgetEmailController.text.trim(),
+          );
+        } else {
+          _errorMessageForget = responseData['message'] ?? 'Email not found';
+        }
+      } else {
+        _errorMessageForget = 'Failed to process request. Please try again.';
+      }
+    } catch (e) {
+      _errorMessageForget = 'Network error: $e';
+      debugPrint('Error in postForgetData: $e');
+    } finally {
+      _isLoadingForget = false;
+      notifyListeners();
     }
   }
 }

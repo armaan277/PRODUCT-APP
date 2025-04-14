@@ -7,9 +7,7 @@ import 'package:shopping_app/app_drawer.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/screens/search_product_screen.dart';
-import 'package:shopping_app/widgets/products_card.dart';
 import '../widgets/build_products.dart';
-import 'product_info_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,6 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<String> images = [
     'images/shoes_offer_img.avif',
+    'images/fashion_offer_img.avif',
+    'images/beauty_offer_img.avif',
   ];
 
   @override
@@ -78,187 +78,177 @@ class _HomeScreenState extends State<HomeScreen> {
     return Stack(
       children: [
         SingleChildScrollView(
-          child: Opacity(
-            opacity: context.watch<ProductProvider>().isFavorite ? 0.2 : 1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                  child: TextField(
-                    controller: searchProductsController,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      hintText: 'Search...',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.search, size: 24),
-                    ),
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return SearchProductScreen();
-                      }));
-                      setState(() {
-                        isSearch = true;
-                      });
-                    },
-                    onChanged: (value) {
-                      setState(() {
-                        searchProductsController.text = value;
-                      });
-                    },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                child: TextField(
+                  onTapOutside: (event) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
+                  controller: searchProductsController,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    hintText: 'Search...',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.search, size: 24),
                   ),
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return SearchProductScreen();
+                    }));
+                    setState(() {
+                      isSearch = true;
+                    });
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      searchProductsController.text = value;
+                    });
+                  },
                 ),
-                SizedBox(height: 10),
-                CarouselSlider(
-                  items: images.map((image) {
-                    return ClipRRect(
+              ),
+              SizedBox(height: 10),
+              CarouselSlider(
+                items: images.map((image) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.asset(
+                      image,
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                }).toList(),
+                options: CarouselOptions(
+                  enlargeCenterPage: true,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                  },
+                  autoPlay: true,
+                ),
+                carouselController: carouselController,
+              ),
+              Center(
+                child: DotsIndicator(
+                  dotsCount: images.length,
+                  position: currentIndex,
+                  decorator: DotsDecorator(
+                    color: Colors.grey,
+                    activeColor: AppColor.appColor,
+                    size: const Size.square(9.0),
+                    activeSize: const Size(12.0, 12.0),
+                    activeShape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      child: Image.asset(
-                        image,
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  }).toList(),
-                  options: CarouselOptions(
-                    enlargeCenterPage: true,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        currentIndex = index;
-                      });
-                    },
-                    autoPlay: true,
-                  ),
-                  carouselController: carouselController,
-                ),
-                Center(
-                  child: DotsIndicator(
-                    dotsCount: images.length,
-                    position: currentIndex,
-                    decorator: DotsDecorator(
-                      color: Colors.grey,
-                      activeColor: AppColor.appColor,
-                      size: const Size.square(9.0),
-                      activeSize: const Size(12.0, 12.0),
-                      activeShape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
                     ),
-                    onTap: (index) {
-                      carouselController.animateToPage(index);
-                    },
                   ),
+                  onTap: (index) {
+                    carouselController.animateToPage(index);
+                  },
                 ),
-                BuildProducts(
-                  title: 'Beauty',
-                  productCategory: 'beauty',
-                ),
-                BuildProducts(
-                  title: 'Fragrances',
-                  productCategory: 'fragrances',
-                ),
-                BuildProducts(
-                  title: 'Furniture',
-                  productCategory: 'furniture',
-                ),
-                BuildProducts(
-                  title: 'Groceries',
-                  productCategory: 'groceries',
-                ),
-                BuildProducts(
-                  title: 'Home Decoration',
-                  productCategory: 'home-decoration',
-                ),
-                BuildProducts(
-                  title: 'Kitchen Accessories',
-                  productCategory: 'kitchen-accessories',
-                ),
-                BuildProducts(
-                  title: 'Laptops',
-                  productCategory: 'laptops',
-                ),
-                BuildProducts(
-                  title: 'Mens Shirts',
-                  productCategory: 'mens-shirts',
-                ),
-                BuildProducts(
-                  title: 'Mens Shoes',
-                  productCategory: 'mens-shoes',
-                ),
-                BuildProducts(
-                  title: 'Mens Watches',
-                  productCategory: 'mens-watches',
-                ),
-                BuildProducts(
-                  title: 'Mobile Accessories',
-                  productCategory: 'mobile-accessories',
-                ),
-                BuildProducts(
-                  title: 'Motorcycle',
-                  productCategory: 'motorcycle',
-                ),
-                BuildProducts(
-                  title: 'Skin Care',
-                  productCategory: 'skin-care',
-                ),
-                BuildProducts(
-                  title: 'Smartphones',
-                  productCategory: 'smartphones',
-                ),
-                BuildProducts(
-                  title: 'Sports Accessories',
-                  productCategory: 'sports-accessories',
-                ),
-                BuildProducts(
-                  title: 'Sunglasses',
-                  productCategory: 'sunglasses',
-                ),
-                BuildProducts(
-                  title: 'Tablets',
-                  productCategory: 'tablets',
-                ),
-                BuildProducts(
-                  title: 'Tops',
-                  productCategory: 'tops',
-                ),
-                BuildProducts(
-                  title: 'Vehicle',
-                  productCategory: 'vehicle',
-                ),
-                BuildProducts(
-                  title: 'Womens Bags',
-                  productCategory: 'womens-bags',
-                ),
-                BuildProducts(
-                  title: 'Womens Dresses',
-                  productCategory: 'womens-dresses',
-                ),
-                BuildProducts(
-                  title: 'Womens Jewellery',
-                  productCategory: 'womens-jewellery',
-                ),
-                BuildProducts(
-                  title: 'Womens Shoes',
-                  productCategory: 'womens-shoes',
-                ),
-                BuildProducts(
-                  title: 'Womens Watches',
-                  productCategory: 'womens-watches',
-                ),
-              ],
-            ),
+              ),
+              BuildProducts(
+                title: 'Beauty',
+                productCategory: 'beauty',
+              ),
+              BuildProducts(
+                title: 'Fragrances',
+                productCategory: 'fragrances',
+              ),
+              BuildProducts(
+                title: 'Furniture',
+                productCategory: 'furniture',
+              ),
+              BuildProducts(
+                title: 'Groceries',
+                productCategory: 'groceries',
+              ),
+              BuildProducts(
+                title: 'Home Decoration',
+                productCategory: 'home-decoration',
+              ),
+              BuildProducts(
+                title: 'Kitchen Accessories',
+                productCategory: 'kitchen-accessories',
+              ),
+              BuildProducts(
+                title: 'Laptops',
+                productCategory: 'laptops',
+              ),
+              BuildProducts(
+                title: 'Mens Shirts',
+                productCategory: 'mens-shirts',
+              ),
+              BuildProducts(
+                title: 'Mens Shoes',
+                productCategory: 'mens-shoes',
+              ),
+              BuildProducts(
+                title: 'Mens Watches',
+                productCategory: 'mens-watches',
+              ),
+              BuildProducts(
+                title: 'Mobile Accessories',
+                productCategory: 'mobile-accessories',
+              ),
+              BuildProducts(
+                title: 'Motorcycle',
+                productCategory: 'motorcycle',
+              ),
+              BuildProducts(
+                title: 'Skin Care',
+                productCategory: 'skin-care',
+              ),
+              BuildProducts(
+                title: 'Smartphones',
+                productCategory: 'smartphones',
+              ),
+              BuildProducts(
+                title: 'Sports Accessories',
+                productCategory: 'sports-accessories',
+              ),
+              BuildProducts(
+                title: 'Sunglasses',
+                productCategory: 'sunglasses',
+              ),
+              BuildProducts(
+                title: 'Tablets',
+                productCategory: 'tablets',
+              ),
+              BuildProducts(
+                title: 'Tops',
+                productCategory: 'tops',
+              ),
+              BuildProducts(
+                title: 'Vehicle',
+                productCategory: 'vehicle',
+              ),
+              BuildProducts(
+                title: 'Womens Bags',
+                productCategory: 'womens-bags',
+              ),
+              BuildProducts(
+                title: 'Womens Dresses',
+                productCategory: 'womens-dresses',
+              ),
+              BuildProducts(
+                title: 'Womens Jewellery',
+                productCategory: 'womens-jewellery',
+              ),
+              BuildProducts(
+                title: 'Womens Shoes',
+                productCategory: 'womens-shoes',
+              ),
+              BuildProducts(
+                title: 'Womens Watches',
+                productCategory: 'womens-watches',
+              ),
+            ],
           ),
         ),
-        if (context.watch<ProductProvider>().isFavorite)
-          Positioned.fill(
-            child: Container(
-              alignment: Alignment.center,
-              color: Colors.transparent,
-              child: CircularProgressIndicator(
-                color: AppColor.appColor,
-              ),
-            ),
-          ),
       ],
     );
   }

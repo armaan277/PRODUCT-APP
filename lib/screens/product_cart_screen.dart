@@ -182,6 +182,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                                                 icon: const Icon(
                                                   Icons.remove,
                                                   size: 15,
+                                                  color: Colors.black,
                                                 ),
                                               ),
                                             ),
@@ -235,9 +236,9 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                                         ),
                                         SizedBox(width: 3),
                                         Text(
-                                          '${product.price}',
+                                          '${(product.price * product.quantity).toStringAsFixed(2)}',
                                           style: const TextStyle(
-                                            fontSize: 24,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -255,106 +256,108 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                 );
               },
             ),
-      bottomSheet: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 3,
-              blurRadius: 3,
-              offset: const Offset(0, 1),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: 10),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Enter your promo code',
-                  suffixIcon: IconButton(
-                    onPressed: () {},
-                    icon: CircleAvatar(
-                      backgroundColor: Colors.black,
-                      child: Icon(
-                        Icons.arrow_right_alt_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  isDense: true,
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Total amount:',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black54,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: Text(
-                      '${(providerWatch.totalPrice).toStringAsFixed(2)}\$',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black54,
-                      ),
-                    ),
+      bottomSheet: providerRead.bagProducts.isNotEmpty
+          ? Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 3,
+                    blurRadius: 3,
+                    offset: const Offset(0, 1),
                   ),
                 ],
               ),
-              GestureDetector(
-                onTap: () {
-                  providerRead.bagProducts.isEmpty
-                      ? CustomToast.showCustomToast(
-                          context,
-                          message: 'Please Add The Cart',
-                        )
-                      : Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                          return AddressScreen();
-                        }));
-                },
-                child: Container(
-                  margin: EdgeInsetsDirectional.only(bottom: 20.0),
-                  height: 55,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                    color: AppColor.appColor,
-                    borderRadius: BorderRadius.circular(50.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'CHECK OUT',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 10),
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Enter your promo code',
+                        suffixIcon: IconButton(
+                          onPressed: () {},
+                          icon: CircleAvatar(
+                            backgroundColor: Colors.black,
+                            child: Icon(
+                              Icons.arrow_right_alt_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        isDense: true,
+                        border: OutlineInputBorder(),
                       ),
                     ),
-                  ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Total amount:',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20.0),
+                          child: Text(
+                            '${(providerWatch.totalPrice).toStringAsFixed(2)}\$',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        providerRead.bagProducts.isEmpty
+                            ? CustomToast.showCustomToast(
+                                context,
+                                message: 'Please Add The Cart',
+                              )
+                            : Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                                return AddressScreen();
+                              }));
+                      },
+                      child: Container(
+                        margin: EdgeInsetsDirectional.only(bottom: 20.0),
+                        height: 55,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.1),
+                              spreadRadius: 2,
+                              blurRadius: 2,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                          color: AppColor.appColor,
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'CHECK OUT',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            )
+          : null,
     );
   }
 }

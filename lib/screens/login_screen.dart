@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 import 'package:shopping_app/screens/sign_up_screen.dart';
+
+import 'forget_password_screen.dart';
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
@@ -71,12 +74,23 @@ class _LogInScreenState extends State<LogInScreen> {
                         controller:
                             context.read<ProductProvider>().emailController,
                         keyboardType: TextInputType.emailAddress,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                        ],
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null || value.trim().isEmpty) {
                             return 'Email is required';
                           }
-                          if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                            return 'Enter a valid email';
+                          value = value.trim();
+                          if (value.length > 100) {
+                            return 'Email cannot exceed 100 characters';
+                          }
+                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                              .hasMatch(value)) {
+                            return 'Enter a valid email address';
+                          }
+                          if (value.contains(' ')) {
+                            return 'Email cannot contain spaces';
                           }
                           return null;
                         },
@@ -158,7 +172,11 @@ class _LogInScreenState extends State<LogInScreen> {
                             ],
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                                return ForgotPasswordScreen();
+                              }));
+                            },
                             child: const Text(
                               'Forget Password',
                               style: TextStyle(
@@ -171,6 +189,8 @@ class _LogInScreenState extends State<LogInScreen> {
                       const SizedBox(height: 30),
                       InkWell(
                         onTap: () async {
+                          // On tap, dismiss the keyboard, Unfocus the current focus (dismiss keyboard)
+                          FocusScope.of(context).unfocus();
                           if (formKey.currentState?.validate() ?? false) {
                             context
                                 .read<ProductProvider>()
@@ -261,7 +281,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -288,9 +308,9 @@ class _LogInScreenState extends State<LogInScreen> {
                   ),
                 ),
                 if (context.watch<ProductProvider>().isLogin)
-                  CircularProgressIndicator(
+                  const CircularProgressIndicator(
                     color: Colors.red,
-                  )
+                  ),
               ],
             ),
           ),
