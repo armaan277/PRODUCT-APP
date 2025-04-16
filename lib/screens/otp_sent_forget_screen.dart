@@ -30,7 +30,7 @@ class _OTPSentForgetScreenState extends State<OTPSentForgetScreen> {
     setState(() => _isLoading = true);
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.0.104:3000/validate-otp'),
+        Uri.parse('http://192.168.0.110:3000/validate-otp'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'otp': otp}),
       );
@@ -43,11 +43,11 @@ class _OTPSentForgetScreenState extends State<OTPSentForgetScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('OTP validated!')),
           );
-          // Navigate to CreateNewPasswordScreen with email
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => CreateNewPasswordScreen(email: email),
-            ),
+          // Navigate to CreateNewPasswordScreen using pushReplacementNamed with email
+          Navigator.pushReplacementNamed(
+            context,
+            'create_new_password_screen',
+            arguments: email, // Pass email as argument
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

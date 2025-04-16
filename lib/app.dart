@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
+import 'package:shopping_app/screens/create_new_password_screen.dart';
 import 'package:shopping_app/screens/login_screen.dart';
 import 'package:shopping_app/screens/my_orders_sceen.dart';
 import 'package:shopping_app/screens/order_success_screen.dart';
@@ -34,6 +35,7 @@ class ProductApp extends StatelessWidget {
           'order_success_screen': (context) => const OrderSuccessScreen(),
           'otp_screen': (context) => const OTPScreen(), // Added / here
           'otp_sent_forget_screen': (context) => const OTPSentForgetScreen(),
+          'create_new_password_screen': (context) => const CreateNewPasswordScreen(),
         },
         debugShowCheckedModeBanner: false,
       ),

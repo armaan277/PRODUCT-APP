@@ -30,9 +30,12 @@ class _LogInScreenState extends State<LogInScreen> {
 
   @override
   void initState() {
-    context.read<ProductProvider>().emailController.clear();
-    context.read<ProductProvider>().passwordController.clear();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final providerRead = context.read<ProductProvider>();
+      providerRead.emailController.clear();
+      providerRead.passwordController.clear();
+    });
   }
 
   @override
@@ -144,7 +147,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       ),
                       if (context.watch<ProductProvider>().errorMessageLogIn !=
                           null) ...[
-                        const SizedBox(height: 15),
+                        SizedBox(height: 5),
                         Text(
                           context.watch<ProductProvider>().errorMessageLogIn!,
                           style: const TextStyle(
@@ -153,7 +156,6 @@ class _LogInScreenState extends State<LogInScreen> {
                           ),
                         ),
                       ],
-                      const SizedBox(height: 5),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -173,7 +175,8 @@ class _LogInScreenState extends State<LogInScreen> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context){
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (context) {
                                 return ForgotPasswordScreen();
                               }));
                             },
@@ -186,7 +189,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 15),
                       InkWell(
                         onTap: () async {
                           // On tap, dismiss the keyboard, Unfocus the current focus (dismiss keyboard)
@@ -216,7 +219,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 25),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -245,7 +248,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 25),
+                      const SizedBox(height: 20),
                       InkWell(
                         onTap: () async {
                           signInWithGoogle();
@@ -291,7 +294,7 @@ class _LogInScreenState extends State<LogInScreen> {
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const SignUpScreen(),
+                                  builder: (context) => SignUpScreen(),
                                 ),
                               );
                             },

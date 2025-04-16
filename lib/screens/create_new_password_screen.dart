@@ -35,7 +35,7 @@ class PasswordUpdateProvider extends ChangeNotifier {
     } else {
       try {
         final response = await http.post(
-          Uri.parse('http://192.168.0.104:3000/update-password'),
+          Uri.parse('http://192.168.0.110:3000/update-password'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({'email': email, 'newPassword': newPassword}),
         );
@@ -59,14 +59,17 @@ class PasswordUpdateProvider extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
+
+
 }
 
 class CreateNewPasswordScreen extends StatelessWidget {
-  final String? email; // Receive email from previous screen
-  const CreateNewPasswordScreen({super.key, this.email});
+  const CreateNewPasswordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final email = ModalRoute.of(context)?.settings.arguments
+        as String?; // Get email from arguments
     debugPrint('Receive email from previous screen : $email');
 
     return ChangeNotifierProvider(
@@ -74,14 +77,6 @@ class CreateNewPasswordScreen extends StatelessWidget {
       child: Consumer<PasswordUpdateProvider>(
         builder: (context, provider, child) {
           return Scaffold(
-            appBar: AppBar(
-              backgroundColor: AppColor.appBackgroundColor,
-              elevation: 0,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.black),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
             backgroundColor: AppColor.appBackgroundColor,
             body: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -145,7 +140,7 @@ class CreateNewPasswordScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: provider.isLoading
-                        ? const CircularProgressIndicator()
+                        ? const Center(child: CircularProgressIndicator())
                         : ElevatedButton(
                             onPressed: () => provider.updatePassword(context),
                             style: ElevatedButton.styleFrom(
