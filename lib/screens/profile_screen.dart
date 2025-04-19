@@ -27,7 +27,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final providerRead = context.read<ProductProvider>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       providerRead.getUserDetails(userUniqueId);
-      providerRead.fetchOrders(userUniqueId, context);
+      // providerRead.fetchOrders(userUniqueId, context);
     });
 
     super.initState();

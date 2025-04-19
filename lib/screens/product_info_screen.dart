@@ -202,11 +202,15 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                     ),
                                   ),
                                   Text(
-                                    widget.product.availabilityStatus,
+                                    widget.product.stock == 0
+                                        ? 'Out of stock'
+                                        : widget.product.stock < 5
+                                            ? 'Low Stock'
+                                            : 'In Stock',
                                     style: TextStyle(
-                                      color:
-                                          widget.product.availabilityStatus ==
-                                                  'Low Stock'
+                                      color: widget.product.stock < 5
+                                          ? Colors.red
+                                          : widget.product.stock == 0
                                               ? Colors.red
                                               : Colors.green,
                                     ),
@@ -256,7 +260,14 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              ShowModalBottomSheet(product: widget.product),
+                              widget.product.category == 'mens-shirts' ||
+                                      widget.product.category ==
+                                          'womens-dresses' ||
+                                      widget.product.category == 'tops'
+                                  ? ShowModalBottomSheet(
+                                      product: widget.product,
+                                    )
+                                  : Text(''),
                             ],
                           ),
                           const SizedBox(height: 10),

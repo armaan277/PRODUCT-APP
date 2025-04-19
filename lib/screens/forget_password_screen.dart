@@ -4,15 +4,31 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
-  const ForgotPasswordScreen({super.key});
+class ForgotPasswordScreen extends StatefulWidget {
+  final String? email;
+  const ForgotPasswordScreen({super.key, this.email});
+
+  @override
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('ForgotPasswordScreen widget.email : ${widget.email}');
+    // Pre-fill email if passed via constructor
+    if (widget.email != null) {
+      context.read<ProductProvider>().forgetEmailController.text = widget.email!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final providerRead = context.read<ProductProvider>();
     final providerWatch = context.watch<ProductProvider>();
-
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
     return Scaffold(
       appBar: AppBar(
@@ -20,14 +36,17 @@ class ForgotPasswordScreen extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.pop(context);
+            providerRead.forgetEmailController.text = '';
+          },
         ),
       ),
       backgroundColor: AppColor.appBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
-          key: _formKey, // ✅ Add Form key
+          key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,

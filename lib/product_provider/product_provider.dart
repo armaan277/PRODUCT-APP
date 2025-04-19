@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
@@ -11,8 +12,8 @@ import 'package:shopping_app/config/endponts.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/model/product.dart';
-import 'package:shopping_app/screens/otp_sent_forget_screen.dart';
 import 'package:shopping_app/screens/product_cart_screen.dart';
+import 'package:shopping_app/screens/sign_up_screen.dart';
 import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path/path.dart' as p;
@@ -90,9 +91,115 @@ class ProductProvider extends ChangeNotifier {
   bool isFavorite = false;
 
   bool isProductAddInCart = false;
+  bool isSignUpGoogle = false;
 
   // Controller for the forget email input
   final TextEditingController forgetEmailController = TextEditingController();
+
+  Future<void> signInWithGoogle(BuildContext context) async {
+    try {
+      final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+      if (gUser == null) return; // User cancelled sign-in
+
+      debugPrint('Name : ${gUser.displayName}');
+      debugPrint('Email : ${gUser.email}');
+
+      // Check if email exists in database
+      final bool emailExists = await checkEmailExists(gUser.email);
+      if (emailExists) {
+        // Email exists, navigate to BottomNavigation
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          'bottom_navigation',
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        // Email doesn't exist, navigate to SignUpScreen with name and email
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SignUpScreen(
+              name: gUser.displayName ?? '',
+              email: gUser.email,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Google Sign-In Error: $e')),
+      );
+    }
+  }
+
+  Future<bool> checkEmailExists(String email) async {
+    // Simulate API call to check if email exists
+    // Replace with actual API call
+    try {
+      final response = await http.get(
+        Uri.parse(
+            '${Endponts.checkEmailEndpoint}/$email'), // Define this endpoint
+      );
+      debugPrint('checkEmailExists response : ${response.body}');
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        userUniqueId = data['user']['id'] ?? '';
+        debugPrint('Login data -> signUpResponse : $data');
+        return data['exists'] == true; // Adjust based on your API response
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Error checking email: $e');
+      return false;
+    }
+  }
+
+  Future<void> googleSignUp(BuildContext context, String userUniqueId) async {
+    setIsSignUp(true);
+    try {
+      final name = signupNameController.text.trim();
+      final email = signupEmailController.text.trim();
+      final phone = signupPhoneController.text.trim();
+      final password = signupPasswordController.text.trim();
+
+      final response = await http.post(
+        Uri.parse('http://192.168.0.110:3000/google-signup'), // New endpoint
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'id': userUniqueId,
+          'name': name,
+          'email': email,
+          'phone': phone,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          'bottom_navigation',
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        final errorMsg =
+            jsonDecode(response.body)['message'] ?? 'Signup failed';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMsg)),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    } finally {
+      setIsSignUp(false);
+    }
+  }
+
+  void setIsSignUpWithGoogle(bool value) {
+    isSignUpGoogle = value;
+    notifyListeners();
+  }
 
   Future<void> getProducts() async {
     final response = await http.get(Uri.parse(Endponts.getAllProductsEndPoint));
@@ -230,9 +337,11 @@ class ProductProvider extends ChangeNotifier {
     );
 
     final signUpResponse = jsonDecode(response.body);
+    debugPrint('Login -> signUpResponse : $signUpResponse');
 
     if (response.statusCode == 200) {
       userUniqueId = signUpResponse['user']['id'] ?? '';
+      debugPrint('Login -> userUniqueId : $userUniqueId');
       isLogin = false;
       debugPrint('userUniqueId : $userUniqueId');
       debugPrint('Successfully LogedIn');
@@ -708,9 +817,9 @@ class ProductProvider extends ChangeNotifier {
         notifyListeners();
       } else {
         isLoadingOrderDetails = false;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load orders!')),
-        );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Failed to load orders!')),
+        // );
         notifyListeners();
       }
     } catch (e) {
@@ -786,7 +895,8 @@ class ProductProvider extends ChangeNotifier {
         debugPrint('Quantity updated successfully: ${response.body}');
       } else {
         debugPrint(
-            'Failed to update quantity: ${response.statusCode} - ${response.body}');
+          'Failed to update quantity: ${response.statusCode} - ${response.body}',
+        );
       }
     } catch (error) {
       debugPrint('Error updating quantity: $error');
@@ -1109,6 +1219,9 @@ class ProductProvider extends ChangeNotifier {
     for (int i = 0; i < name.length - 1; i++) {
       if (name[i] == ' ') {
         newName = newName + name[i + 1];
+        if(newName.length == 2) {
+          return newName;
+        }
       }
     }
     return newName;
@@ -1132,7 +1245,9 @@ class ProductProvider extends ChangeNotifier {
         isUserReviewsLoad = false;
         notifyListeners();
       } else {
+        isUserReviewsLoad = false;
         debugPrint('Error: ${response.statusCode} - ${response.reasonPhrase}');
+        notifyListeners();
       }
     } catch (e) {
       debugPrint('Exception: $e'); // Handle any unexpected errors

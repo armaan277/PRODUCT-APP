@@ -29,24 +29,29 @@ class ContainerButtonState extends State<ContainerButton> {
         width: double.infinity,
         child: FilledButton(
           style: FilledButton.styleFrom(
-            backgroundColor: AppColor.appColor,
+            backgroundColor: widget.product.stock == 0
+                ? Colors.grey.shade200
+                : AppColor.appColor,
           ),
-          onPressed: () async {
-            final productExists =
-                providerWatch.bagProducts.contains(widget.product);
+          onPressed: widget.product.stock != 0
+              ? () async {
+                  final productExists =
+                      providerWatch.bagProducts.contains(widget.product);
 
-            if (!productExists) {
-              await providerRead.postCartData(widget.product, context);
-              CustomToast.showCustomToast(
-                context,
-                message: 'Added Cart Successfully',
-              );
-            } else {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return const ProductCartScreen();
-              }));
-            }
-          },
+                  if (!productExists) {
+                    await providerRead.postCartData(widget.product, context);
+                    CustomToast.showCustomToast(
+                      context,
+                      message: 'Added Cart Successfully',
+                    );
+                  } else {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return const ProductCartScreen();
+                    }));
+                  }
+                }
+              : null,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

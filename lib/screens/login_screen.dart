@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
@@ -9,19 +8,14 @@ import 'package:shopping_app/screens/sign_up_screen.dart';
 import 'forget_password_screen.dart';
 
 class LogInScreen extends StatefulWidget {
-  const LogInScreen({super.key});
+  final String? email;
+  const LogInScreen({super.key, this.email});
 
   @override
   State<LogInScreen> createState() => _LogInScreenState();
 }
 
 class _LogInScreenState extends State<LogInScreen> {
-  signInWithGoogle() async {
-    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
-    debugPrint('Name : ${gUser?.displayName}');
-    debugPrint('Email : ${gUser?.email}');
-  }
-
   bool isRemember = false;
   bool isPasswordShow = true;
   String? errorMessage;
@@ -35,6 +29,12 @@ class _LogInScreenState extends State<LogInScreen> {
       final providerRead = context.read<ProductProvider>();
       providerRead.emailController.clear();
       providerRead.passwordController.clear();
+      // Pre-fill email if passed via constructor
+      debugPrint('LogInScreen widget.email : ${widget.email}');
+
+      if (widget.email != null) {
+        providerRead.emailController.text = widget.email!;
+      }
     });
   }
 
@@ -177,7 +177,10 @@ class _LogInScreenState extends State<LogInScreen> {
                             onPressed: () {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (context) {
-                                return ForgotPasswordScreen();
+                                return ForgotPasswordScreen(
+                                    email: context.read<ProductProvider>().emailController.text.trim().isNotEmpty
+                                        ? context.read<ProductProvider>().emailController.text.trim()
+                                        : null,);
                               }));
                             },
                             child: const Text(
@@ -192,7 +195,6 @@ class _LogInScreenState extends State<LogInScreen> {
                       const SizedBox(height: 15),
                       InkWell(
                         onTap: () async {
-                          // On tap, dismiss the keyboard, Unfocus the current focus (dismiss keyboard)
                           FocusScope.of(context).unfocus();
                           if (formKey.currentState?.validate() ?? false) {
                             context
@@ -251,7 +253,9 @@ class _LogInScreenState extends State<LogInScreen> {
                       const SizedBox(height: 20),
                       InkWell(
                         onTap: () async {
-                          signInWithGoogle();
+                          context
+                              .read<ProductProvider>()
+                              .signInWithGoogle(context);
                         },
                         child: Container(
                           height: 55,

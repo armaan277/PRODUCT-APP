@@ -57,7 +57,14 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
             )
           : providerRead.orders.isEmpty
               ? const Center(
-                  child: Text('No orders found'),
+                  child: Text(
+                    'Explore and buy now!',
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 )
               : ListView.builder(
                   itemCount: providerRead.orders.length,
@@ -222,6 +229,39 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                     );
                   },
                 ),
+      bottomSheet: providerWatch.orders.isEmpty
+          ? GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed('bottom_navigation');
+              },
+              child: Container(
+                height: 60,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 2,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
+                  color: AppColor.appColor,
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                child: const Center(
+                  child: Text(
+                    'Browse Products',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          : null,
     );
   }
 }

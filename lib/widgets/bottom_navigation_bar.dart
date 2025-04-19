@@ -20,11 +20,16 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   void initState() {
-    context.read<ProductProvider>().getProducts();
-    context.read<ProductProvider>().getCartsData(userUniqueId);
-    context.read<ProductProvider>().getFavouriteData(userUniqueId);
-    context.read<ProductProvider>().getAddressData();
-    context.read<ProductProvider>().getUserReviews(userUniqueId);
+    // Delay the state update after the current build phase
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProductProvider>().getProducts();
+      context.read<ProductProvider>().getCartsData(userUniqueId);
+      context.read<ProductProvider>().getFavouriteData(userUniqueId);
+      context.read<ProductProvider>().getAddressData();
+      context.read<ProductProvider>().getUserReviews(userUniqueId);
+      context.read<ProductProvider>().fetchOrders(userUniqueId, context);
+    });
+
     super.initState();
   }
 

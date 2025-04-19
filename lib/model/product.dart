@@ -15,6 +15,7 @@ class Product {
   final String warrantyInformation;
   final String category;
   int quantity = 1;
+  final int stock;
 
   Product({
     required this.id,
@@ -31,6 +32,7 @@ class Product {
     required this.warrantyInformation,
     required this.category,
     this.quantity = 1,
+    required this.stock,
   });
 
   Map productToMap() {
@@ -49,6 +51,7 @@ class Product {
       'warrantyinformation': warrantyInformation,
       'category': category,
       'quantity': quantity,
+      'stock' : stock,
     };
   }
 
@@ -76,6 +79,7 @@ class Product {
       warrantyInformation: productMap['warrantyinformation'] ?? '',
       category: productMap['category'] ?? '',
       quantity: productMap['quantity'] ?? 1,
+      stock: productMap['stock'] ?? 0,
     );
   }
 

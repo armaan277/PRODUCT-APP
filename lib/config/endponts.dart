@@ -34,4 +34,7 @@ class Endponts {
   static const deleteUserFavouriteEndPoint = '$_baseEndpoint/favorite';
   static const deleteUserOrderCartsProducts =
       '$_baseEndpoint/ordercartproducts';
+
+  static const checkEmailEndpoint = '$_baseEndpoint/check-email';
+  
 }

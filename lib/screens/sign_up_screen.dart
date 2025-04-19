@@ -1,53 +1,74 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nanoid/nanoid.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/constant/constant.dart';
+import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  final String? name;
+  final String? email;
+
+  const SignUpScreen({super.key, this.name, this.email});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final nanoId = nanoid(8);
+  late final uniqueId;
+  
   final _formKey = GlobalKey<FormState>();
   String error = '';
 
   Future<void> _sendOTP(String email, ProductProvider provider) async {
-    provider.setIsSignUp(true); // Start loading
-    final response = await http.post(
-      Uri.parse('http://192.168.0.110:3000/send-otp'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email}),
-    );
-
-    debugPrint('_sendOTP :- ${response.body}');
-
-    // Decode the JSON body
-    final Map<String, dynamic> responseBody = jsonDecode(response.body);
-    debugPrint('responseBody : $responseBody');
-    if (response.statusCode == 200) {
-      Navigator.pushNamed(
-        context,
-        'otp_screen',
-        arguments: email,
+    if (widget.email == null) { // Only for normal sign-up
+      provider.setIsSignUp(true);
+      final response = await http.post(
+        Uri.parse('http://192.168.0.110:3000/send-otp'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email}),
       );
-    } else if (response.statusCode == 409) {
-      error = responseBody['message'] ?? 'Error occurred';
-    } else {
-      error = 'Failed to send OTP';
+
+      debugPrint('_sendOTP :- ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      debugPrint('responseBody : $responseBody');
+      if (response.statusCode == 200) {
+        Navigator.pushNamed(
+          context,
+          'otp_screen',
+          arguments: email,
+        );
+      } else if (response.statusCode == 409) {
+        error = responseBody['message'] ?? 'Error occurred';
+      } else {
+        error = 'Failed to send OTP';
+      }
+      provider.setIsSignUp(false);
     }
-    provider.setIsSignUp(false); // Stop loading
-    setState(() {}); // Update UI with error if any
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final providerRead = context.read<ProductProvider>();
+      if (widget.name != null) providerRead.signupNameController.text = widget.name!;
+      if (widget.email != null) providerRead.signupEmailController.text = widget.email!;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final providerRead = context.read<ProductProvider>();
+    final isGoogleSignUp = widget.email != null && widget.name != null;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -149,6 +170,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   inputFormatters: [
                     FilteringTextInputFormatter.deny(RegExp(r'\s')),
                   ],
+                  enabled: !isGoogleSignUp,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return 'Email is required';
@@ -271,9 +293,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               : () async {
                                   FocusScope.of(context).unfocus();
                                   if (_formKey.currentState!.validate()) {
-                                    final email =
-                                        providerRead.signupEmailController.text.trim();
-                                    await _sendOTP(email, prov); // Pass provider
+                                    if (isGoogleSignUp) {
+                                      final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                      uniqueId = nanoId;
+                                      userUniqueId = nanoId;
+                                      prefs.setString('userUniqueId', userUniqueId);
+                                      prefs.setBool('isLoggedIn', true);
+                                      debugPrint('SignUp userUniqueId : $userUniqueId');
+                                      debugPrint('uuid : $uniqueId');
+                                      await prov.googleSignUp(context, userUniqueId); // Google signup
+                                    } else {
+                                      final email =
+                                          providerRead.signupEmailController.text.trim();
+                                      await _sendOTP(email, prov); // Normal signup with OTP
+                                    }
                                   }
                                 },
                           child: Container(
