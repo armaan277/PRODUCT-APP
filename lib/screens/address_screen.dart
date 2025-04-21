@@ -16,8 +16,13 @@ class AddressScreen extends StatefulWidget {
 
 class _AddressScreenState extends State<AddressScreen> {
   Position? currentPosition;
+  bool isAddressLoad = false; // Initial state false, button action ke liye
 
   Future<void> getCurrentLocation() async {
+    setState(() {
+      isAddressLoad = true; // Loading start
+    });
+
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
@@ -25,7 +30,13 @@ class _AddressScreenState extends State<AddressScreen> {
       permission = await Geolocator.requestPermission();
       if (permission != LocationPermission.whileInUse &&
           permission != LocationPermission.always) {
+        setState(() {
+          isAddressLoad = false; // Loading stop
+        });
         debugPrint("Location permissions are still denied.");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions denied.')),
+        );
         return;
       }
     }
@@ -36,9 +47,16 @@ class _AddressScreenState extends State<AddressScreen> {
       ));
       debugPrint('Latitude: ${currentPosition?.latitude}');
       debugPrint('Longitude: ${currentPosition?.longitude}');
-      checkPermission();
+      await checkPermission(); // Address fetch ke baad
     } catch (e) {
       debugPrint('Error retrieving location: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching location: $e')),
+      );
+    } finally {
+      setState(() {
+        isAddressLoad = false; // Loading stop (success ya fail dono case mein)
+      });
     }
   }
 
@@ -63,6 +81,9 @@ class _AddressScreenState extends State<AddressScreen> {
         }
       } catch (e) {
         debugPrint('Error getting placemarks: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error getting address: $e')),
+        );
       }
     } else {
       debugPrint('Current position is null');
@@ -106,92 +127,100 @@ class _AddressScreenState extends State<AddressScreen> {
         padding: const EdgeInsets.all(10.0),
         child: Form(
           key: _formKey,
-          child: ListView(
+          child: Stack(
             children: [
-              const SizedBox(height: 20.0),
-              _buildInputField(
-                controller: providerRead.nameController,
-                label: 'Full name',
-                validationMessage: 'Please enter your name',
-              ),
-              const SizedBox(height: 20.0),
-              _buildInputField(
-                controller: providerRead.addressController,
-                label: 'Address',
-                validationMessage: 'Please enter your address',
-              ),
-              const SizedBox(height: 20.0),
-              _buildInputField(
-                controller: providerRead.cityController,
-                label: 'City',
-                validationMessage: 'Please enter your city',
-              ),
-              const SizedBox(height: 20.0),
-              _buildInputField(
-                controller: providerRead.stateController,
-                label: 'State/Province/Region',
-                validationMessage: 'Please enter your state',
-              ),
-              const SizedBox(height: 20.0),
-              _buildInputField(
-                controller: providerRead.zipcodeController,
-                label: 'Zip Code (Postal Code)',
-                validationMessage: 'Please enter your zip code',
-              ),
-              const SizedBox(height: 20.0),
-              _buildInputField(
-                controller: providerRead.countryController,
-                label: 'Country',
-                validationMessage: 'Please enter your country',
-              ),
-              const SizedBox(height: 20.0),
-              GestureDetector(
-                onTap: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    if (providerRead.isAddressStoreInDatabase) {
-                      providerRead.addressUpdate(
-                        userUniqueId,
-                        providerRead.nameController.text,
-                        providerRead.addressController.text,
-                        providerRead.cityController.text,
-                        providerRead.stateController.text,
-                        int.parse(providerRead.zipcodeController.text),
-                        providerRead.countryController.text,
-                      );
-                    } else {
-                      providerRead.postAddressData();
-                    }
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return PaymentScreen();
-                    }));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Center(
-                          child: Text('Please fill in all required fields'),
+              ListView(
+                children: [
+                  const SizedBox(height: 20.0),
+                  _buildInputField(
+                    controller: providerRead.nameController,
+                    label: 'Full name',
+                    validationMessage: 'Please enter your name',
+                  ),
+                  const SizedBox(height: 20.0),
+                  _buildInputField(
+                    controller: providerRead.addressController,
+                    label: 'Address',
+                    validationMessage: 'Please enter your address',
+                  ),
+                  const SizedBox(height: 20.0),
+                  _buildInputField(
+                    controller: providerRead.cityController,
+                    label: 'City',
+                    validationMessage: 'Please enter your city',
+                  ),
+                  const SizedBox(height: 20.0),
+                  _buildInputField(
+                    controller: providerRead.stateController,
+                    label: 'State/Province/Region',
+                    validationMessage: 'Please enter your state',
+                  ),
+                  const SizedBox(height: 20.0),
+                  _buildInputField(
+                    controller: providerRead.zipcodeController,
+                    label: 'Zip Code (Postal Code)',
+                    validationMessage: 'Please enter your zip code',
+                  ),
+                  const SizedBox(height: 20.0),
+                  _buildInputField(
+                    controller: providerRead.countryController,
+                    label: 'Country',
+                    validationMessage: 'Please enter your country',
+                  ),
+                  const SizedBox(height: 20.0),
+                  GestureDetector(
+                    onTap: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        if (providerRead.isAddressStoreInDatabase) {
+                          providerRead.addressUpdate(
+                            userUniqueId,
+                            providerRead.nameController.text,
+                            providerRead.addressController.text,
+                            providerRead.cityController.text,
+                            providerRead.stateController.text,
+                            int.parse(providerRead.zipcodeController.text),
+                            providerRead.countryController.text,
+                          );
+                        } else {
+                          providerRead.postAddressData();
+                        }
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return PaymentScreen();
+                        }));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Center(
+                              child: Text('Please fill in all required fields'),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    child: _buildSaveButton(
+                      context.watch<ProductProvider>().isAddressStoreInDatabase
+                          ? 'CONFIRM ADDRESS'
+                          : 'SAVE ADDRESS',
+                      AppColor.appColor,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: isAddressLoad ? null : getCurrentLocation,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        _buildSaveButton(
+                          'CURRENT LOCATION',
+                          Colors.white,
+                          borderColor: AppColor.appColor,
+                          textColor: AppColor.appColor,
+                          isAddressLoad: isAddressLoad,
                         ),
-                      ),
-                    );
-                  }
-                },
-                child: _buildSaveButton(
-                  context.watch<ProductProvider>().isAddressStoreInDatabase
-                      ? 'CONFIRM ADDRESS'
-                      : 'SAVE ADDRESS',
-                  AppColor.appColor,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  getCurrentLocation();
-                },
-                child: _buildSaveButton(
-                  'CURRENT LOCATION',
-                  Colors.white,
-                  borderColor: AppColor.appColor,
-                  textColor: AppColor.appColor,
-                ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -245,6 +274,7 @@ class _AddressScreenState extends State<AddressScreen> {
     Color color, {
     Color? textColor = Colors.white,
     Color? borderColor,
+    bool isAddressLoad = false,
   }) {
     return Container(
       margin: const EdgeInsetsDirectional.only(bottom: 20.0),
@@ -264,13 +294,22 @@ class _AddressScreenState extends State<AddressScreen> {
         border: borderColor != null ? Border.all(color: borderColor) : null,
       ),
       child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 18,
-            color: textColor,
-          ),
-        ),
+        child: isAddressLoad
+            ? const SizedBox(
+                height: 26,
+                width: 26,
+                child: CircularProgressIndicator(
+                  color: AppColor.appColor,
+                  strokeWidth: 3,
+                ),
+              )
+            : Text(
+                text,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: textColor,
+                ),
+              ),
       ),
     );
   }

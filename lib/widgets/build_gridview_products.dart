@@ -42,9 +42,7 @@ class BuildGridviewProducts extends StatelessWidget {
               final product = shopCategories[index];
               final favorite =
                   !providerWatch.favoriteProducts.contains(product);
-              return 
-
-              ProductsCard(
+              return ProductsCard(
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -80,8 +78,6 @@ class BuildGridviewProducts extends StatelessWidget {
                 horizontal: 12.0,
                 left: 150,
               );
-           
-           
             },
           );
   }

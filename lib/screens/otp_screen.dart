@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:nanoid/nanoid.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shopping_app/config/endponts.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
@@ -39,8 +40,7 @@ class _OTPScreenState extends State<OTPScreen> {
     setState(() => _isLoading = true); // Start loading
     try {
       final response = await http.post(
-        Uri.parse(
-            'http://192.168.0.110:3000/validate-otp'), // Replace with your PC's IP
+        Uri.parse(EndPoints.validateOTPEndpoint),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'otp': otp}),
       );
@@ -84,8 +84,8 @@ class _OTPScreenState extends State<OTPScreen> {
   Future<void> _resendOTP(String email) async {
     final response = await http.post(
       Uri.parse(
-        'http://192.168.0.110:3000/send-otp',
-      ), // Replace with your PC's IP
+        EndPoints.sendOTPEndpoint,
+      ),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email}),
     );

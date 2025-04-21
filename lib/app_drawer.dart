@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
-import 'package:shopping_app/screens/refund_policy_faqs_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppDrawer extends StatefulWidget {
   const AppDrawer({super.key});
@@ -19,6 +19,14 @@ class _AppDrawerState extends State<AppDrawer> {
   void initState() {
     context.read<ProductProvider>().getUserDetails(userUniqueId);
     super.initState();
+  }
+
+  Future<void> _launchURL(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -128,12 +136,9 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
             ),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return RefundPolicyFaqsScreen(
-                  url:
-                      'https://armaan277.github.io/simple-website/refund-policy.html',
-                );
-              }));
+              _launchURL(
+                'https://armaan277.github.io/simple-website/refund-policy.html',
+              );
             },
           ),
           ListTile(
@@ -149,11 +154,9 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
             ),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return RefundPolicyFaqsScreen(
-                  url: 'https://armaan277.github.io/simple-website/FAQs.html',
-                );
-              }));
+              _launchURL(
+                'https://armaan277.github.io/simple-website/FAQs.html',
+              );
             },
           ),
           const Divider(),

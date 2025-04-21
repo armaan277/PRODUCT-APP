@@ -1,6 +1,6 @@
-class Endponts {
+class EndPoints {
   // static const _baseEndpoint = 'https://ecommerce-rendered.onrender.com';
-  static const _baseEndpoint = 'http://192.168.0.110:3000'; 
+  static const _baseEndpoint = 'http://192.168.0.106:3000';
 
   static const loginEndPoint = '$_baseEndpoint/login';
   static const signUpEndPoint = '$_baseEndpoint/signup';
@@ -35,6 +35,20 @@ class Endponts {
   static const deleteUserOrderCartsProducts =
       '$_baseEndpoint/ordercartproducts';
 
+// Google SignUp End Points
   static const checkEmailEndpoint = '$_baseEndpoint/check-email';
+  static const googleSignupEndpoint = '$_baseEndpoint/google-signup';
+
+  // OTP End Points
+  static const sendOTPEndpoint = '$_baseEndpoint/send-otp';
+  static const validateOTPEndpoint = '$_baseEndpoint/validate-otp';
+
+
+  // Forget Password
+  static const forgetPasswordEndpoint = '$_baseEndpoint/forget-password';
+  static const updatePasswordEndpoint = '$_baseEndpoint/update-password';
+
+
   
+
 }

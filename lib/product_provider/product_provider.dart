@@ -138,14 +138,18 @@ class ProductProvider extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse(
-            '${Endponts.checkEmailEndpoint}/$email'), // Define this endpoint
+            '${EndPoints.checkEmailEndpoint}/$email'), // Define this endpoint
       );
       debugPrint('checkEmailExists response : ${response.body}');
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         userUniqueId = data['user']['id'] ?? '';
         debugPrint('Login data -> signUpResponse : $data');
-        return data['exists'] == true; // Adjust based on your API response
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isLoggedIn', data['exists']);
+        prefs.setString('userUniqueId', userUniqueId);
+        return data['exists'] == true;
+        // Adjust based on your API response
       }
       return false;
     } catch (e) {
@@ -163,7 +167,7 @@ class ProductProvider extends ChangeNotifier {
       final password = signupPasswordController.text.trim();
 
       final response = await http.post(
-        Uri.parse('http://192.168.0.110:3000/google-signup'), // New endpoint
+        Uri.parse(EndPoints.googleSignupEndpoint),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'id': userUniqueId,
@@ -202,7 +206,8 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<void> getProducts() async {
-    final response = await http.get(Uri.parse(Endponts.getAllProductsEndPoint));
+    final response =
+        await http.get(Uri.parse(EndPoints.getAllProductsEndPoint));
 
     final mapResponse = jsonDecode(response.body);
 
@@ -318,8 +323,9 @@ class ProductProvider extends ChangeNotifier {
   }
 
 // LOGIN WORK
+
   Future<void> postLoginData(BuildContext context) async {
-    final url = Uri.parse(Endponts.loginEndPoint);
+    final url = Uri.parse(EndPoints.loginEndPoint);
 
     final loginData = {
       'email': emailController.text,
@@ -388,7 +394,7 @@ class ProductProvider extends ChangeNotifier {
 
     try {
       final response = await http.post(
-        Uri.parse(Endponts.signUpEndPoint),
+        Uri.parse(EndPoints.signUpEndPoint),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(signUpData),
       );
@@ -434,7 +440,7 @@ class ProductProvider extends ChangeNotifier {
   // Helper function to send OTP
   Future<void> _sendOTP(String email, BuildContext context) async {
     final response = await http.post(
-      Uri.parse('http://192.168.0.110:3000/send-otp'), // Match with backend
+      Uri.parse(EndPoints.sendOTPEndpoint),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email}),
     );
@@ -460,7 +466,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void getFavouriteData(String userId) async {
-    final url = Uri.parse('${Endponts.getUserFavouritesEndPoint}/$userId');
+    final url = Uri.parse('${EndPoints.getUserFavouritesEndPoint}/$userId');
     final response = await http.get(url);
 
     debugPrint('favouriteResponse : ${response.body}');
@@ -482,7 +488,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<void> postFavoriteData(Product favoriteProduct) async {
-    final url = Uri.parse(Endponts.postUserFavouriteEndPoint);
+    final url = Uri.parse(EndPoints.postUserFavouriteEndPoint);
     isFavorite = true;
     notifyListeners();
 
@@ -528,7 +534,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<void> deleteFavourite(int id) async {
-    final url = Uri.parse('${Endponts.deleteUserFavouriteEndPoint}/$id');
+    final url = Uri.parse('${EndPoints.deleteUserFavouriteEndPoint}/$id');
     isFavorite = true;
     notifyListeners();
     try {
@@ -549,7 +555,7 @@ class ProductProvider extends ChangeNotifier {
 
   // CART API WORK
   Future<void> postCartData(Product bagProduct, BuildContext? context) async {
-    final url = Uri.parse(Endponts.postUserCartProductsEndPoint);
+    final url = Uri.parse(EndPoints.postUserCartProductsEndPoint);
 
     isProductAddInCart = true;
     notifyListeners();
@@ -605,7 +611,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void getCartsData(String userId) async {
-    final url = Uri.parse('${Endponts.getUserCartsProductsEndPoint}/$userId');
+    final url = Uri.parse('${EndPoints.getUserCartsProductsEndPoint}/$userId');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -628,7 +634,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void deleteCartData(int id) async {
-    final url = Uri.parse('${Endponts.deleteUserCartProductsEndPoint}/$id');
+    final url = Uri.parse('${EndPoints.deleteUserCartProductsEndPoint}/$id');
 
     try {
       final response = await http.delete(url);
@@ -648,7 +654,7 @@ class ProductProvider extends ChangeNotifier {
 
   // ADDRESS API WORK
   Future<void> getAddressData() async {
-    final url = Uri.parse('${Endponts.getUserAddressEndPoint}/$userUniqueId');
+    final url = Uri.parse('${EndPoints.getUserAddressEndPoint}/$userUniqueId');
     debugPrint('getAddressData : $userUniqueId');
 
     try {
@@ -702,7 +708,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void postAddressData() async {
-    final url = Uri.parse(Endponts.postUserAddressEndPoint);
+    final url = Uri.parse(EndPoints.postUserAddressEndPoint);
 
     final postAddressData = {
       'address_id': userUniqueId,
@@ -732,7 +738,7 @@ class ProductProvider extends ChangeNotifier {
     int zipCode,
     String country,
   ) {
-    final url = Uri.parse('${Endponts.postUserAddressEndPoint}/$userId');
+    final url = Uri.parse('${EndPoints.postUserAddressEndPoint}/$userId');
 
     final updatedTodo = jsonEncode({
       'address_id': userId,
@@ -755,7 +761,7 @@ class ProductProvider extends ChangeNotifier {
   void postAddressId(String userId) async {
     DateTime now = DateTime.now();
     String formattedTime = DateFormat('HH:mm:ss').format(now); // 24-hour format
-    final url = Uri.parse('${Endponts.postUserAddressIDEndPoint}/$userId');
+    final url = Uri.parse('${EndPoints.postUserAddressIDEndPoint}/$userId');
 
     final data = {
       'address_id': userId,
@@ -778,7 +784,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void deleteOrderCartProducts(String userId) async {
-    final url = Uri.parse('${Endponts.deleteUserOrderCartsProducts}/$userId');
+    final url = Uri.parse('${EndPoints.deleteUserOrderCartsProducts}/$userId');
 
     try {
       final response = await http.delete(url);
@@ -799,7 +805,7 @@ class ProductProvider extends ChangeNotifier {
 // ORDERS API WORKING
   Future<void> fetchOrders(String userId, BuildContext context) async {
     final url =
-        Uri.parse('${Endponts.getUserOrdersEndPoint}/$userId'); // Backend URL
+        Uri.parse('${EndPoints.getUserOrdersEndPoint}/$userId'); // Backend URL
 
     try {
       // Clear existing orders and set loading state
@@ -833,7 +839,7 @@ class ProductProvider extends ChangeNotifier {
 
   void fetchOrderItems(String orderIdItems) async {
     final url =
-        Uri.parse('${Endponts.getUserOrderItemsEndPoint}/$orderIdItems');
+        Uri.parse('${EndPoints.getUserOrderItemsEndPoint}/$orderIdItems');
 
     debugPrint('Fetching items for orderItemsId: $orderIdItems');
     // Clear existing data and set loading state BEFORE making the network call
@@ -873,7 +879,7 @@ class ProductProvider extends ChangeNotifier {
 
   void updateQuantity(String uniqueId, Product bagProduct) async {
     // Define the URL
-    final url = Uri.parse(Endponts.patchUserCartQtyUpdateEndPoint);
+    final url = Uri.parse(EndPoints.patchUserCartQtyUpdateEndPoint);
 
     // Prepare the request body
     final body = {
@@ -917,7 +923,7 @@ class ProductProvider extends ChangeNotifier {
     String userId,
     List<String> reviewImages,
   ) async {
-    final url = Uri.parse('${Endponts.postUserReviewsEndPoint}/$productId');
+    final url = Uri.parse('${EndPoints.postUserReviewsEndPoint}/$productId');
 
     final postRatingData = {
       'product_id': productId,
@@ -957,7 +963,7 @@ class ProductProvider extends ChangeNotifier {
   Future<void> getReviewData(int productId) async {
     try {
       // Construct the API URL
-      final url = Uri.parse('${Endponts.getAllReviewsEndPoint}/$productId');
+      final url = Uri.parse('${EndPoints.getAllReviewsEndPoint}/$productId');
 
       // Send GET request
       final response = await http.get(url);
@@ -1165,7 +1171,7 @@ class ProductProvider extends ChangeNotifier {
   Future<bool> cancelStatusInDatabase(
       String orderId, String orderStatus) async {
     final url = Uri.parse(
-        '${Endponts.cancelStatusInDatabaseEndPoint}/$orderId'); // Fixed endpoint
+        '${EndPoints.cancelStatusInDatabaseEndPoint}/$orderId'); // Fixed endpoint
 
     try {
       final response = await http.patch(
@@ -1194,7 +1200,7 @@ class ProductProvider extends ChangeNotifier {
   void getUserDetails(String id) async {
     try {
       final response =
-          await http.get(Uri.parse('${Endponts.getUserDetailsEndPoint}/$id'));
+          await http.get(Uri.parse('${EndPoints.getUserDetailsEndPoint}/$id'));
 
       if (response.statusCode == 200) {
         // Ensure response is successful
@@ -1219,7 +1225,7 @@ class ProductProvider extends ChangeNotifier {
     for (int i = 0; i < name.length - 1; i++) {
       if (name[i] == ' ') {
         newName = newName + name[i + 1];
-        if(newName.length == 2) {
+        if (newName.length == 2) {
           return newName;
         }
       }
@@ -1230,7 +1236,7 @@ class ProductProvider extends ChangeNotifier {
   void getUserReviews(String id) async {
     try {
       final response =
-          await http.get(Uri.parse('${Endponts.getUserReviewsEndPoint}/$id'));
+          await http.get(Uri.parse('${EndPoints.getUserReviewsEndPoint}/$id'));
 
       if (response.statusCode == 200) {
         // Ensure response is successful
@@ -1266,8 +1272,8 @@ class ProductProvider extends ChangeNotifier {
     _isLoadingForget = true;
     _errorMessageForget = null;
     notifyListeners();
+    final url = Uri.parse(EndPoints.forgetPasswordEndpoint);
 
-    final url = Uri.parse('http://192.168.0.110:3000/forget-password');
     final forgetData = {'email': forgetEmailController.text.trim()};
 
     try {

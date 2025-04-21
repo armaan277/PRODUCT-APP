@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shopping_app/config/endponts.dart';
 import 'dart:convert';
 import 'package:shopping_app/constant/constant.dart';
-import 'package:shopping_app/screens/create_new_password_screen.dart';
-import 'package:shopping_app/widgets/bottom_navigation_bar.dart';
 
 class OTPSentForgetScreen extends StatefulWidget {
   final String? email;
@@ -30,7 +29,7 @@ class _OTPSentForgetScreenState extends State<OTPSentForgetScreen> {
     setState(() => _isLoading = true);
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.0.110:3000/validate-otp'),
+        Uri.parse(EndPoints.validateOTPEndpoint),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'otp': otp}),
       );

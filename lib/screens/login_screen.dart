@@ -40,6 +40,9 @@ class _LogInScreenState extends State<LogInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final providerRead = context.read<ProductProvider>();
+    final providerWatch = context.watch<ProductProvider>();
+
     return Scaffold(
       backgroundColor: AppColor.appBackgroundColor,
       body: Padding(
@@ -51,7 +54,7 @@ class _LogInScreenState extends State<LogInScreen> {
               alignment: Alignment.center,
               children: [
                 Opacity(
-                  opacity: context.watch<ProductProvider>().isLogin ? 0.2 : 1,
+                  opacity: providerWatch.isLogin ? 0.2 : 1,
                   child: Column(
                     children: [
                       const SizedBox(height: 120),
@@ -74,8 +77,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       ),
                       const SizedBox(height: 40),
                       TextFormField(
-                        controller:
-                            context.read<ProductProvider>().emailController,
+                        controller: providerRead.emailController,
                         keyboardType: TextInputType.emailAddress,
                         inputFormatters: [
                           FilteringTextInputFormatter.deny(RegExp(r'\s')),
@@ -111,8 +113,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        controller:
-                            context.read<ProductProvider>().passwordController,
+                        controller: providerRead.passwordController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Password is required';
@@ -145,11 +146,10 @@ class _LogInScreenState extends State<LogInScreen> {
                           hintText: 'Password',
                         ),
                       ),
-                      if (context.watch<ProductProvider>().errorMessageLogIn !=
-                          null) ...[
+                      if (providerWatch.errorMessageLogIn != null) ...[
                         SizedBox(height: 5),
                         Text(
-                          context.watch<ProductProvider>().errorMessageLogIn!,
+                          providerWatch.errorMessageLogIn!,
                           style: const TextStyle(
                             color: Colors.red,
                             fontSize: 14,
@@ -178,9 +178,12 @@ class _LogInScreenState extends State<LogInScreen> {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (context) {
                                 return ForgotPasswordScreen(
-                                    email: context.read<ProductProvider>().emailController.text.trim().isNotEmpty
-                                        ? context.read<ProductProvider>().emailController.text.trim()
-                                        : null,);
+                                  email: providerRead.emailController.text
+                                          .trim()
+                                          .isNotEmpty
+                                      ? providerRead.emailController.text.trim()
+                                      : null,
+                                );
                               }));
                             },
                             child: const Text(
@@ -197,9 +200,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         onTap: () async {
                           FocusScope.of(context).unfocus();
                           if (formKey.currentState?.validate() ?? false) {
-                            context
-                                .read<ProductProvider>()
-                                .postLoginData(context);
+                            providerRead.postLoginData(context);
                           }
                         },
                         child: Container(
@@ -253,9 +254,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       const SizedBox(height: 20),
                       InkWell(
                         onTap: () async {
-                          context
-                              .read<ProductProvider>()
-                              .signInWithGoogle(context);
+                          providerRead.signInWithGoogle(context);
                         },
                         child: Container(
                           height: 55,
@@ -314,7 +313,7 @@ class _LogInScreenState extends State<LogInScreen> {
                     ],
                   ),
                 ),
-                if (context.watch<ProductProvider>().isLogin)
+                if (providerWatch.isLogin)
                   const CircularProgressIndicator(
                     color: Colors.red,
                   ),

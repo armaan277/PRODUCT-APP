@@ -321,6 +321,9 @@ class ShopScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: TextField(
+              onTapOutside: (event) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
               onChanged: (value) {
                 providerRead.filterProducts(value);
               },
@@ -335,7 +338,7 @@ class ShopScreen extends StatelessWidget {
                         onPressed: () {
                           providerRead.cancelSearching();
                         },
-                        icon: const Icon(Icons.close,size: 24),
+                        icon: const Icon(Icons.close, size: 24),
                       )
                     : null,
               ),

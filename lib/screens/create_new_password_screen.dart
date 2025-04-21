@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:shopping_app/config/endponts.dart';
 import 'dart:convert';
 import 'package:shopping_app/constant/constant.dart';
 
@@ -35,7 +36,7 @@ class PasswordUpdateProvider extends ChangeNotifier {
     } else {
       try {
         final response = await http.post(
-          Uri.parse('http://192.168.0.110:3000/update-password'),
+          Uri.parse(EndPoints.updatePasswordEndpoint),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({'email': email, 'newPassword': newPassword}),
         );
@@ -59,8 +60,6 @@ class PasswordUpdateProvider extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
-
-
 }
 
 class CreateNewPasswordScreen extends StatelessWidget {

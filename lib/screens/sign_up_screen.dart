@@ -5,6 +5,7 @@ import 'package:nanoid/nanoid.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shopping_app/config/endponts.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
@@ -30,7 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (widget.email == null) { // Only for normal sign-up
       provider.setIsSignUp(true);
       final response = await http.post(
-        Uri.parse('http://192.168.0.110:3000/send-otp'),
+        Uri.parse(EndPoints.sendOTPEndpoint),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email}),
       );
