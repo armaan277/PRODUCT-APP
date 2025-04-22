@@ -1,6 +1,6 @@
 class EndPoints {
   // static const _baseEndpoint = 'https://ecommerce-rendered.onrender.com';
-  static const _baseEndpoint = 'http://192.168.0.106:3000';
+  static const _baseEndpoint = 'http://192.168.0.106:3000'; 
 
   static const loginEndPoint = '$_baseEndpoint/login';
   static const signUpEndPoint = '$_baseEndpoint/signup';

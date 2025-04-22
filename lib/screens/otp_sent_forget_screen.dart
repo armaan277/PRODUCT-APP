@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shopping_app/config/endponts.dart';
+import 'package:shopping_app/config/endpoints.dart';
 import 'dart:convert';
 import 'package:shopping_app/constant/constant.dart';
 

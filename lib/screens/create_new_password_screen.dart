@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:shopping_app/config/endponts.dart';
+import 'package:shopping_app/config/endpoints.dart';
 import 'dart:convert';
 import 'package:shopping_app/constant/constant.dart';
+import 'package:shopping_app/product_provider/product_provider.dart';
 
 class PasswordUpdateProvider extends ChangeNotifier {
   bool _isLoading = false;
@@ -141,7 +142,10 @@ class CreateNewPasswordScreen extends StatelessWidget {
                     child: provider.isLoading
                         ? const Center(child: CircularProgressIndicator())
                         : ElevatedButton(
-                            onPressed: () => provider.updatePassword(context),
+                            onPressed: () {
+                              provider.updatePassword(context);
+                              context.read<ProductProvider>().errorMessageLogIn = '';
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColor.appColor,
                               padding: const EdgeInsets.symmetric(vertical: 15),

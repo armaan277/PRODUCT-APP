@@ -179,7 +179,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   await SharedPreferences.getInstance();
               prefs.setBool('isLoggedIn', isLoggedIn);
               prefs.setString('userUniqueId', userUniqueId);
-              Navigator.of(context).pushReplacementNamed('login_sreen');
+              providerRead.signOutGoogle(context);
             },
           ),
         ],

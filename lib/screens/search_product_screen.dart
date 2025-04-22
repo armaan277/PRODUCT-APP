@@ -81,15 +81,17 @@ class _SearchProductScreenState extends State<SearchProductScreen> {
                 hintText: 'Search...',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.search, size: 24),
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    setState(() {
-                      searchProductsController.clear();
-                      isSearch = false;
-                    });
-                  },
-                ),
+                suffixIcon: searchProductsController.text.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          setState(() {
+                            searchProductsController.clear();
+                            isSearch = false;
+                          });
+                        },
+                      )
+                    : null,
               ),
               onChanged: (value) {
                 setState(() {
@@ -99,57 +101,66 @@ class _SearchProductScreenState extends State<SearchProductScreen> {
             ),
           ),
           Expanded(
-            child: GridView.builder(
-              itemCount: shopCategories.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.6,
-              ),
-              itemBuilder: (context, index) {
-                final product = shopCategories[index];
-                final favorite =
-                    !providerWatch.favoriteProducts.contains(product);
+            child: shopCategories.isEmpty
+                ? Center(
+                    child: Image.asset(
+                      'assets/products_not_found.png',
+                      width: 300,
+                    ),
+                  )
+                : GridView.builder(
+                    itemCount: shopCategories.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.6,
+                    ),
+                    itemBuilder: (context, index) {
+                      final product = shopCategories[index];
+                      final favorite =
+                          !providerWatch.favoriteProducts.contains(product);
 
-                return ProductsCard(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ProductInfoScreen(
-                            product: product,
+                      return ProductsCard(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return ProductInfoScreen(
+                                  product: product,
+                                );
+                              },
+                            ),
                           );
                         },
-                      ),
-                    );
-                  },
-                  thumbnail: product.thumbnail,
-                  rating: product.rating > 4.50
-                      ? '⭐⭐⭐⭐⭐'
-                      : product.rating > 4
-                          ? '⭐⭐⭐⭐'
-                          : product.rating > 3
-                              ? '⭐⭐⭐'
-                              : product.rating > 2
-                                  ? '⭐⭐'
-                                  : product.rating > 1
-                                      ? '⭐'
-                                      : '',
-                  brand: product.brand,
-                  title: product.title,
-                  price: product.price,
-                  discountPercentage: product.discountPercentage.toDouble(),
-                  favorite: favorite,
-                  onPressed: () {
-                    context
-                        .read<ProductProvider>()
-                        .toggleFavoriteStatus(product);
-                  },
-                  vertical: 12.0,
-                  horizontal: 12.0,
-                  left: 150,
-                );
-              },
-            ),
+                        thumbnail: product.thumbnail,
+                        rating: product.rating > 4.50
+                            ? '⭐⭐⭐⭐⭐'
+                            : product.rating > 4
+                                ? '⭐⭐⭐⭐'
+                                : product.rating > 3
+                                    ? '⭐⭐⭐'
+                                    : product.rating > 2
+                                        ? '⭐⭐'
+                                        : product.rating > 1
+                                            ? '⭐'
+                                            : '',
+                        brand: product.brand,
+                        title: product.title,
+                        price: product.price,
+                        discountPercentage:
+                            product.discountPercentage.toDouble(),
+                        favorite: favorite,
+                        onPressed: () {
+                          context
+                              .read<ProductProvider>()
+                              .toggleFavoriteStatus(product);
+                        },
+                        vertical: 12.0,
+                        horizontal: 12.0,
+                        left: 150,
+                      );
+                    },
+                  ),
           ),
         ],
       ),

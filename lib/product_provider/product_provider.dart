@@ -8,7 +8,7 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shopping_app/config/endponts.dart';
+import 'package:shopping_app/config/endpoints.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/model/product.dart';
@@ -95,6 +95,8 @@ class ProductProvider extends ChangeNotifier {
 
   // Controller for the forget email input
   final TextEditingController forgetEmailController = TextEditingController();
+  final GoogleSignIn _googleSignIn = GoogleSignIn(); // Global instance
+
 
   Future<void> signInWithGoogle(BuildContext context) async {
     try {
@@ -128,6 +130,18 @@ class ProductProvider extends ChangeNotifier {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Google Sign-In Error: $e')),
+      );
+    }
+  }
+
+  Future<void> signOutGoogle(BuildContext context) async {
+    try {
+      await _googleSignIn.signOut(); // Google se sign-out
+      // App ko login screen pe wapas le jao
+     Navigator.pushNamedAndRemoveUntil(context, 'login_sreen', (route) => false);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Google Sign-Out Error: $e')),
       );
     }
   }

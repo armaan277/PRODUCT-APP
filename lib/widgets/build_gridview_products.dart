@@ -30,7 +30,10 @@ class BuildGridviewProducts extends StatelessWidget {
 
     return shopCategories.isEmpty
         ? Center(
-            child: Image.asset('assets/products_not_found.png'),
+            child: Image.asset(
+              'assets/products_not_found.png',
+              width: 300,
+            ),
           )
         : GridView.builder(
             itemCount: shopCategories.length,

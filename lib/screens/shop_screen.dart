@@ -330,7 +330,7 @@ class ShopScreen extends StatelessWidget {
               controller: providerRead.searchController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search, size: 24),
                 hintText: 'Search...',
                 border: const OutlineInputBorder(),
                 suffixIcon: providerWatch.searchController.text.isNotEmpty
@@ -345,9 +345,11 @@ class ShopScreen extends StatelessWidget {
             ),
           ),
           providerWatch.products.isEmpty
-              ? Center(
-                  child: CircularProgressIndicator(
-                    color: AppColor.appColor,
+              ? Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: AppColor.appColor,
+                    ),
                   ),
                 )
               : Expanded(
