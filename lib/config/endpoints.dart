@@ -1,12 +1,12 @@
 class EndPoints {
-  // static const _baseEndpoint = 'https://ecommerce-rendered.onrender.com';
-  static const _baseEndpoint = 'http://192.168.0.106:3000'; 
+  static const _baseEndpoint = 'https://ecommerce-rendered.onrender.com'; 
+  // static const _baseEndpoint = 'http://192.168.0.106:3000'; 
 
   static const loginEndPoint = '$_baseEndpoint/login';
   static const signUpEndPoint = '$_baseEndpoint/signup';
 
 // All Get End Points
-  static const getAllProductsEndPoint = '$_baseEndpoint/productss'; //
+  static const getAllProductsEndPoint = '$_baseEndpoint/products'; //
   static const getUserCartsProductsEndPoint = '$_baseEndpoint/cartproducts';
   static const getUserFavouritesEndPoint = '$_baseEndpoint/favorite';
   static const getUserAddressEndPoint = '$_baseEndpoint/address';
