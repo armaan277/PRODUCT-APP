@@ -207,7 +207,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
-                                  child: Text("Details"),
+                                  child:  Text("Details"),
                                 ),
                                 Text(
                                   '${order['order_status']}',
