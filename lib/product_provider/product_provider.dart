@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/config/endpoints.dart';
+import 'package:shopping_app/config/network_helper.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/model/product.dart';
@@ -97,7 +98,6 @@ class ProductProvider extends ChangeNotifier {
   final TextEditingController forgetEmailController = TextEditingController();
   final GoogleSignIn _googleSignIn = GoogleSignIn(); // Global instance
 
-
   Future<void> signInWithGoogle(BuildContext context) async {
     try {
       final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
@@ -138,7 +138,11 @@ class ProductProvider extends ChangeNotifier {
     try {
       await _googleSignIn.signOut(); // Google se sign-out
       // App ko login screen pe wapas le jao
-     Navigator.pushNamedAndRemoveUntil(context, 'login_sreen', (route) => false);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        'login_sreen',
+        (route) => false,
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Google Sign-Out Error: $e')),
@@ -152,7 +156,8 @@ class ProductProvider extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse(
-            '${EndPoints.checkEmailEndpoint}/$email'), // Define this endpoint
+          '${EndPoints.checkEmailEndpoint}/$email',
+        ), // Define this endpoint
       );
       debugPrint('checkEmailExists response : ${response.body}');
       if (response.statusCode == 200) {
@@ -219,20 +224,60 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getProducts() async {
-    final response =
-        await http.get(Uri.parse(EndPoints.getAllProductsEndPoint));
+  Future<void> getProducts(BuildContext context) async {
+    final token = getToken();
+    debugPrint('Using Token for Products: $token');
 
-    final mapResponse = jsonDecode(response.body);
-
-    debugPrint('mapResponse : $mapResponse');
-
-    for (int i = 0; i < mapResponse.length; i++) {
-      products.add(Product.fromMap(mapResponse[i]));
+    if (token.isEmpty) {
+      debugPrint('No token found, redirecting to login');
+      Navigator.of(context).pushReplacementNamed('login_sreen');
+      return;
     }
+
+    isProductLoading = true;
+    notifyListeners();
+
+    final response = await NetworkHelper.get(
+      EndPoints.getAllProductsEndPoint,
+      token,
+      context,
+    );
+
+    if (response != null) {
+      final List<dynamic> productResponse = response;
+      products = productResponse
+          .map(
+            (product) => Product.fromMap(product as Map<String, dynamic>),
+          )
+          .toList();
+      debugPrint('Products: $products');
+    } else {
+      debugPrint('Failed to fetch products');
+    }
+
     isProductLoading = false;
     notifyListeners();
   }
+
+  // Future<void> getProducts() async {
+  //   final token = getToken();
+  //   final response = await http.get(
+  //     Uri.parse(
+  //       EndPoints.getAllProductsEndPoint,
+  //     ),
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': 'Bearer $token',
+  //     },
+  //   );
+  //   final mapResponse = jsonDecode(response.body);
+  //   debugPrint('mapResponse : $mapResponse');
+  //   for (int i = 0; i < mapResponse.length; i++) {
+  //     products.add(Product.fromMap(mapResponse[i]));
+  //   }
+  //   isProductLoading = false;
+  //   notifyListeners();
+  // }
 
   void productInfoInc(Product product) {
     product.quantity++;
@@ -337,7 +382,6 @@ class ProductProvider extends ChangeNotifier {
   }
 
 // LOGIN WORK
-
   Future<void> postLoginData(BuildContext context) async {
     final url = Uri.parse(EndPoints.loginEndPoint);
 
@@ -350,42 +394,100 @@ class ProductProvider extends ChangeNotifier {
     errorMessageLogIn = '';
     notifyListeners();
 
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(loginData),
-    );
-
-    final signUpResponse = jsonDecode(response.body);
-    debugPrint('Login -> signUpResponse : $signUpResponse');
-
-    if (response.statusCode == 200) {
-      userUniqueId = signUpResponse['user']['id'] ?? '';
-      debugPrint('Login -> userUniqueId : $userUniqueId');
-      isLogin = false;
-      debugPrint('userUniqueId : $userUniqueId');
-      debugPrint('Successfully LogedIn');
-
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool('isLoggedIn', true);
-      prefs.setString('userUniqueId', userUniqueId);
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const BottomNavigation()),
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(loginData),
       );
-      errorMessageLogIn = '';
-      notifyListeners();
-    } else if (response.statusCode == 401) {
-      errorMessageLogIn = 'Invalid email or password!';
+
+      final signUpResponse = jsonDecode(response.body);
+      debugPrint('Login -> signUpResponse : $signUpResponse');
+
+      if (response.statusCode == 200) {
+        userUniqueId = signUpResponse['user']['id'] ?? '';
+        token = signUpResponse['token']; // Save JWT token
+        debugPrint('Login -> userUniqueId : $userUniqueId');
+        debugPrint('Login -> token : $token');
+        isLogin = false;
+        debugPrint('Successfully Logged In');
+
+        // Save to SharedPreferences
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isLoggedIn', true);
+        prefs.setString('userUniqueId', userUniqueId);
+        prefs.setString('token', token); // Save token
+
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const BottomNavigation()),
+        );
+        errorMessageLogIn = '';
+        notifyListeners();
+      } else if (response.statusCode == 401) {
+        errorMessageLogIn = 'Invalid email or password!';
+        isLogin = false;
+        debugPrint('errorMessage : $errorMessageLogIn');
+        notifyListeners();
+      } else {
+        isLogin = false;
+        errorMessageLogIn = 'Something went wrong!';
+        debugPrint('Invalid email or password !!!');
+        notifyListeners();
+      }
+    } catch (e) {
       isLogin = false;
-      debugPrint('errorMessage : $errorMessageLogIn');
-      notifyListeners();
-    } else {
-      isLogin = false;
-      debugPrint('Invalid email or password !!!');
+      errorMessageLogIn = 'Error: $e';
+      debugPrint('Login error: $e');
       notifyListeners();
     }
   }
+
+  // Function to get token for future requests
+  String getToken() {
+    return token;
+  }
+
+  // Future<void> postLoginData(BuildContext context) async {
+  //   final url = Uri.parse(EndPoints.loginEndPoint);
+  //   final loginData = {
+  //     'email': emailController.text,
+  //     'password': passwordController.text,
+  //   };
+  //   isLogin = true;
+  //   errorMessageLogIn = '';
+  //   notifyListeners();
+  //   final response = await http.post(
+  //     url,
+  //     headers: {'Content-Type': 'application/json'},
+  //     body: jsonEncode(loginData),
+  //   );
+  //   final signUpResponse = jsonDecode(response.body);
+  //   debugPrint('Login -> signUpResponse : $signUpResponse');
+  //   if (response.statusCode == 200) {
+  //     userUniqueId = signUpResponse['user']['id'] ?? '';
+  //     debugPrint('Login -> userUniqueId : $userUniqueId');
+  //     isLogin = false;
+  //     debugPrint('userUniqueId : $userUniqueId');
+  //     debugPrint('Successfully LogedIn');
+  //     final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     prefs.setBool('isLoggedIn', true);
+  //     prefs.setString('userUniqueId', userUniqueId);
+  //     Navigator.of(context).pushReplacement(
+  //       MaterialPageRoute(builder: (context) => const BottomNavigation()),
+  //     );
+  //     errorMessageLogIn = '';
+  //     notifyListeners();
+  //   } else if (response.statusCode == 401) {
+  //     errorMessageLogIn = 'Invalid email or password!';
+  //     isLogin = false;
+  //     debugPrint('errorMessage : $errorMessageLogIn');
+  //     notifyListeners();
+  //   } else {
+  //     isLogin = false;
+  //     debugPrint('Invalid email or password !!!');
+  //     notifyListeners();
+  //   }
+  // }
 
   String? _signupError;
   String? get signupError => _signupError;
@@ -468,40 +570,83 @@ class ProductProvider extends ChangeNotifier {
   }
 
 // FAVORITE API WORK
-  Future<void> toggleFavoriteStatus(Product favoriteProduct) async {
+  Future<void> toggleFavoriteStatus(
+      Product favoriteProduct, BuildContext context) async {
     if (!favoriteProducts.contains(favoriteProduct)) {
       // Add to favorites
-      await postFavoriteData(favoriteProduct);
+      await postFavoriteData(context, favoriteProduct);
     } else {
       // Remove from favorites
-      await deleteFavourite(favoriteProduct.id);
+      await deleteFavourite(favoriteProduct.id, context);
     }
     notifyListeners();
   }
 
-  void getFavouriteData(String userId) async {
-    final url = Uri.parse('${EndPoints.getUserFavouritesEndPoint}/$userId');
-    final response = await http.get(url);
+  Future<void> getFavoriteProducts(BuildContext context) async {
+    final token = getToken();
+    debugPrint('Using Token for Favorite: $token');
 
-    debugPrint('favouriteResponse : ${response.body}');
-
-    if (response.statusCode == 200) {
-      final List<dynamic> favouriteResponse = jsonDecode(response.body);
-
-      // Map the response to a List<Product>
-      favoriteProducts = favouriteResponse
-          .map((favoritePro) => Product.fromMap(favoritePro))
-          .toList();
-      isProductLoading = false;
-      notifyListeners();
-
-      debugPrint('favoriteProducts: $favoriteProducts');
-    } else {
-      debugPrint('Failed to load data');
+    if (token.isEmpty) {
+      debugPrint('No token found, redirecting to login');
+      Navigator.of(context).pushReplacementNamed('login_sreen');
+      return;
     }
-  }
 
-  Future<void> postFavoriteData(Product favoriteProduct) async {
+    isProductLoading = true;
+    notifyListeners();
+
+    final response = await NetworkHelper.get(
+      EndPoints.getUserFavouritesEndPoint,
+      token,
+      context,
+    );
+
+    if (response != null) {
+      final List<dynamic> favouriteResponse = response;
+      favoriteProducts = favouriteResponse
+          .map(
+            (favoritePro) => Product.fromMap(
+              favoritePro as Map<String, dynamic>,
+            ),
+          )
+          .toList();
+      debugPrint('Favorite Products: $favoriteProducts');
+    } else {
+      debugPrint('Failed to fetch favorite products');
+    }
+
+    isProductLoading = false;
+    notifyListeners();
+  }
+  // void getFavouriteData() async {
+  //   final token = getToken();
+  //   final url = Uri.parse(EndPoints.getUserFavouritesEndPoint);
+  //   final response = await http.get(
+  //     url,
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': 'Bearer $token', // Send token in Bearer format
+  //     },
+  //   );
+  //   debugPrint('favouriteResponse : ${response.body}');
+  //   if (response.statusCode == 200) {
+  //     final List<dynamic> favouriteResponse = jsonDecode(response.body);
+  //     // Map the response to a List<Product>
+  //     favoriteProducts = favouriteResponse
+  //         .map((favoritePro) => Product.fromMap(favoritePro))
+  //         .toList();
+  //     isProductLoading = false;
+  //     notifyListeners();
+  //     debugPrint('favoriteProducts: $favoriteProducts');
+  //   } else {
+  //     debugPrint('Failed to load data');
+  //   }
+  // }
+
+  Future<void> postFavoriteData(
+      BuildContext context, Product favoriteProduct) async {
+    final token = getToken();
+    debugPrint('token : $token');
     final url = Uri.parse(EndPoints.postUserFavouriteEndPoint);
     isFavorite = true;
     notifyListeners();
@@ -524,7 +669,10 @@ class ProductProvider extends ChangeNotifier {
         final response = await http.post(
           url,
           body: jsonEncode(postFavorite),
-          headers: {'Content-Type': 'application/json'},
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token', // Send token in Bearer format
+          },
         );
 
         debugPrint('responseFavorite : ${response.body}');
@@ -539,7 +687,7 @@ class ProductProvider extends ChangeNotifier {
         }
       } else {
         // Remove from favorites
-        await deleteFavourite(favoriteProduct.id);
+        await deleteFavourite(favoriteProduct.id, context);
       }
       notifyListeners();
     } catch (e) {
@@ -547,28 +695,62 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteFavourite(int id) async {
-    final url = Uri.parse('${EndPoints.deleteUserFavouriteEndPoint}/$id');
+  Future<void> deleteFavourite(int id, BuildContext context) async {
+    final token = getToken(); // Add await for token
+    debugPrint('Using Token for Delete Favorite: $token');
+
+    if (token.isEmpty) {
+      debugPrint('No token found, redirecting to login');
+      Navigator.of(context).pushReplacementNamed('login_screen');
+      return;
+    }
+
     isFavorite = true;
     notifyListeners();
-    try {
-      final response = await http.delete(url);
 
-      debugPrint('deleteFavouriteResponse : ${response.body}');
-      if (response.statusCode == 200) {
+    final response = await NetworkHelper.delete(
+      EndPoints.deleteUserFavouriteEndPoint,
+      token,
+      context,
+      {'id': id}, // Send id in body
+    );
+
+    if (response != null) {
+      if (response['statusCode'] == 200) {
         favoriteProducts.removeWhere((product) => product.id == id);
-        isFavorite = false;
-        notifyListeners();
+        debugPrint('Favorite deleted successfully');
       } else {
-        debugPrint('Failed to delete favorite: ${response.body}');
+        debugPrint('Failed to delete favorite: ${response['body']}');
       }
-    } catch (e) {
-      debugPrint('Error deleting favorite: $e');
+    } else {
+      debugPrint('Failed to delete favorite');
     }
+
+    isFavorite = false;
+    notifyListeners();
   }
 
+  // Future<void> deleteFavourite(int id) async {
+  //   final url = Uri.parse('${EndPoints.deleteUserFavouriteEndPoint}/$id');
+  //   isFavorite = true;
+  //   notifyListeners();
+  //   try {
+  //     final response = await http.delete(url);
+  //     debugPrint('deleteFavouriteResponse : ${response.body}');
+  //     if (response.statusCode == 200) {
+  //       favoriteProducts.removeWhere((product) => product.id == id);
+  //       isFavorite = false;
+  //       notifyListeners();
+  //     } else {
+  //       debugPrint('Failed to delete favorite: ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     debugPrint('Error deleting favorite: $e');
+  //   }
+  // }
   // CART API WORK
   Future<void> postCartData(Product bagProduct, BuildContext? context) async {
+    final token = getToken();
     final url = Uri.parse(EndPoints.postUserCartProductsEndPoint);
 
     isProductAddInCart = true;
@@ -590,7 +772,10 @@ class ProductProvider extends ChangeNotifier {
       final response = await http.post(
         url,
         body: jsonEncode(postCart),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
       );
 
       if (response.statusCode == 201) {
@@ -602,9 +787,13 @@ class ProductProvider extends ChangeNotifier {
         }
         debugPrint('Product added to cart');
       } else if (response.statusCode == 200) {
-        Navigator.of(context!).push(MaterialPageRoute(builder: (context) {
-          return const ProductCartScreen();
-        }));
+        Navigator.of(context!).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return const ProductCartScreen();
+            },
+          ),
+        );
         // Product already in the cart
         debugPrint('Product already in cart');
       } else {
@@ -624,56 +813,204 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getCartsData(String userId) async {
-    final url = Uri.parse('${EndPoints.getUserCartsProductsEndPoint}/$userId');
-    final response = await http.get(url);
+  Future<void> getCartsData(BuildContext context) async {
+    final token = getToken(); // Add await
+    debugPrint('Using Token for Cart: $token');
 
-    if (response.statusCode == 200) {
-      final cartResponse = jsonDecode(response.body);
-      debugPrint('cartResponse : $cartResponse');
-
-      // Map the response to a List<Product>
-      bagProducts = (cartResponse as List<dynamic>)
-          .map((cartPro) => Product.fromMap(cartPro))
-          .toList();
-
-      totalPriceCartItems();
-
-      debugPrint('bagProducts bagProducts : $bagProducts');
-      isProductLoading = false;
-      notifyListeners();
-    } else {
-      debugPrint('Failed to load data');
+    if (token.isEmpty) {
+      debugPrint('No token found, redirecting to login');
+      Navigator.of(context).pushReplacementNamed('login_sreen');
+      return;
     }
-  }
 
-  void deleteCartData(int id) async {
-    final url = Uri.parse('${EndPoints.deleteUserCartProductsEndPoint}/$id');
+    isProductLoading = true;
+    notifyListeners();
 
-    try {
-      final response = await http.delete(url);
+    final response = await NetworkHelper.get(
+      EndPoints.getUserCartsProductsEndPoint,
+      token,
+      context,
+    );
 
-      debugPrint('deleteCartResponse: ${response.body}');
+    if (response != null) {
+      try {
+        final List<dynamic> cartResponse =
+            response is List ? response : response['data'] ?? [];
+        bagProducts = cartResponse
+            .map(
+              (cartPro) => Product.fromMap(cartPro as Map<String, dynamic>),
+            )
+            .toList();
 
-      if (response.statusCode == 200) {
-        bagProducts.removeWhere((product) => product.id == id);
-
-        debugPrint('Updated Total Price: $totalPrice');
-        notifyListeners();
+        totalPriceCartItems();
+        debugPrint('bagProducts: $bagProducts');
+      } catch (e) {
+        debugPrint('Error mapping cart data: $e');
+        bagProducts = [];
       }
-    } catch (e) {
-      debugPrint('Error deleting cart item: $e');
+    } else {
+      debugPrint('Failed to fetch cart products');
+      bagProducts = [];
     }
+
+    isProductLoading = false;
+    notifyListeners();
   }
+  // void getCartsData() async {
+  //   final token = getToken();
+  //   final url = Uri.parse(EndPoints.getUserCartsProductsEndPoint);
+  //   final response = await http.get(
+  //     url,
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': 'Bearer $token',
+  //     },
+  //   );
+  //   if (response.statusCode == 200) {
+  //     final cartResponse = jsonDecode(response.body);
+  //     debugPrint('cartResponse : $cartResponse');
+  //     // Map the response to a List<Product>
+  //     bagProducts = (cartResponse as List<dynamic>)
+  //         .map(
+  //           (cartPro) => Product.fromMap(cartPro),
+  //         )
+  //         .toList();
+  //     totalPriceCartItems();
+  //     debugPrint('bagProducts bagProducts : $bagProducts');
+  //     isProductLoading = false;
+  //     notifyListeners();
+  //   } else {
+  //     debugPrint('Failed to load data');
+  //   }
+  // }
+
+  Future<void> deleteCartData(int id, BuildContext context) async {
+    final token = getToken(); // Add await for token
+    debugPrint('Using Token for Delete Cart: $token');
+
+    if (token.isEmpty) {
+      debugPrint('No token found, redirecting to login');
+      Navigator.of(context).pushReplacementNamed('login_screen');
+      return;
+    }
+
+    isProductLoading = true;
+    notifyListeners();
+
+    final response = await NetworkHelper.delete(
+      '${EndPoints.deleteUserCartProductsEndPoint}/$id',
+      token,
+      context,
+      {}, // No body needed since id is in URL
+    );
+
+    if (response != null) {
+      if (response['statusCode'] == 200) {
+        bagProducts.removeWhere((product) => product.id == id);
+        totalPriceCartItems(); // Recalculate total price
+        debugPrint('Updated Total Price: $totalPrice');
+      } else {
+        debugPrint('Failed to delete cart item: ${response['body']}');
+      }
+    } else {
+      debugPrint('Failed to delete cart item');
+    }
+
+    isProductLoading = false;
+    notifyListeners();
+  }
+  // void deleteCartData(int id) async {
+  //   final url = Uri.parse('${EndPoints.deleteUserCartProductsEndPoint}/$id');
+  //   try {
+  //     final response = await http.delete(url);
+  //     debugPrint('deleteCartResponse: ${response.body}');
+  //     if (response.statusCode == 200) {
+  //       bagProducts.removeWhere((product) => product.id == id);
+  //       debugPrint('Updated Total Price: $totalPrice');
+  //       notifyListeners();
+  //     }
+  //   } catch (e) {
+  //     debugPrint('Error deleting cart item: $e');
+  //   }
+  // }
 
   // ADDRESS API WORK
-  Future<void> getAddressData() async {
-    final url = Uri.parse('${EndPoints.getUserAddressEndPoint}/$userUniqueId');
-    debugPrint('getAddressData : $userUniqueId');
 
+  // Future<void> getAddressData(BuildContext context) async {
+  //   final token = getToken(); // Add await
+  //   debugPrint('Using Token for Address: $token');
+  //   if (token.isEmpty) {
+  //     debugPrint('No token found, redirecting to login');
+  //     Navigator.of(context).pushReplacementNamed('login_screen');
+  //     return;
+  //   }
+  //   debugPrint('getAddressData: $userUniqueId');
+  //   final url = Uri.parse(EndPoints.getUserAddressEndPoint);
+  //   try {
+  //     final response = await http.get(
+  //       url,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     );
+  //     debugPrint('response.statusCode: ${response.statusCode}');
+  //     debugPrint('response.body: ${response.body}');
+  //     if (response.statusCode == 200) {
+  //       final dynamic responseBody = jsonDecode(response.body);
+  //       final List<dynamic> addresses =
+  //           responseBody is List ? responseBody : [];
+  //       debugPrint('responseBody: $addresses');
+  //       if (addresses.isNotEmpty) {
+  //         // Populate the text controllers with existing data
+  //         nameController.text = addresses[0]['full_name']?.toString() ?? '';
+  //         addressController.text = addresses[0]['address']?.toString() ?? '';
+  //         cityController.text = addresses[0]['city']?.toString() ?? '';
+  //         stateController.text = addresses[0]['state_region']?.toString() ?? '';
+  //         zipcodeController.text = addresses[0]['zip_code']?.toString() ?? '';
+  //         countryController.text = addresses[0]['country']?.toString() ?? '';
+  //         isAddressStoreInDatabase = true;
+  //         debugPrint('Address data successfully loaded.');
+  //       } else {
+  //         // Clear controllers if no address found
+  //         nameController.clear();
+  //         addressController.clear();
+  //         cityController.clear();
+  //         stateController.clear();
+  //         zipcodeController.clear();
+  //         countryController.clear();
+  //         isAddressStoreInDatabase = false;
+  //         debugPrint('No address data found.');
+  //       }
+  //     } else if (response.statusCode == 404) {
+  //       nameController.clear();
+  //       addressController.clear();
+  //       cityController.clear();
+  //       stateController.clear();
+  //       zipcodeController.clear();
+  //       countryController.clear();
+  //       isAddressStoreInDatabase = false;
+  //       debugPrint('ADDRESS NOT AVAILABLE !!!');
+  //     } else if (response.statusCode == 401 || response.statusCode == 403) {
+  //       debugPrint('Token expired or unauthorized, redirecting to login');
+  //       Navigator.of(context).pushReplacementNamed('login_screen');
+  //     } else {
+  //       debugPrint('Unexpected response: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     debugPrint('Error occurred: $e');
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Error fetching address: $e')),
+  //     );
+  //   }
+  //   notifyListeners();
+  // }
+
+  Future<void> getAddressData() async {
+    final url = Uri.parse(EndPoints.getUserAddressEndPoint);
+    debugPrint('getAddressData : $userUniqueId');
     try {
       final response = await http.get(url);
-
       if (response.statusCode == 200) {
         debugPrint('response.statusCode == 200');
         final List<dynamic> responseBody = jsonDecode(response.body);
@@ -688,7 +1025,6 @@ class ProductProvider extends ChangeNotifier {
           zipcodeController.text =
               responseBody[0]['zip_code']?.toString() ?? '';
           countryController.text = responseBody[0]['country'] ?? '';
-
           // Address is available in the database
           isAddressStoreInDatabase = true;
           notifyListeners();
@@ -708,7 +1044,6 @@ class ProductProvider extends ChangeNotifier {
         // Address not available
         debugPrint('response.statusCode == 404');
         isAddressStoreInDatabase = false;
-
         debugPrint('isAddressStoreInDatabase : $isAddressStoreInDatabase');
         notifyListeners();
         debugPrint('ADDRESS NOT AVAILABLE !!!');
@@ -817,6 +1152,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
 // ORDERS API WORKING
+
   Future<void> fetchOrders(String userId, BuildContext context) async {
     final url =
         Uri.parse('${EndPoints.getUserOrdersEndPoint}/$userId'); // Backend URL

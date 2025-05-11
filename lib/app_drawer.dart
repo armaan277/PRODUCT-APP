@@ -175,10 +175,12 @@ class _AppDrawerState extends State<AppDrawer> {
             onTap: () async {
               isLoggedIn = false;
               userUniqueId = '';
+              token = '';
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
               prefs.setBool('isLoggedIn', isLoggedIn);
               prefs.setString('userUniqueId', userUniqueId);
+              prefs.setString('token', token);
               providerRead.signOutGoogle(context);
             },
           ),

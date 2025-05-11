@@ -190,7 +190,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                       child: IconButton(
                                           onPressed: () {
                                             providerRead.toggleFavoriteStatus(
-                                                widget.product);
+                                                widget.product, context);
                                           },
                                           icon: Icon(
                                             favorite

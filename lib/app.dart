@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shopping_app/constant/constant.dart';
 import 'package:shopping_app/main.dart';
 import 'package:shopping_app/product_provider/product_provider.dart';
+import 'package:shopping_app/routes/routes_list.dart';
 import 'package:shopping_app/screens/create_new_password_screen.dart';
 import 'package:shopping_app/screens/login_screen.dart';
 import 'package:shopping_app/screens/my_orders_sceen.dart';
@@ -28,14 +29,15 @@ class ProductApp extends StatelessWidget {
         ),
         initialRoute: isLoggedIn ? 'bottom_navigation' : 'login_sreen',
         routes: {
-          'bottom_navigation': (context) => const BottomNavigation(),
-          'login_sreen': (context) => const LogInScreen(),
-          'product_cart_screen': (context) => const ProductCartScreen(),
-          'my_orders_screen': (context) => const MyOrdersScreen(),
-          'order_success_screen': (context) => const OrderSuccessScreen(),
-          'otp_screen': (context) => const OTPScreen(), // Added / here
+          RoutesList.bottomNavigation: (context) => const BottomNavigation(),
+          RoutesList.loginScreen: (context) => const LogInScreen(),
+          RoutesList.productCartScreen: (context) => const ProductCartScreen(),
+          RoutesList.myOrdersScreen  : (context) => const MyOrdersScreen(),
+          RoutesList.orderSuccessScreen : (context) => const OrderSuccessScreen(),
+          RoutesList.otpScreen : (context) => const OTPScreen(), // Added / here
           'otp_sent_forget_screen': (context) => const OTPSentForgetScreen(),
-          'create_new_password_screen': (context) => const CreateNewPasswordScreen(),
+          'create_new_password_screen': (context) =>
+              const CreateNewPasswordScreen(),
         },
         debugShowCheckedModeBanner: false,
       ),

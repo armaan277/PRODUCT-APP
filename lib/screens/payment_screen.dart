@@ -142,9 +142,7 @@ class PaymentScreenState extends State<PaymentScreen> {
                       };
                       _razorpay.open(options);
                     } else {
-                      context
-                          .read<ProductProvider>()
-                          .postAddressId(userUniqueId);
+                      context.read<ProductProvider>().postAddressId(userUniqueId);
                       Navigator.of(context).pushNamed('order_success_screen');
                     }
                   },

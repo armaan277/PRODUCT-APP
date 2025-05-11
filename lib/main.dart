@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 // My Reviews -> Reviews for items static items
 bool isLoggedIn = false;
 String userUniqueId = "";
+String token = ''; // Store JWT token
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,8 +23,9 @@ void main() async {
   debugPrint('isLoggedIn : $isLoggedIn');
   userUniqueId = prefs.getString('userUniqueId') ?? '';
   debugPrint('userUniqueId : $userUniqueId');
-
-runApp(
+  token = prefs.getString('token') ?? '';
+  debugPrint('token : $token');
+  runApp(
     const ProductApp(),
   );
 }

@@ -14,7 +14,9 @@ class BuildFavouriteProduct extends StatefulWidget {
 class _BuildFavouriteProductState extends State<BuildFavouriteProduct> {
   @override
   void initState() {
-    context.read<ProductProvider>().getFavouriteData(userUniqueId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProductProvider>().getFavoriteProducts(context);
+    });
     super.initState();
   }
 
@@ -43,7 +45,7 @@ class _BuildFavouriteProductState extends State<BuildFavouriteProduct> {
             ),
           )
         : Scaffold(
-          backgroundColor: AppColor.appBackgroundColor,
+            backgroundColor: AppColor.appBackgroundColor,
             body: Stack(
               children: [
                 Opacity(
@@ -165,7 +167,7 @@ class _BuildFavouriteProductState extends State<BuildFavouriteProduct> {
                                         providerRead.favoriteProducts
                                             .removeAt(index);
                                         await providerRead
-                                            .deleteFavourite(cartId);
+                                            .deleteFavourite(cartId,context);
                                       },
                                       icon: const Icon(Icons.close),
                                     ),

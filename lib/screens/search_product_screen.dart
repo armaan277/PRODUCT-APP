@@ -153,7 +153,7 @@ class _SearchProductScreenState extends State<SearchProductScreen> {
                         onPressed: () {
                           context
                               .read<ProductProvider>()
-                              .toggleFavoriteStatus(product);
+                              .toggleFavoriteStatus(product,context);
                         },
                         vertical: 12.0,
                         horizontal: 12.0,

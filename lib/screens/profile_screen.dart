@@ -55,11 +55,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: Badge(
               backgroundColor: Colors.white,
               label: Text(
-                '${providerWatch.bagProductsCount}',
+                '${providerWatch.bagProducts.length}',
                 style:
                     TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
               ),
-              child: const Icon(Icons.shopping_cart),
+              child: const Icon(Icons.shopping_cart_outlined),
             ),
           ),
         ],

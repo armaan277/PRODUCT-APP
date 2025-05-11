@@ -1,49 +1,49 @@
 class EndPoints {
-  static const _baseEndpoint = 'https://ecommerce-rendered.onrender.com';
-  // static const _baseEndpoint = 'http://192.168.0.106:3000';
+  // static const _baseEndpoint = 'https://ecommerce-rendered.onrender.com';
+  static const baseEndpoint = 'http://192.168.0.104:3000'; 
 
-  static const loginEndPoint = '$_baseEndpoint/login';
-  static const signUpEndPoint = '$_baseEndpoint/signup';
+  static const loginEndPoint = '$baseEndpoint/login';
+  static const signUpEndPoint = '$baseEndpoint/signup';
 
 // All Get End Points
-  static const getAllProductsEndPoint = '$_baseEndpoint/products'; //
-  static const getUserCartsProductsEndPoint = '$_baseEndpoint/cartproducts';
-  static const getUserFavouritesEndPoint = '$_baseEndpoint/favorite';
-  static const getUserAddressEndPoint = '$_baseEndpoint/address';
-  static const getUserOrdersEndPoint = '$_baseEndpoint/myorders';
-  static const getUserOrderItemsEndPoint = '$_baseEndpoint/bookingcarts';
-  static const getAllReviewsEndPoint = '$_baseEndpoint/reviews';
-  static const getUserDetailsEndPoint = '$_baseEndpoint/signup';
-  static const getUserReviewsEndPoint = '$_baseEndpoint/userreviews';
+  static const getAllProductsEndPoint = 'productss'; //
+  static const getUserCartsProductsEndPoint = 'cartproducts';
+  static const getUserFavouritesEndPoint = 'favorite';
+  static const getUserAddressEndPoint = '$baseEndpoint/address';
+  static const getUserOrdersEndPoint = '$baseEndpoint/myorders';
+  static const getUserOrderItemsEndPoint = '$baseEndpoint/bookingcarts';
+  static const getAllReviewsEndPoint = '$baseEndpoint/reviews';
+  static const getUserDetailsEndPoint = '$baseEndpoint/signup';
+  static const getUserReviewsEndPoint = '$baseEndpoint/userreviews';
 
 // All Post End Points
-  static const postUserCartProductsEndPoint = '$_baseEndpoint/cartproducts';
-  static const postUserFavouriteEndPoint = '$_baseEndpoint/favorite';
-  static const postUserAddressIDEndPoint = '$_baseEndpoint/orderslist';
-  static const postUserAddressEndPoint = '$_baseEndpoint/address';
-  static const postUserReviewsEndPoint = '$_baseEndpoint/reviews';
+  static const postUserCartProductsEndPoint = '$baseEndpoint/cartproducts';
+  static const postUserFavouriteEndPoint = '$baseEndpoint/favorite';
+  static const postUserAddressIDEndPoint = '$baseEndpoint/orderslist';
+  static const postUserAddressEndPoint = '$baseEndpoint/address';
+  static const postUserReviewsEndPoint = '$baseEndpoint/reviews';
 
 // All Patch End Points
-  static const patchUserAddressEndPoint = '$_baseEndpoint/address';
+  static const patchUserAddressEndPoint = '$baseEndpoint/address';
   static const patchUserCartQtyUpdateEndPoint =
-      '$_baseEndpoint/cartproducts/updateQuantity';
-  static const cancelStatusInDatabaseEndPoint = '$_baseEndpoint/orderlist';
+      '$baseEndpoint/cartproducts/updateQuantity';
+  static const cancelStatusInDatabaseEndPoint = '$baseEndpoint/orderlist';
 
 // All Delete End Points
-  static const deleteUserCartProductsEndPoint = '$_baseEndpoint/cartproducts';
-  static const deleteUserFavouriteEndPoint = '$_baseEndpoint/favorite';
+  static const deleteUserCartProductsEndPoint = 'cartproducts';
+  static const deleteUserFavouriteEndPoint = 'favorite';
   static const deleteUserOrderCartsProducts =
-      '$_baseEndpoint/ordercartproducts';
+      '$baseEndpoint/ordercartproducts';
 
 // Google SignUp End Points
-  static const checkEmailEndpoint = '$_baseEndpoint/check-email';
-  static const googleSignupEndpoint = '$_baseEndpoint/google-signup';
+  static const checkEmailEndpoint = '$baseEndpoint/check-email';
+  static const googleSignupEndpoint = '$baseEndpoint/google-signup';
 
   // OTP End Points
-  static const sendOTPEndpoint = '$_baseEndpoint/send-otp';
-  static const validateOTPEndpoint = '$_baseEndpoint/validate-otp';
+  static const sendOTPEndpoint = '$baseEndpoint/send-otp';
+  static const validateOTPEndpoint = '$baseEndpoint/validate-otp';
 
   // Forget Password
-  static const forgetPasswordEndpoint = '$_baseEndpoint/forget-password';
-  static const updatePasswordEndpoint = '$_baseEndpoint/update-password';
+  static const forgetPasswordEndpoint = '$baseEndpoint/forget-password';
+  static const updatePasswordEndpoint = '$baseEndpoint/update-password';
 }

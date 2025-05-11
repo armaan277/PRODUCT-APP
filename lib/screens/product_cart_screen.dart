@@ -24,7 +24,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
 
     // Delay the state update after the current build phase
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProductProvider>().getCartsData(userUniqueId);
+      context.read<ProductProvider>().getCartsData(context);
       // context.read<ProductProvider>().fetchOrders(userUniqueId, context);
     });
   }
@@ -90,7 +90,7 @@ class _ProductCartScreenState extends State<ProductCartScreen> {
                           providerRead.removeProductFromBag(index, product);
                           debugPrint('index : $index');
                           // Deleting the product from the cart data
-                          providerRead.deleteCartData(product.id);
+                          providerRead.deleteCartData(product.id,context);
                           debugPrint('product.id : ${product.id}');
                         },
                         foregroundColor: AppColor.appColor,

@@ -34,8 +34,7 @@ class BuildProductCategories extends StatelessWidget {
         children: [
           Expanded(
             child: ListView.separated(
-              separatorBuilder: (context, index) =>
-                  const SizedBox(width: 5.0),
+              separatorBuilder: (context, index) => const SizedBox(width: 5.0),
               scrollDirection: Axis.horizontal,
               itemCount: categories.length,
               itemBuilder: (context, index) {
@@ -74,7 +73,7 @@ class BuildProductCategories extends StatelessWidget {
                   onPressed: () {
                     context
                         .read<ProductProvider>()
-                        .toggleFavoriteStatus(product);
+                        .toggleFavoriteStatus(product, context);
                   },
                   vertical: 15,
                   horizontal: 18,

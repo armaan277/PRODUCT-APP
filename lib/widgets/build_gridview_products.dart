@@ -75,7 +75,7 @@ class BuildGridviewProducts extends StatelessWidget {
                 discountPercentage: product.discountPercentage.toDouble(),
                 favorite: favorite,
                 onPressed: () {
-                  context.read<ProductProvider>().toggleFavoriteStatus(product);
+                  context.read<ProductProvider>().toggleFavoriteStatus(product,context);
                 },
                 vertical: 12.0,
                 horizontal: 12.0,
